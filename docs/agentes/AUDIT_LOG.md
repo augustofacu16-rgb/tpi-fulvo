@@ -151,3 +151,50 @@
 * **Seguridad Centralizada con Keycloak:** Demostrar cómo Keycloak 26 gestiona la autenticación mediante tokens JWT firmados, inyectando los roles de negocio (`ROL_*`) dentro del claim `realm_access.roles`, que luego serán consumidos por el filtro reactivo del API Gateway.
 * **Contingencia Offline con WireMock:** Explicar cómo la presencia de WireMock en Docker garantiza que la defensa del proyecto no dependa de internet ni de cuotas de APIs públicas de terceros.
 
+
+---
+
+### [AUDIT-20261108-12] Etapa 1 - Subsección 1.2: Librería Compartida `fulvo-common-lib` (Instalación en `.m2`)
+
+- **Fecha y Hora de Cierre:** 2026-11-08 18:35 (Hora Local)
+- **Estado:** COMPLETADO
+- **Gate de Etapa Asociado:** Gate 1 [PENDIENTE - Restan Subsecciones 1.3 a 1.5]
+
+#### 1. ¿Qué y Cómo se hizo?
+* **Componentes / Módulos intervenidos:** Librería compartida `fulvo-common-lib`.
+* **Archivos creados o modificados:**
+  - `fulvo-common-lib/pom.xml`: Configuración Maven (Java 21, Spring Boot Starter Web 3.3.4, Validation, Lombok, SLF4J), sin empaquetado repackage ejecutable para garantizar exportación como dependencia `.jar` canónica.
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/CrucePartidoDTO.java`: Contrato DTO serializable para despacho en lote de partidos entre Torneos y Operaciones (`POST /v1/partidos/lote`).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/NotificacionEmailDTO.java`: Contrato DTO serializable para eventos transaccionales hacia servicio-notificaciones (`POST /v1/notificaciones/emails`).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/GeocodificacionDTO.java`: Contrato DTO para resolución geográfica y fallback manual de sedes (`POST /v1/geocodificaciones`).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/ClimaPronosticoDTO.java`: Contrato DTO para evaluación climática y detección de condiciones adversas severas (>40mm / tormentas).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/ActuacionJugadorDTO.java`: Contrato DTO para actas arbitrales (goles y tarjetas por dorsal).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/ActaPartidoDTO.java`: Contrato DTO integral para asentamiento oficial de partidos y definición por penales.
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/BusinessRuleException.java`: Excepción base de negocio (código de regla opcional).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/RecursoNoEncontradoException.java`: Excepción para recursos inexistentes (404 Not Found).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/ConflictoEstadoException.java`: Excepción para transiciones inválidas y colisiones de estado (409 Conflict).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/ArbitroNoAsignadoException.java`: Excepción para intentos de modificación arbitral no autorizados (403 Forbidden).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/ConflictoHorarioException.java`: Excepción para superposición horaria ±2h (409 Conflict).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/EmpateNoPermitidoException.java`: Excepción para omisión de penales en Llaves (400 Bad Request).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/filter/CorrelationIdFilter.java`: Filtro `OncePerRequestFilter` con cabecera `X-Correlation-ID`, población en `MDC` (`correlationId`) y propagación a cabeceras de respuesta HTTP.
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/GlobalExceptionHandler.java`: Manejador `@RestControllerAdvice` global que transforma todas las excepciones de dominio y validación en `ProblemDetail` (RFC 7807) enriquecidos con timestamp, correlación y URI.
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/config/FulvoCommonAutoConfiguration.java`: Configuración `@AutoConfiguration` para habilitar automáticamente los beans en cualquier microservicio Spring Boot consumidor.
+  - `fulvo-common-lib/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`: Declaración de autoconfiguración de Spring Boot 3.
+* **Endpoints y Contratos implementados:**
+  - Contratos DTO estándar para comunicación inter-servicio vía `RestClient`.
+  - Respuestas RFC 7807 (`ProblemDetail`) con HTTP 400, 403, 404, 409 y 500.
+* **Lógica técnica y de dominio aplicada:**
+  - Compilación Java 21 y empaquetado JAR instalado en el repositorio local `~/.m2/repository/com/fulvo/fulvo-common-lib/1.0.0-SNAPSHOT/`.
+  - Inyección de MDC `[%X{correlationId}]` y limpieza obligatoria en `finally` para evitar fugas en pools de hilos de Tomcat.
+
+#### 2. ¿Qué hubo que arreglar sobre la marcha?
+* **Aislamiento de Empaquetado como Librería:** Se omitió intencionalmente la meta `repackage` del `spring-boot-maven-plugin` para que el archivo generado sea un JAR estándar consumible en el classpath de otros proyectos en lugar de un fat-JAR ejecutable.
+* **Autodescubrimiento en Spring Boot 3:** Se añadió `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` para que los microservicios core y adaptadores importen automáticamente el `CorrelationIdFilter` y el `GlobalExceptionHandler` sin necesidad de forzar un `@ComponentScan("com.fulvo")` manual.
+
+#### 3. ¿En qué difiere con lo establecido en el Plan Original?
+* Se incorporaron proactivamente las excepciones arbitrales (`ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`) y los DTOs de actas (`ActaPartidoDTO`, `ActuacionJugadorDTO`) previstos para la Subsección 3.6, dejándolos listos en `.m2` para que Gastón y Santiago puedan consumirlos inmediatamente sin reprocesar la librería.
+
+#### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
+* **Estandarización de Errores con RFC 7807:** Justificar por qué se utiliza `ProblemDetail` de Spring 6 en lugar de DTOs propios ad-hoc para respuestas de error (cumplimiento de estándares de la industria, interoperabilidad y uniformidad REST).
+* **Trazabilidad Distribuida con Correlation ID y MDC:** Explicar cómo el `CorrelationIdFilter` extrae o genera el `X-Correlation-ID`, lo inyecta en el `MDC` de SLF4J permitiendo que cada línea de log incluya `[%X{correlationId}]`, y lo propaga en la respuesta para facilitar el debugging en arquitecturas distribuidas.
+* **Autonomía y Desacoplamiento de Librería Común:** Justificar por qué la librería solo comparte DTOs de transferencia y excepciones agnósticas de persistencia, prohibiendo taxativamente compartir entidades JPA entre microservicios.
