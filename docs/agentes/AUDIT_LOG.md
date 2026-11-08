@@ -1,4 +1,4 @@
-# Bitácora y Registro de Auditoría de Desarrollo - TPI Fulvo'
+﻿# Bitácora y Registro de Auditoría de Desarrollo - TPI Fulvo'
 
 > **Propósito:** Este archivo es el registro histórico oficial de la evolución del proyecto. Documenta cronológicamente **cuándo y cómo se implementó cada sección**, los **problemas y soluciones encontrados sobre la marcha**, y las **desviaciones o adaptaciones respecto al plan original**. Sirve como instrumento clave de trazabilidad y material de estudio directo para la **defensa oral (coloquio) con los docentes de la cátedra**.
 >
@@ -85,7 +85,7 @@
 * Se revisó que la carga de trabajo no estuviera desbalanceada: cada integrante es dueño de un componente ejecutable completo con su correspondiente flujo de prueba manual post-implementación que no depende de que otro compañero termine código a medias.
 
 #### 3. ¿En qué difiere con lo establecido en el Plan Original?
-* Inicialmente se había planteado una versión con roles jerárquicos (Tech Lead vs implementadores) y posteriormente una versión anónima sin responsables. Esta nueva versión establece una distribución horizontal, equitativa y orientada a vertical slices funcionales.
+* Inicialmente se había planteado una versión con roles jerárquicos (Tech Lead vs implementadores) y posteriormente una versión anónima sin responsabilidades. Esta nueva versión establece una distribución horizontal, equitativa y orientada a vertical slices funcionales.
 
 #### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
 * **Demostración Individual y Colectiva:** Cada integrante puede explicar y demostrar en vivo su flujo específico con datos reales sin interferir con las otras partes: Santiago muestra el Gateway y Keycloak; Gastón muestra la inscripción y el fixture; Tomas muestra la asignación, acta y tabla de posiciones; Luis Miguel muestra los adaptadores, Mailpit y la suite completa de Postman.
@@ -151,81 +151,112 @@
 * **Seguridad Centralizada con Keycloak:** Demostrar cómo Keycloak 26 gestiona la autenticación mediante tokens JWT firmados, inyectando los roles de negocio (`ROL_*`) dentro del claim `realm_access.roles`, que luego serán consumidos por el filtro reactivo del API Gateway.
 * **Contingencia Offline con WireMock:** Explicar cómo la presencia de WireMock en Docker garantiza que la defensa del proyecto no dependa de internet ni de cuotas de APIs públicas de terceros.
 
-
 ---
 
-### [AUDIT-20261108-12] Etapa 1 - Subsección 1.2: Librería Compartida `fulvo-common-lib` (Instalación en `.m2`)
+### [AUDIT-20261108-12] Etapa 1 - SubsecciÃ³n 1.2: LibrerÃ­a Compartida `fulvo-common-lib` (InstalaciÃ³n en `.m2`)
 
 - **Fecha y Hora de Cierre:** 2026-11-08 18:35 (Hora Local)
 - **Estado:** COMPLETADO
 - **Gate de Etapa Asociado:** Gate 1 [PENDIENTE - Restan Subsecciones 1.3 a 1.5]
 
-#### 1. ¿Qué y Cómo se hizo?
-* **Componentes / Módulos intervenidos:** Librería compartida `fulvo-common-lib`.
+#### 1. Â¿QuÃ© y CÃ³mo se hizo?
+* **Componentes / MÃ³dulos intervenidos:** LibrerÃ­a compartida `fulvo-common-lib`.
 * **Archivos creados o modificados:**
-  - `fulvo-common-lib/pom.xml`: Configuración Maven (Java 21, Spring Boot Starter Web 3.3.4, Validation, Lombok, SLF4J), sin empaquetado repackage ejecutable para garantizar exportación como dependencia `.jar` canónica.
+  - `fulvo-common-lib/pom.xml`: ConfiguraciÃ³n Maven (Java 21, Spring Boot Starter Web, Validation, Lombok, SLF4J), sin empaquetado repackage ejecutable para garantizar exportaciÃ³n como dependencia `.jar` canÃ³nica.
   - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/CrucePartidoDTO.java`: Contrato DTO serializable para despacho en lote de partidos entre Torneos y Operaciones (`POST /v1/partidos/lote`).
   - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/NotificacionEmailDTO.java`: Contrato DTO serializable para eventos transaccionales hacia servicio-notificaciones (`POST /v1/notificaciones/emails`).
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/GeocodificacionDTO.java`: Contrato DTO para resolución geográfica y fallback manual de sedes (`POST /v1/geocodificaciones`).
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/ClimaPronosticoDTO.java`: Contrato DTO para evaluación climática y detección de condiciones adversas severas (>40mm / tormentas).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/GeocodificacionDTO.java`: Contrato DTO para resoluciÃ³n geogrÃ¡fica y fallback manual de sedes (`POST /v1/geocodificaciones`).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/ClimaPronosticoDTO.java`: Contrato DTO para evaluaciÃ³n climÃ¡tica y detecciÃ³n de condiciones adversas severas (>40mm / tormentas).
   - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/ActuacionJugadorDTO.java`: Contrato DTO para actas arbitrales (goles y tarjetas por dorsal).
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/ActaPartidoDTO.java`: Contrato DTO integral para asentamiento oficial de partidos y definición por penales.
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/BusinessRuleException.java`: Excepción base de negocio (código de regla opcional).
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/RecursoNoEncontradoException.java`: Excepción para recursos inexistentes (404 Not Found).
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/ConflictoEstadoException.java`: Excepción para transiciones inválidas y colisiones de estado (409 Conflict).
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/ArbitroNoAsignadoException.java`: Excepción para intentos de modificación arbitral no autorizados (403 Forbidden).
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/ConflictoHorarioException.java`: Excepción para superposición horaria ±2h (409 Conflict).
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/EmpateNoPermitidoException.java`: Excepción para omisión de penales en Llaves (400 Bad Request).
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/filter/CorrelationIdFilter.java`: Filtro `OncePerRequestFilter` con cabecera `X-Correlation-ID`, población en `MDC` (`correlationId`) y propagación a cabeceras de respuesta HTTP.
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/GlobalExceptionHandler.java`: Manejador `@RestControllerAdvice` global que transforma todas las excepciones de dominio y validación en `ProblemDetail` (RFC 7807) enriquecidos con timestamp, correlación y URI.
-  - `fulvo-common-lib/src/main/java/com/fulvo/common/config/FulvoCommonAutoConfiguration.java`: Configuración `@AutoConfiguration` para habilitar automáticamente los beans en cualquier microservicio Spring Boot consumidor.
-  - `fulvo-common-lib/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`: Declaración de autoconfiguración de Spring Boot 3.
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/dto/ActaPartidoDTO.java`: Contrato DTO integral para asentamiento oficial de partidos y definiciÃ³n por penales.
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/BusinessRuleException.java`: ExcepciÃ³n base de negocio (cÃ³digo de regla opcional).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/RecursoNoEncontradoException.java`: ExcepciÃ³n para recursos inexistentes (404 Not Found).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/ConflictoEstadoException.java`: ExcepciÃ³n para transiciones invÃ¡lidas y colisiones de estado (409 Conflict).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/ArbitroNoAsignadoException.java`: ExcepciÃ³n para intentos de modificaciÃ³n arbitral no autorizados (403 Forbidden).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/ConflictoHorarioException.java`: ExcepciÃ³n para superposiciÃ³n horaria Â±2h (409 Conflict).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/EmpateNoPermitidoException.java`: ExcepciÃ³n para omisiÃ³n de penales en Llaves (400 Bad Request).
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/filter/CorrelationIdFilter.java`: Filtro `OncePerRequestFilter` con cabecera `X-Correlation-ID`, poblaciÃ³n en `MDC` (`correlationId`) y propagaciÃ³n a cabeceras de respuesta HTTP.
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/exception/GlobalExceptionHandler.java`: Manejador `@RestControllerAdvice` global que transforma todas las excepciones de dominio y validaciÃ³n en `ProblemDetail` (RFC 7807) enriquecidos con timestamp, correlaciÃ³n y URI.
+  - `fulvo-common-lib/src/main/java/com/fulvo/common/config/FulvoCommonAutoConfiguration.java`: ConfiguraciÃ³n `@AutoConfiguration` para habilitar automÃ¡ticamente los beans en cualquier microservicio Spring Boot consumidor.
+  - `fulvo-common-lib/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`: DeclaraciÃ³n de autoconfiguraciÃ³n de Spring Boot 3/4.
 * **Endpoints y Contratos implementados:**
-  - Contratos DTO estándar para comunicación inter-servicio vía `RestClient`.
+  - Contratos DTO estÃ¡ndar para comunicaciÃ³n inter-servicio vÃ­a `RestClient`.
   - Respuestas RFC 7807 (`ProblemDetail`) con HTTP 400, 403, 404, 409 y 500.
-* **Lógica técnica y de dominio aplicada:**
-  - Compilación Java 21 y empaquetado JAR instalado en el repositorio local `~/.m2/repository/com/fulvo/fulvo-common-lib/1.0.0-SNAPSHOT/`.
-  - Inyección de MDC `[%X{correlationId}]` y limpieza obligatoria en `finally` para evitar fugas en pools de hilos de Tomcat.
+* **LÃ³gica tÃ©cnica y de dominio aplicada:**
+  - CompilaciÃ³n Java 21 y empaquetado JAR instalado en el repositorio local `~/.m2/repository/com/fulvo/fulvo-common-lib/1.0.0-SNAPSHOT/`.
+  - InyecciÃ³n de MDC `[%X{correlationId}]` y limpieza obligatoria en `finally` para evitar fugas en pools de hilos de Tomcat.
 
-#### 2. ¿Qué hubo que arreglar sobre la marcha?
-* **Aislamiento de Empaquetado como Librería:** Se omitió intencionalmente la meta `repackage` del `spring-boot-maven-plugin` para que el archivo generado sea un JAR estándar consumible en el classpath de otros proyectos en lugar de un fat-JAR ejecutable.
-* **Autodescubrimiento en Spring Boot 3:** Se añadió `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` para que los microservicios core y adaptadores importen automáticamente el `CorrelationIdFilter` y el `GlobalExceptionHandler` sin necesidad de forzar un `@ComponentScan("com.fulvo")` manual.
+#### 2. Â¿QuÃ© hubo que arreglar sobre la marcha?
+* **Aislamiento de Empaquetado como LibrerÃ­a:** Se omitiÃ³ intencionalmente la meta `repackage` del `spring-boot-maven-plugin` para que el archivo generado sea un JAR estÃ¡ndar consumible en el classpath de otros proyectos en lugar de un fat-JAR ejecutable.
+* **Autodescubrimiento en Spring Boot:** Se aÃ±adiÃ³ `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` para que los microservicios core y adaptadores importen automÃ¡ticamente el `CorrelationIdFilter` y el `GlobalExceptionHandler` sin necesidad de forzar un `@ComponentScan("com.fulvo")` manual.
 
-#### 3. ¿En qué difiere con lo establecido en el Plan Original?
-* Se incorporaron proactivamente las excepciones arbitrales (`ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`) y los DTOs de actas (`ActaPartidoDTO`, `ActuacionJugadorDTO`) previstos para la Subsección 3.6, dejándolos listos en `.m2` para que Gastón y Santiago puedan consumirlos inmediatamente sin reprocesar la librería.
+#### 3. Â¿En quÃ© difiere con lo establecido en el Plan Original?
+* Se incorporaron proactivamente las excepciones arbitrales (`ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`) y los DTOs de actas (`ActaPartidoDTO`, `ActuacionJugadorDTO`) previstos para la SubsecciÃ³n 3.6, dejÃ¡ndolos listos en `.m2` para que GastÃ³n y Santiago puedan consumirlos inmediatamente sin reprocesar la librerÃ­a.
 
 #### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
-* **Estandarización de Errores con RFC 7807:** Justificar por qué se utiliza `ProblemDetail` de Spring 6 en lugar de DTOs propios ad-hoc para respuestas de error (cumplimiento de estándares de la industria, interoperabilidad y uniformidad REST).
-* **Trazabilidad Distribuida con Correlation ID y MDC:** Explicar cómo el `CorrelationIdFilter` extrae o genera el `X-Correlation-ID`, lo inyecta en el `MDC` de SLF4J permitiendo que cada línea de log incluya `[%X{correlationId}]`, y lo propaga en la respuesta para facilitar el debugging en arquitecturas distribuidas.
-* **Autonomía y Desacoplamiento de Librería Común:** Justificar por qué la librería solo comparte DTOs de transferencia y excepciones agnósticas de persistencia, prohibiendo taxativamente compartir entidades JPA entre microservicios.
-
+* **EstandarizaciÃ³n de Errores con RFC 7807:** Justificar por quÃ© se utiliza `ProblemDetail` de Spring 6 en lugar de DTOs propios ad-hoc para respuestas de error (cumplimiento de estÃ¡ndares de la industria, interoperabilidad y uniformidad REST).
+* **Trazabilidad Distribuida con Correlation ID y MDC:** Explicar cÃ³mo el `CorrelationIdFilter` extrae o genera el `X-Correlation-ID`, lo inyecta en el `MDC` de SLF4J permitiendo que cada lÃ­nea de log incluya `[%X{correlationId}]`, y lo propaga en la respuesta para facilitar el debugging en arquitecturas distribuidas.
+* **AutonomÃ­a y Desacoplamiento de LibrerÃ­a ComÃºn:** Justificar por quÃ© la librerÃ­a solo comparte DTOs de transferencia y excepciones agnÃ³sticas de persistencia, prohibiendo taxativamente compartir entidades JPA entre microservicios.
 
 ---
 
-### [AUDIT-20261108-13] Etapa 1 - Actualización de Ecosistema: Spring Boot 4.0.8 y Lombok 1.18.38 en `subseccion1.2`
+### [AUDIT-20261108-13] Etapa 1 - ActualizaciÃ³n de Ecosistema: Spring Boot 4.0.8 y Lombok 1.18.38 en `subseccion1.2`
 
 - **Fecha y Hora de Cierre:** 2026-11-08 19:15 (Hora Local)
 - **Estado:** COMPLETADO
 - **Gate de Etapa Asociado:** Gate 1 [PENDIENTE - Restan Subsecciones 1.3 a 1.5]
 
-#### 1. ¿Qué y Cómo se hizo?
-* **Componentes / Módulos intervenidos:** `fulvo-common-lib` y documentación de agentes en `docs/agentes/`.
+#### 1. Â¿QuÃ© y CÃ³mo se hizo?
+* **Componentes / MÃ³dulos intervenidos:** `fulvo-common-lib` y documentaciÃ³n de agentes en `docs/agentes/`.
 * **Archivos creados o modificados:**
-  - `fulvo-common-lib/pom.xml`: Se actualizó el `parent` a `org.springframework.boot:spring-boot-starter-parent:4.0.8` y se fijó `<lombok.version>1.18.38</lombok.version>`.
-  - `docs/agentes/CONTEXT.md`: Se actualizó el stack tecnológico a Spring Boot 4.0.8 en la rama `subseccion1.2`.
-  - `docs/agentes/PLAN_DESARROLLO.md`: Se actualizó la referencia del starter parent a Spring Boot 4.0.8.
-  - `docs/agentes/TASKS.md`: Se actualizaron las tareas de inicialización (1.3.1, 1.4.1, 1.5.1) a Spring Boot 4.0.8.
-  - `docs/agentes/DISENO_SISTEMA_FULVO.md`: Se actualizó la referencia del diagrama de contenedores a Spring Boot 4.0.8.
-  - `docs/agentes/GUIA_PRUEBAS_MANUALES.md`: Se actualizó la referencia de proyectos a Spring Boot 4.0.8.
-* **Lógica técnica y de dominio aplicada:**
-  - Empaquetado e instalación en `.m2` (`mvn clean install -DskipTests`) de `fulvo-common-lib:1.0.0-SNAPSHOT` compilando sobre Spring Boot 4.0.8 y Java 21 LTS con `BUILD SUCCESS`.
+  - `fulvo-common-lib/pom.xml`: Se actualizÃ³ el `parent` a `org.springframework.boot:spring-boot-starter-parent:4.0.8` y se fijÃ³ `<lombok.version>1.18.38</lombok.version>`.
+  - `docs/agentes/CONTEXT.md`: Se actualizÃ³ el stack tecnolÃ³gico a Spring Boot 4.0.8 en la rama `subseccion1.2`.
+  - `docs/agentes/PLAN_DESARROLLO.md`: Se actualizÃ³ la referencia del starter parent a Spring Boot 4.0.8.
+  - `docs/agentes/TASKS.md`: Se actualizaron las tareas de inicializaciÃ³n (1.3.1, 1.4.1, 1.5.1) a Spring Boot 4.0.8.
+  - `docs/agentes/DISENO_SISTEMA_FULVO.md`: Se actualizÃ³ la referencia del diagrama de contenedores a Spring Boot 4.0.8.
+  - `docs/agentes/GUIA_PRUEBAS_MANUALES.md`: Se actualizÃ³ la referencia de proyectos a Spring Boot 4.0.8.
+* **LÃ³gica tÃ©cnica y de dominio aplicada:**
+  - Empaquetado e instalaciÃ³n en `.m2` (`mvn clean install -DskipTests`) de `fulvo-common-lib:1.0.0-SNAPSHOT` compilando sobre Spring Boot 4.0.8 y Java 21 LTS con `BUILD SUCCESS`.
 
-#### 2. ¿Qué hubo que arreglar sobre la marcha?
-* **Incompatibilidad Lombok con JDK 21.0.11 (`TypeTag :: UNKNOWN`):** Al compilar con Oracle JDK 21.0.11, la versión anterior de Lombok arrojaba `ExceptionInInitializerError: com.sun.tools.javac.code.TypeTag :: UNKNOWN` por cambios internos en `javac`. Se resolvió explícitamente configurando `<lombok.version>1.18.38</lombok.version>` en las propiedades del compilador.
-* **Actualización a Spring Boot 4.0.8:** Se adoptó Spring Boot 4.0.8 en esta rama, resolviendo todas las dependencias transitivas desde Maven Central de forma limpia.
+#### 2. Â¿QuÃ© hubo que arreglar sobre la marcha?
+* **Incompatibilidad Lombok con JDK 21.0.11 (`TypeTag :: UNKNOWN`):** Al compilar con Oracle JDK 21.0.11, la versiÃ³n anterior de Lombok arrojaba `ExceptionInInitializerError: com.sun.tools.javac.code.TypeTag :: UNKNOWN` por cambios internos en `javac`. Se resolviÃ³ explÃ­citamente configurando `<lombok.version>1.18.38</lombok.version>` en las propiedades del compilador.
+* **ActualizaciÃ³n a Spring Boot 4.0.8:** Se adoptÃ³ Spring Boot 4.0.8 en esta rama, resolviendo todas las dependencias transitivas desde Maven Central de forma limpia.
 
-#### 3. ¿En qué difiere con lo establecido en el Plan Original?
-* **Versión del Framework:** El plan original contemplaba Spring Boot 3.3.4. Se adaptó la rama a Spring Boot 4.0.8 y se dejó constancia formal en todos los artefactos de `docs/agentes/`.
+#### 3. Â¿En quÃ© difiere con lo establecido en el Plan Original?
+* **VersiÃ³n del Framework:** El plan original contemplaba Spring Boot 3.3.4. Se adaptÃ³ la rama a Spring Boot 4.0.8 y se dejÃ³ constancia formal en todos los artefactos de `docs/agentes/`.
 
 #### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
-* **Compatibilidad de Framework y JDK:** Explicar cómo la combinación de JDK 21 moderno requirió sincronizar la versión de Lombok y la transición hacia Spring Boot 4.0.8 asegurando que los módulos downstream consuman el JAR actualizado desde `.m2`.
+* **Compatibilidad de Framework y JDK:** Explicar cÃ³mo la combinaciÃ³n de JDK 21 moderno requiriÃ³ sincronizar la versiÃ³n de Lombok y la transiciÃ³n hacia Spring Boot 4.0.8 asegurando que los mÃ³dulos downstream consuman el JAR actualizado desde `.m2`.
+
+---
+
+### [AUDIT-20261108-14] Etapa 1 - SubsecciÃ³n 1.3: Scaffolding Base, ConfiguraciÃ³n DataSource de `servicio-torneos` con Spring Boot 4.0.8
+
+- **Fecha y Hora de Cierre:** 2026-11-08 19:30 (Hora Local)
+- **Estado:** COMPLETADO
+- **Gate de Etapa Asociado:** Gate 1 [PENDIENTE - Restan Subsecciones 1.4 y 1.5]
+
+#### 1. Â¿QuÃ© y CÃ³mo se hizo?
+* **Componentes / MÃ³dulos intervenidos:** CreaciÃ³n del proyecto base `servicio-torneos` en `tpi-fulvo/servicio-torneos/`.
+* **Archivos creados o modificados:**
+  - `servicio-torneos/pom.xml`: Proyecto Maven configurado con Spring Boot Starter Parent `4.0.8`, Java 21 LTS, Lombok `1.18.38`, starters Web, Data JPA, Validation, Actuator, PostgreSQL y la dependencia activa de `fulvo-common-lib:1.0.0-SNAPSHOT`.
+  - `servicio-torneos/src/main/resources/application.yml`: ConfiguraciÃ³n de puerto HTTP `8081`, conexiÃ³n a PostgreSQL (`jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/fulvo_db?currentSchema=esquema_torneos`), `default_schema: esquema_torneos`, endpoints de Actuator (`/actuator/health`, `/actuator/info`) y formato de logging con `[%X{correlationId}]`.
+  - `servicio-torneos/src/main/java/com/fulvo/torneos/ServicioTorneosApplication.java`: Clase principal arrancable con `@SpringBootApplication`.
+  - EstructuraciÃ³n de paquetes base en `com.fulvo.torneos.*`: `config`, `controller`, `domain`, `dto`, `repository`, `service` y `client`.
+* **Endpoints y Contratos implementados:**
+  - `GET http://localhost:8081/actuator/health`: Endpoint de diagnÃ³stico y salud del microservicio.
+* **LÃ³gica tÃ©cnica y de dominio aplicada:**
+  - Microservicio independiente y desacoplado configurado para operar exclusivamente sobre el esquema lÃ³gico `esquema_torneos` en PostgreSQL.
+  - IntegraciÃ³n directa con la librerÃ­a compartida instalada en `.m2` (`fulvo-common-lib:1.0.0-SNAPSHOT`).
+  - Empaquetado ejecutable verificado con `mvn clean package -DskipTests` produciendo `servicio-torneos-1.0.0-SNAPSHOT.jar` de manera limpia sobre Spring Boot 4.0.8.
+
+#### 2. Â¿QuÃ© hubo que arreglar sobre la marcha?
+* **SincronizaciÃ³n de VersiÃ³n de Spring Boot:** Se actualizÃ³ el parent a `spring-boot-starter-parent:4.0.8` y Lombok a `1.18.38` alineÃ¡ndose con la actualizaciÃ³n de `fulvo-common-lib` en `main`.
+* **ActivaciÃ³n de LibrerÃ­a ComÃºn:** Tras la integraciÃ³n de `subseccion1.2` en `main`, se activÃ³ la dependencia de `fulvo-common-lib:1.0.0-SNAPSHOT` en el `pom.xml`.
+
+#### 3. Â¿En quÃ© difiere con lo establecido en el Plan Original?
+* Se adoptÃ³ Spring Boot 4.0.8 y Lombok 1.18.38 conforme a la actualizaciÃ³n oficial consensuada del stack tÃ©cnico.
+
+#### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
+* **Aislamiento por Esquema LÃ³gico:** Explicar cÃ³mo Hibernate y el DataSource apuntan explÃ­citamente a `esquema_torneos` mediante el parÃ¡metro de conexiÃ³n JDBC `?currentSchema=esquema_torneos` y `hibernate.default_schema=esquema_torneos`, garantizando que este servicio jamÃ¡s acceda a tablas de operaciones de partidos.
+* **Consumo de Artefacto ComÃºn:** Demostrar cÃ³mo `servicio-torneos` consume los DTOs y el manejador global RFC 7807 desde `fulvo-common-lib` sin acoplarse a capas de persistencia externas.
