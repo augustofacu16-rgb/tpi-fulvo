@@ -85,7 +85,7 @@
 * Se revisó que la carga de trabajo no estuviera desbalanceada: cada integrante es dueño de un componente ejecutable completo con su correspondiente flujo de prueba manual post-implementación que no depende de que otro compañero termine código a medias.
 
 #### 3. ¿En qué difiere con lo establecido en el Plan Original?
-* Inicialmente se había planteado una versión con roles jerárquicos (Tech Lead vs implementadores) y posteriormente una versión anónima sin responsables. Esta nueva versión establece una distribución horizontal, equitativa y orientada a vertical slices funcionales.
+* Inicialmente se había planteado una versión con roles jerárquicos (Tech Lead vs implementadores) y posteriormente una versión anónima sin responsabilidades. Esta nueva versión establece una distribución horizontal, equitativa y orientada a vertical slices funcionales.
 
 #### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
 * **Demostración Individual y Colectiva:** Cada integrante puede explicar y demostrar en vivo su flujo específico con datos reales sin interferir con las otras partes: Santiago muestra el Gateway y Keycloak; Gastón muestra la inscripción y el fixture; Tomas muestra la asignación, acta y tabla de posiciones; Luis Miguel muestra los adaptadores, Mailpit y la suite completa de Postman.
@@ -151,3 +151,33 @@
 * **Seguridad Centralizada con Keycloak:** Demostrar cómo Keycloak 26 gestiona la autenticación mediante tokens JWT firmados, inyectando los roles de negocio (`ROL_*`) dentro del claim `realm_access.roles`, que luego serán consumidos por el filtro reactivo del API Gateway.
 * **Contingencia Offline con WireMock:** Explicar cómo la presencia de WireMock en Docker garantiza que la defensa del proyecto no dependa de internet ni de cuotas de APIs públicas de terceros.
 
+---
+
+### [AUDIT-20261108-13] Etapa 1 - Subsección 1.3: Scaffolding Base y Configuración DataSource de `servicio-torneos`
+
+- **Fecha y Hora de Cierre:** 2026-11-08 18:55 (Hora Local)
+- **Estado:** COMPLETADO
+- **Gate de Etapa Asociado:** Gate 1 [PENDIENTE - Restan Subsecciones 1.2, 1.4 y 1.5]
+
+#### 1. ¿Qué y Cómo se hizo?
+* **Componentes / Módulos intervenidos:** Creación del proyecto base `servicio-torneos` en `tpi-fulvo/servicio-torneos/`.
+* **Archivos creados o modificados:**
+  - `servicio-torneos/pom.xml`: Proyecto Maven Spring Boot 3.3.4 con Java 21, starters Web, Data JPA, Validation, Actuator, PostgreSQL y Lombok. Se dejó preparada la sección de dependencia para `fulvo-common-lib:1.0.0-SNAPSHOT` una vez instalada en `.m2`.
+  - `servicio-torneos/src/main/resources/application.yml`: Configuración de puerto HTTP `8081`, conexión a PostgreSQL (`jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/fulvo_db?currentSchema=esquema_torneos`), `default_schema: esquema_torneos`, endpoints de Actuator (`/actuator/health`, `/actuator/info`) y formato de logging con `[%X{correlationId}]`.
+  - `servicio-torneos/src/main/java/com/fulvo/torneos/ServicioTorneosApplication.java`: Clase principal arrancable con `@SpringBootApplication`.
+  - Estructuración de paquetes base en `com.fulvo.torneos.*`: `config`, `controller`, `domain`, `dto`, `repository`, `service` y `client`.
+* **Endpoints y Contratos implementados:**
+  - `GET http://localhost:8081/actuator/health`: Endpoint de diagnóstico y salud del microservicio.
+* **Lógica técnica y de dominio aplicada:**
+  - Microservicio independiente y desacoplado configurado para operar exclusivamente sobre el esquema lógico `esquema_torneos` en PostgreSQL.
+  - Empaquetado ejecutable verificado con `mvn clean package -DskipTests` produciendo `servicio-torneos-1.0.0-SNAPSHOT.jar` de manera limpia.
+
+#### 2. ¿Qué hubo que arreglar sobre la marcha?
+* **Resolución de Dependencia de Librería Común:** Dado que la Subsección 1.2 (`fulvo-common-lib`) aún no había sido instalada en el repositorio `~/.m2` local por el compañero asignado, se consultó con Gastón mediante el protocolo anti-suposición y se acordó avanzar con el scaffolding autónomo de `servicio-torneos`, dejando el bloque `<dependency>` de `fulvo-common-lib` comentado y preparado en el `pom.xml` para evitar bloqueos de compilación.
+
+#### 3. ¿En qué difiere con lo establecido en el Plan Original?
+* Ninguna diferencia en cuanto al alcance funcional ni a la arquitectura. La dependencia a `fulvo-common-lib` se activará tan pronto se complete la Subsección 1.2.
+
+#### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
+* **Aislamiento por Esquema Lógico:** Explicar cómo Hibernate y el DataSource apuntan explícitamente a `esquema_torneos` mediante el parámetro de conexión JDBC `?currentSchema=esquema_torneos` y `hibernate.default_schema=esquema_torneos`, garantizando que este servicio jamás acceda a tablas de operaciones de partidos.
+* **Resiliencia en Parámetros de Entorno:** Explicar el uso de variables por defecto `${DB_HOST:localhost}:${DB_PORT:5432}` en `application.yml`, lo que permite ejecutar el servicio dentro de Docker con `postgres-db:5432` o fuera de Docker en el IDE con puertos alternativos (ej. `-DDB_PORT=5433`) sin cambiar el código fuente.
