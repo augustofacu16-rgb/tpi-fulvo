@@ -1,0 +1,7 @@
+# Configuraciones de Git para TPI Fulvo
+
+# Normalizacion de fines de linea para trabajo cruzado (Windows / Linux)
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf

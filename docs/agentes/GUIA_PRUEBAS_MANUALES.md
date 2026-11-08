@@ -1,6 +1,6 @@
-# Guía Maestra de Pruebas Manuales por Subsección y Tarea - TPI Fulvo'
+﻿# Guía Maestra de Pruebas Manuales por Subsección y Tarea - TPI Fulvo'
 
-> **Propósito:** Esta guía proporciona el protocolo técnico detallado para que cada integrante (**Tomas, Gastón, Santiago y Luis Miguel**) pueda probar de forma manual, quirúrgica y visual el código resultante de cada subsección desarrollada, antes de darla por finalizada en `TASKS.md` y registrar su entrada en `AUDIT_LOG.md`.
+> **Propósito:** Esta guía proporciona el protocolo técnico detallado para que cada integrante (**Tomas, Gastón, Santiago y Luis Miguel**) pueda probar de forma manual, quirúrgica y visual el código resultante de cada subsección desarrollada, antes de darla por finalizada en `TASKS.md` y registrar su entrada en `docs/audit/`.
 > 
 > **Modalidades de Prueba Soportadas:**
 > 1. **Opción A (Postman GUI):** Peticiones configuradas con pestañas *Params*, *Authorization*, *Headers* y *Body*, ideales para inspección visual de estados y respuestas.
