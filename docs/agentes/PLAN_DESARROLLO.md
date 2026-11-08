@@ -9,7 +9,7 @@
 1. **Nomenclatura de Paquetes y Maven:**
    * `groupId`: `com.fulvo`
    * Raíz de paquetes Java: `com.fulvo.*` (`com.fulvo.torneos`, `com.fulvo.operaciones`, `com.fulvo.gateway`, `com.fulvo.common`, etc.).
-   * Proyectos Spring Boot estándar e independientes que heredan de `spring-boot-starter-parent:3.3.4`. La librería `fulvo-common-lib` se instala en `.m2` (`mvn clean install -DskipTests`).
+   * Proyectos Spring Boot estándar e independientes que heredan de `spring-boot-starter-parent:4.0.8`. La librería `fulvo-common-lib` se instala en `.m2` (`mvn clean install -DskipTests`).
    * Compilación ágil sin tests Java: `mvn clean package -DskipTests`.
 2. **Contingencia Offline con WireMock:**
    * Se incluye el servicio `wiremock` en el `docker-compose.yml` para emular las respuestas de OpenStreetMap (Nominatim) y Open-Meteo durante la defensa oral en caso de cortes de red o falta de conectividad en la facultad.
@@ -166,7 +166,7 @@ flowchart TD
 #### Subsección 1.5: Gateway Reactivo (`api-gateway`) con `RouteLocatorBuilder` y Seguridad OIDC
 - **Responsable:** **Tomas Augusto Quiróz**
 - **Partes a Desarrollar:**
-  - Creación del microservicio Spring Boot reactivo en `tpi-fulvo/api-gateway/` heredando de `spring-boot-starter-parent:3.3.4` con `spring-cloud-starter-gateway`.
+  - Creación del microservicio Spring Boot reactivo en `tpi-fulvo/api-gateway/` heredando de `spring-boot-starter-parent:4.0.8` con `spring-cloud-starter-gateway`.
   - Configuración de rutas programáticas mediante bean `RouteLocator` con `RouteLocatorBuilder` (Apunte 19) apuntando a los microservicios de backend.
   - Configuración de seguridad reactiva `SecurityWebFilterChain` con validación de JWT emitido por Keycloak y convertidor reactivo de roles `realm_access.roles` a autoridades `ROL_*` (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) (Apunte 21).
   - Bloqueo perimetral: accesos anónimos con `401 Unauthorized` y accesos sin permisos suficientes con `403 Forbidden`. Exposición de endpoints de Actuator (`/actuator/health`).

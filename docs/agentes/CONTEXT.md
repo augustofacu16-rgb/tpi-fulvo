@@ -37,14 +37,14 @@ Cualquier código generado en este proyecto debe respetar los siguientes princip
 
 1. **Stack Tecnológico:**
    * Java 21 LTS.
-   * Spring Boot 3.3.x.
+   * Spring Boot 4.0.8 (fijado en rama `subseccion1.2`).
    * Spring Cloud 2023.0.x (para el API Gateway).
    * PostgreSQL 16.
    * Keycloak 26.5.0 (OIDC / OAuth2 Resource Server).
 2. **Organización de Proyectos y Maven:**
    * `groupId`: `com.fulvo`
    * Raíz de paquetes Java: `com.fulvo.*` (ej. `com.fulvo.torneos`, `com.fulvo.operaciones`, `com.fulvo.common`, etc.).
-   * **Estructura Desacoplada:** Cada microservicio es un proyecto Spring Boot independiente que hereda directamente de `org.springframework.boot:spring-boot-starter-parent:3.3.4`.
+   * **Estructura Desacoplada:** Cada microservicio es un proyecto Spring Boot independiente que hereda directamente de `org.springframework.boot:spring-boot-starter-parent:4.0.8`.
    * La librería compartida `fulvo-common-lib` es un artefacto `.jar` que se compila e instala en el repositorio local `.m2` (`mvn clean install -DskipTests`). Los microservicios la importan como dependencia estándar.
    * Compilación ágil sin pruebas de Java: `mvn clean package -DskipTests`.
 3. **Persistencia Desacoplada (PostgreSQL):**
