@@ -1,4 +1,4 @@
-# Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
+﻿# Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
 
 > **Estado:** `PLAN APROBADO - EN ESPERA DE ARRANQUE`  
 > **Regla de Operación Obligatoria:** 
@@ -50,12 +50,12 @@
 - *Auditor�a Requerida:* Registrar entrada en AUDIT_LOG.md al finalizar. [COMPLETADO - AUDIT-20261108-12]
 
 #### Subsección 1.3: Scaffolding Base y Configuración DataSource de `servicio-torneos`
-- [ ] **1.3.1** Inicializar microservicio `servicio-torneos` (`com.fulvo:servicio-torneos`, Java 21, Spring Boot 4.0.8). `[Gastón]`
-- [ ] **1.3.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`. `[Gastón]`
-- [ ] **1.3.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.torneos.*`. `[Gastón]`
-- [ ] **1.3.4** Verificar compilación limpia y arranque inicial en puerto `8081`. `[Gastón]`
+- [X] **1.3.1** Inicializar microservicio `servicio-torneos` (`com.fulvo:servicio-torneos`, Java 21, Spring Boot 4.0.8). `[GastÃ³n]`
+- [X] **1.3.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`. `[GastÃ³n]`
+- [X] **1.3.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.torneos.*`. `[GastÃ³n]`
+- [X] **1.3.4** Verificar compilaciÃ³n limpia y arranque inicial en puerto `8081`. `[GastÃ³n]`
 - *Criterio de Aceptación 1.3:* `mvn clean package -DskipTests` exitoso y conexión validada con el esquema lógico de torneos.
-- *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar. `[COMPLETADO - AUDIT-20261108-13]`
 
 #### Subsección 1.4: Scaffolding Base y Configuración DataSource de `servicio-operaciones-partidos`
 - **Estado:** `[EN PROCESO]`. Estructura y configuración creadas; compilación y conexión pendientes de validación con la librería común y PostgreSQL disponibles.
@@ -226,8 +226,7 @@
 - *Criterio de Aceptación 5.1:* Todo el backend levanta con un solo comando sin intervención manual.
 - *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar.
 
-#### Subsección 5.2: Documentación OpenAPI 3.0 de Torneos (`servicio-torneos`)
-- [ ] **5.2.1** Integrar `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos`. `[Gastón]`
+#### Subsección 5.2: Documentación OpenAPI 3.0 de Torneos (`servicio-torneos`)\n- [ ] **5.2.1** Integrar `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos`. `[Gastón]`
 - [ ] **5.2.2** Anotar endpoints, parámetros, esquemas de admisión, planteles y respuestas de error RFC 7807. `[Gastón]`
 - *Criterio de Aceptación 5.2:* Endpoints del ciclo registral documentados exhaustivamente.
 - *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar.
