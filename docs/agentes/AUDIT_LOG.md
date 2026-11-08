@@ -260,3 +260,30 @@
 #### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
 * **Aislamiento por Esquema LÃ³gico:** Explicar cÃ³mo Hibernate y el DataSource apuntan explÃ­citamente a `esquema_torneos` mediante el parÃ¡metro de conexiÃ³n JDBC `?currentSchema=esquema_torneos` y `hibernate.default_schema=esquema_torneos`, garantizando que este servicio jamÃ¡s acceda a tablas de operaciones de partidos.
 * **Consumo de Artefacto ComÃºn:** Demostrar cÃ³mo `servicio-torneos` consume los DTOs y el manejador global RFC 7807 desde `fulvo-common-lib` sin acoplarse a capas de persistencia externas.
+
+---
+
+### [AUDIT-20261108-03] Etapa 1 - Subsección 1.4: Inicialización de Operaciones
+
+- **Fecha y Hora de Cierre:** Pendiente; avance registrado el 2026-11-08 18:07 (Hora Local).
+- **Estado:** EN OBSERVACIÓN
+- **Gate de Etapa Asociado:** Gate 1 [PENDIENTE]
+
+#### 1. ¿Qué y Cómo se hizo?
+* **Componentes / Módulos intervenidos:** `servicio-operaciones-partidos`, en la rama `feature/1.4-scaffolding-operaciones` creada por Santiago.
+* **Archivos creados o modificados:** `servicio-operaciones-partidos/pom.xml`, `servicio-operaciones-partidos/src/main/java/com/fulvo/operaciones/OperacionesPartidosApplication.java`, `servicio-operaciones-partidos/src/main/resources/application.yml`, `servicio-operaciones-partidos/.gitignore`, `servicio-operaciones-partidos/README.md` y `TASKS.md`.
+* **Endpoints y Contratos implementados:** Actuator configurado para exponer `/actuator/health` en puerto 8082; verificación HTTP pendiente. Dependencia declarada de `com.fulvo:fulvo-common-lib:1.0.0-SNAPSHOT`; integración real pendiente.
+* **Lógica técnica y de dominio aplicada:** Proyecto independiente Java 21 / Spring Boot 3.3.4 con Web, JPA, PostgreSQL, Actuator y Lombok. Datasource parametrizado para `fulvo_db` y `esquema_operaciones`, contraseña obligatoria mediante `DB_PASSWORD`, validación de esquema por Hibernate y patrón de logs con MDC `correlationId`. Escaneo de componentes del servicio y de `com.fulvo.common`.
+
+#### 2. ¿Qué hubo que arreglar sobre la marcha?
+* **Problemas técnicos encontrados:** No estaban disponibles las dependencias Maven en caché. La descarga inicial falló por resolución DNS dentro del sandbox; al reintentar con permisos de red se descargaron las dependencias públicas. El empaquetado terminó con `BUILD FAILURE` porque falta `fulvo-common-lib:1.0.0-SNAPSHOT`. El repositorio todavía no contiene la infraestructura PostgreSQL de la subsección 1.1.
+* **Soluciones y Workarounds aplicados:** Se usó un repositorio Maven temporal en `/tmp/fulvo-operaciones-m2` para la comprobación. Se conserva la dependencia común oficial sin reemplazarla por un artefacto ficticio. La compilación, el arranque y la conexión se validarán cuando estén disponibles la librería y PostgreSQL. `git diff --check` pasó.
+
+#### 3. ¿En qué difiere con lo establecido en el Plan Original?
+* **Modificaciones del Modelo de Datos / Entidades:** Ninguna; esta inicialización no incorpora entidades de etapas posteriores.
+* **Ajustes en Funcionalidades o Reglas:** Se añade Actuator para cumplir el health check previsto en la guía manual. Las tareas 1.4.3 y 1.4.4 permanecen pendientes de integración y validación; la subsección sigue en proceso.
+* **Motivo del cambio:** Registrar el avance parcial de Santiago mientras se completan las dependencias de otros integrantes.
+
+#### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
+* **Decisiones de diseño a defender:** Proyecto Maven autónomo, contratos compartidos mediante un JAR y persistencia restringida al esquema de operaciones. `ddl-auto: validate` evita modificar automáticamente tablas; el esquema debe existir previamente.
+* **Preguntas probables de los profesores:** Cómo cambia la conexión entre IDE y Docker mediante `DB_HOST` y `DB_PORT`; por qué un scaffold creado no equivale a un servicio validado y por qué Gate 1 sigue pendiente.
