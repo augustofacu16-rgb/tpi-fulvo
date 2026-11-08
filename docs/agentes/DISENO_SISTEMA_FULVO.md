@@ -244,7 +244,7 @@ flowchart TB
 
     Keycloak["🔐 servidor-identidad (Keycloak :8090)<br/>Realm: fulvo-realm"]:::sec
 
-    subgraph CoreBusiness [" Microservicios Core de Negocio (Spring Boot 3 / Java 21) "]
+    subgraph CoreBusiness [" Microservicios Core de Negocio (Spring Boot 4.0.8 / Java 21) "]
         MS_Torneos["🏆 servicio-torneos (:8081)<br/>- TorneoController & EquipoController<br/>- SolicitudInscripcionService (Cupo 10/20 o 8/16)<br/>- PlantelService (15-22, arquero y capitán)<br/>- AlgoritmoFixtureService (Round Robin / Llaves)"]:::core
         
         MS_Operaciones["⚽ servicio-operaciones-partidos (:8082)<br/>- PartidoController & SedeController<br/>- CronClimaScheduler (24h antes)<br/>- ActaPartidoService (Goles y tarjetas por dorsal)<br/>- TablaPosicionService (Puntos, DG, GF, GC)"]:::core

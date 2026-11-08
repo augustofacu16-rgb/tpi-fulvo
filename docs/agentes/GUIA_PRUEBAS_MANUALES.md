@@ -269,8 +269,8 @@ Estar ubicado en `tpi-fulvo/` con Docker Desktop iniciado.
    * Artefacto `com.fulvo:fulvo-common-lib:1.0.0-SNAPSHOT` instalado físicamente en el repositorio local Maven (`~/.m2`).
    * Contratos DTOs (`CrucePartidoDTO`, `NotificacionEmailDTO`, etc.), excepciones comunes y manejador RFC 7807 (`ProblemDetail`) disponibles para todos los módulos.
 3. **Scaffoldings de Negocio:**
-   * `servicio-torneos`: Proyecto Spring Boot 3.3 compilando limpiamente (`mvn clean package -DskipTests`) y conectado a `esquema_torneos`.
-   * `servicio-operaciones-partidos`: Proyecto Spring Boot 3.3 compilando limpiamente y conectado a `esquema_operaciones`.
+   * `servicio-torneos`: Proyecto Spring Boot 4.0.8 compilando limpiamente (`mvn clean package -DskipTests`) y conectado a `esquema_torneos`.
+   * `servicio-operaciones-partidos`: Proyecto Spring Boot 4.0.8 compilando limpiamente y conectado a `esquema_operaciones`.
 4. **Perímetro de Seguridad en Gateway (`api-gateway`):**
    * Spring Cloud Gateway en puerto `8080` con seguridad reactiva OIDC validando tokens JWT de Keycloak y mapeando autoridades a `ROL_*`.
    * Endpoint de Actuator `/actuator/health` en estado `UP`.
