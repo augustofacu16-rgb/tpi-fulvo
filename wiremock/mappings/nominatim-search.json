@@ -1,0 +1,26 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/search.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    "jsonBody": [
+      {
+        "place_id": 1001,
+        "licence": "Data © OpenStreetMap contributors",
+        "osm_type": "node",
+        "osm_id": 987654321,
+        "lat": "-31.4167",
+        "lon": "-64.1833",
+        "display_name": "Estadio Mario Alberto Kempes, Av. Cárcano, Córdoba, Argentina",
+        "class": "leisure",
+        "type": "stadium",
+        "importance": 0.85
+      }
+    ]
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "id": "fulvo-realm",
+  "realm": "fulvo-realm",
+  "displayName": "Fulvo Sports Management Realm",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "roles": {
+    "realm": [
+      {
+        "id": "role-organizador",
+        "name": "ROL_ORGANIZADOR",
+        "description": "Rol de Organizador / Administrador del Torneo",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "id": "role-delegado",
+        "name": "ROL_DELEGADO",
+        "description": "Rol temporal de Delegado de Equipo admitido",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "id": "role-arbitro",
+        "name": "ROL_ARBITRO",
+        "description": "Rol de Arbitro designado para partidos",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "id": "role-fanatico",
+        "name": "ROL_FANATICO",
+        "description": "Rol de Fanatico / Usuario general autenticado",
+        "composite": false,
+        "clientRole": false
+      }
+    ]
+  },
+  "defaultRoles": [
+    "ROL_FANATICO"
+  ],
+  "clients": [
+    {
+      "id": "client-fulvo-backend",
+      "clientId": "fulvo-backend",
+      "name": "Fulvo Backend Client",
+      "description": "Cliente publico para autenticacion OIDC en Fulvo Backend",
+      "enabled": true,
+      "alwaysDisplayInConsole": true,
+      "clientAuthenticatorType": "client-secret",
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "publicClient": true,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "fullScopeAllowed": true
+    }
+  ],
+  "users": [
+    {
+      "id": "user-admin1-uuid",
+      "username": "admin1",
+      "enabled": true,
+      "email": "admin1@fulvo.com",
+      "emailVerified": true,
+      "firstName": "Tomas",
+      "lastName": "Organizador",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROL_ORGANIZADOR"
+      ]
+    },
+    {
+      "id": "user-delegado1-uuid",
+      "username": "delegado1",
+      "enabled": true,
+      "email": "delegado1@fulvo.com",
+      "emailVerified": true,
+      "firstName": "Gaston",
+      "lastName": "Delegado",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROL_DELEGADO"
+      ]
+    },
+    {
+      "id": "user-arbitro1-uuid",
+      "username": "arbitro1",
+      "enabled": true,
+      "email": "arbitro1@fulvo.com",
+      "emailVerified": true,
+      "firstName": "Martin",
+      "lastName": "Perez",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROL_ARBITRO"
+      ]
+    },
+    {
+      "id": "user-fanatico1-uuid",
+      "username": "fanatico1",
+      "enabled": true,
+      "email": "fanatico1@fulvo.com",
+      "emailVerified": true,
+      "firstName": "Santiago",
+      "lastName": "Fanatico",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROL_FANATICO"
+      ]
+    }
+  ]
+}
