@@ -1,0 +1,315 @@
+{
+  "info": {
+    "_postman_id": "fulvo-auth-collection",
+    "name": "Fulvo API - Quickstart",
+    "description": "Colección inicial para autenticación contra Keycloak y pruebas del API Gateway en TPI Fulvo'",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00 - Autenticación Keycloak",
+      "item": [
+        {
+          "name": "Login - Organizador (admin1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.access_token) {",
+                  "    pm.environment.set(\"token_organizador\", res.access_token);",
+                  "    console.log(\"Token de Organizador actualizado en el entorno.\");",
+                  "} else {",
+                  "    console.error(\"No se recibio access_token en la respuesta:\", res);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "client_id",
+                  "value": "fulvo-backend",
+                  "type": "text"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "admin1",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "admin123",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{keycloak_url}}/realms/fulvo-realm/protocol/openid-connect/token",
+              "host": [
+                "{{keycloak_url}}"
+              ],
+              "path": [
+                "realms",
+                "fulvo-realm",
+                "protocol",
+                "openid-connect",
+                "token"
+              ]
+            },
+            "description": "Obtiene un token JWT con rol ROL_ORGANIZADOR y lo guarda automáticamente en la variable de entorno `token_organizador`."
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Delegado (delegado1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.access_token) {",
+                  "    pm.environment.set(\"token_delegado\", res.access_token);",
+                  "    console.log(\"Token de Delegado actualizado en el entorno.\");",
+                  "} else {",
+                  "    console.error(\"No se recibio access_token:\", res);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "client_id",
+                  "value": "fulvo-backend",
+                  "type": "text"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "delegado1",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "admin123",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{keycloak_url}}/realms/fulvo-realm/protocol/openid-connect/token",
+              "host": [
+                "{{keycloak_url}}"
+              ],
+              "path": [
+                "realms",
+                "fulvo-realm",
+                "protocol",
+                "openid-connect",
+                "token"
+              ]
+            },
+            "description": "Obtiene un token JWT con rol ROL_DELEGADO y lo guarda automáticamente en `token_delegado`."
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Arbitro (arbitro1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.access_token) {",
+                  "    pm.environment.set(\"token_arbitro\", res.access_token);",
+                  "    console.log(\"Token de Arbitro actualizado en el entorno.\");",
+                  "} else {",
+                  "    console.error(\"No se recibio access_token:\", res);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "client_id",
+                  "value": "fulvo-backend",
+                  "type": "text"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "arbitro1",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "admin123",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{keycloak_url}}/realms/fulvo-realm/protocol/openid-connect/token",
+              "host": [
+                "{{keycloak_url}}"
+              ],
+              "path": [
+                "realms",
+                "fulvo-realm",
+                "protocol",
+                "openid-connect",
+                "token"
+              ]
+            },
+            "description": "Obtiene un token JWT con rol ROL_ARBITRO y lo guarda automáticamente en `token_arbitro`."
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Fanatico (fanatico1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.access_token) {",
+                  "    pm.environment.set(\"token_fanatico\", res.access_token);",
+                  "    console.log(\"Token de Fanatico actualizado en el entorno.\");",
+                  "} else {",
+                  "    console.error(\"No se recibio access_token:\", res);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "client_id",
+                  "value": "fulvo-backend",
+                  "type": "text"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "fanatico1",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "admin123",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{keycloak_url}}/realms/fulvo-realm/protocol/openid-connect/token",
+              "host": [
+                "{{keycloak_url}}"
+              ],
+              "path": [
+                "realms",
+                "fulvo-realm",
+                "protocol",
+                "openid-connect",
+                "token"
+              ]
+            },
+            "description": "Obtiene un token JWT con rol ROL_FANATICO y lo guarda automáticamente en `token_fanatico`."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "01 - Health Checks y Gateway",
+      "item": [
+        {
+          "name": "Gateway - Actuator Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/actuator/health",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Chequeo de salud del API Gateway (puerto 8080)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
