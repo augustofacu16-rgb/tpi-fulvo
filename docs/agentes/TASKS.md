@@ -1,4 +1,4 @@
-# Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
+﻿# Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
 
 > **Estado:** `PLAN APROBADO - EN ESPERA DE ARRANQUE`  
 > **Regla de Operación Obligatoria:** 
@@ -40,25 +40,25 @@
 - *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar. `[COMPLETADO - AUDIT-20261108-11]`
 
 #### Subsección 1.2: Librería Compartida `fulvo-common-lib` (Instalación en `.m2`)
-- [ ] **1.2.1** Inicializar proyecto Maven `fulvo-common-lib` (`com.fulvo:fulvo-common-lib:1.0.0-SNAPSHOT`, empaquetado `.jar`). `[Luis Miguel]`
-- [ ] **1.2.2** Implementar DTOs inter-servicio en `com.fulvo.common.dto`: `CrucePartidoDTO`, `NotificacionEmailDTO`, `GeocodificacionDTO`, `ClimaPronosticoDTO`. `[Luis Miguel]`
-- [ ] **1.2.3** Definir jerarquía de excepciones en `com.fulvo.common.exception`: `BusinessRuleException`, `RecursoNoEncontradoException`, `ConflictoEstadoException`. `[Luis Miguel]`
-- [ ] **1.2.4** Implementar `@RestControllerAdvice` global retornando **RFC 7807 (`ProblemDetail`)** de Spring 6 (Apuntes 18 y 23). `[Luis Miguel]`
-- [ ] **1.2.5** Implementar `CorrelationIdFilter` (`OncePerRequestFilter`) propagando cabecera `X-Correlation-ID` al MDC de SLF4J (Apunte 23). `[Luis Miguel]`
-- [ ] **1.2.6** Compilar e instalar librería en repositorio local: `mvn clean install -DskipTests`. `[Luis Miguel]`
+- [X] **1.2.1** Inicializar proyecto Maven `fulvo-common-lib` (`com.fulvo:fulvo-common-lib:1.0.0-SNAPSHOT`, empaquetado `.jar`). `[Luis Miguel]`
+- [X] **1.2.2** Implementar DTOs inter-servicio en `com.fulvo.common.dto`: `CrucePartidoDTO`, `NotificacionEmailDTO`, `GeocodificacionDTO`, `ClimaPronosticoDTO`. `[Luis Miguel]`
+- [X] **1.2.3** Definir jerarquía de excepciones en `com.fulvo.common.exception`: `BusinessRuleException`, `RecursoNoEncontradoException`, `ConflictoEstadoException`. `[Luis Miguel]`
+- [X] **1.2.4** Implementar `@RestControllerAdvice` global retornando **RFC 7807 (`ProblemDetail`)** de Spring 6 (Apuntes 18 y 23). `[Luis Miguel]`
+- [X] **1.2.5** Implementar `CorrelationIdFilter` (`OncePerRequestFilter`) propagando cabecera `X-Correlation-ID` al MDC de SLF4J (Apunte 23). `[Luis Miguel]`
+- [X] **1.2.6** Compilar e instalar librería en repositorio local: `mvn clean install -DskipTests`. `[Luis Miguel]`
 - *Criterio de Aceptación 1.2:* Artefacto disponible en `~/.m2` local listo para ser importado por los microservicios.
-- *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar.
+- *Auditor�a Requerida:* Registrar entrada en AUDIT_LOG.md al finalizar. [COMPLETADO - AUDIT-20261108-12]
 
 #### Subsección 1.3: Scaffolding Base y Configuración DataSource de `servicio-torneos`
-- [X] **1.3.1** Inicializar microservicio `servicio-torneos` (`com.fulvo:servicio-torneos`, Java 21, Spring Boot 3.3.4). `[Gastón]`
-- [X] **1.3.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`. `[Gastón]`
-- [X] **1.3.3** Importar dependencia `fulvo-common-lib` (preparada/comentada para integración con .m2) y estructurar paquetes base `com.fulvo.torneos.*`. `[Gastón]`
-- [X] **1.3.4** Verificar compilación limpia y empaquetado JAR ejecutable. `[Gastón]`
+- [X] **1.3.1** Inicializar microservicio `servicio-torneos` (`com.fulvo:servicio-torneos`, Java 21, Spring Boot 4.0.8). `[GastÃ³n]`
+- [X] **1.3.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`. `[GastÃ³n]`
+- [X] **1.3.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.torneos.*`. `[GastÃ³n]`
+- [X] **1.3.4** Verificar compilaciÃ³n limpia y arranque inicial en puerto `8081`. `[GastÃ³n]`
 - *Criterio de Aceptación 1.3:* `mvn clean package -DskipTests` exitoso y conexión validada con el esquema lógico de torneos.
 - *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar. `[COMPLETADO - AUDIT-20261108-13]`
 
 #### Subsección 1.4: Scaffolding Base y Configuración DataSource de `servicio-operaciones-partidos`
-- [ ] **1.4.1** Inicializar microservicio `servicio-operaciones-partidos` (`com.fulvo:servicio-operaciones-partidos`, Java 21, Spring Boot 3.3.4). `[Santiago]`
+- [ ] **1.4.1** Inicializar microservicio `servicio-operaciones-partidos` (`com.fulvo:servicio-operaciones-partidos`, Java 21, Spring Boot 4.0.8). `[Santiago]`
 - [ ] **1.4.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_operaciones`. `[Santiago]`
 - [ ] **1.4.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.operaciones.*`. `[Santiago]`
 - [ ] **1.4.4** Verificar compilación limpia y arranque inicial en puerto `8082`. `[Santiago]`
@@ -66,7 +66,7 @@
 - *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar.
 
 #### Subsección 1.5: Gateway Reactivo (`api-gateway`) con `RouteLocatorBuilder` y Seguridad OIDC
-- [ ] **1.5.1** Inicializar proyecto Spring Boot `api-gateway` con `spring-cloud-starter-gateway` (`com.fulvo:api-gateway`, Java 21, Spring Boot 3.3.4). `[Tomas]`
+- [ ] **1.5.1** Inicializar proyecto Spring Boot `api-gateway` con `spring-cloud-starter-gateway` (`com.fulvo:api-gateway`, Java 21, Spring Boot 4.0.8). `[Tomas]`
 - [ ] **1.5.2** Configurar bean `RouteLocator` con `RouteLocatorBuilder` (Apunte 19) enrutando hacia downstream (`/v1/torneos/**`, `/v1/partidos/**`, adaptadores). `[Tomas]`
 - [ ] **1.5.3** Implementar convertidor reactivo de roles `realm_access.roles` $\to$ autoridades `ROL_*` (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) con `Converter<Jwt, Mono<AbstractAuthenticationToken>>` (Apunte 21). `[Tomas]`
 - [ ] **1.5.4** Configurar `SecurityWebFilterChain` reactiva bloqueando anónimos (401) y verificando roles (403). `[Tomas]`
