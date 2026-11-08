@@ -17,6 +17,7 @@ spring:
       hibernate:
         format_sql: true
         default_schema: esquema_torneos
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
 
 management:
