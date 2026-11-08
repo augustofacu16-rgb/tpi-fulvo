@@ -198,3 +198,34 @@
 * **Estandarización de Errores con RFC 7807:** Justificar por qué se utiliza `ProblemDetail` de Spring 6 en lugar de DTOs propios ad-hoc para respuestas de error (cumplimiento de estándares de la industria, interoperabilidad y uniformidad REST).
 * **Trazabilidad Distribuida con Correlation ID y MDC:** Explicar cómo el `CorrelationIdFilter` extrae o genera el `X-Correlation-ID`, lo inyecta en el `MDC` de SLF4J permitiendo que cada línea de log incluya `[%X{correlationId}]`, y lo propaga en la respuesta para facilitar el debugging en arquitecturas distribuidas.
 * **Autonomía y Desacoplamiento de Librería Común:** Justificar por qué la librería solo comparte DTOs de transferencia y excepciones agnósticas de persistencia, prohibiendo taxativamente compartir entidades JPA entre microservicios.
+
+
+---
+
+### [AUDIT-20261108-13] Etapa 1 - Actualización de Ecosistema: Spring Boot 4.0.8 y Lombok 1.18.38 en `subseccion1.2`
+
+- **Fecha y Hora de Cierre:** 2026-11-08 19:15 (Hora Local)
+- **Estado:** COMPLETADO
+- **Gate de Etapa Asociado:** Gate 1 [PENDIENTE - Restan Subsecciones 1.3 a 1.5]
+
+#### 1. ¿Qué y Cómo se hizo?
+* **Componentes / Módulos intervenidos:** `fulvo-common-lib` y documentación de agentes en `docs/agentes/`.
+* **Archivos creados o modificados:**
+  - `fulvo-common-lib/pom.xml`: Se actualizó el `parent` a `org.springframework.boot:spring-boot-starter-parent:4.0.8` y se fijó `<lombok.version>1.18.38</lombok.version>`.
+  - `docs/agentes/CONTEXT.md`: Se actualizó el stack tecnológico a Spring Boot 4.0.8 en la rama `subseccion1.2`.
+  - `docs/agentes/PLAN_DESARROLLO.md`: Se actualizó la referencia del starter parent a Spring Boot 4.0.8.
+  - `docs/agentes/TASKS.md`: Se actualizaron las tareas de inicialización (1.3.1, 1.4.1, 1.5.1) a Spring Boot 4.0.8.
+  - `docs/agentes/DISENO_SISTEMA_FULVO.md`: Se actualizó la referencia del diagrama de contenedores a Spring Boot 4.0.8.
+  - `docs/agentes/GUIA_PRUEBAS_MANUALES.md`: Se actualizó la referencia de proyectos a Spring Boot 4.0.8.
+* **Lógica técnica y de dominio aplicada:**
+  - Empaquetado e instalación en `.m2` (`mvn clean install -DskipTests`) de `fulvo-common-lib:1.0.0-SNAPSHOT` compilando sobre Spring Boot 4.0.8 y Java 21 LTS con `BUILD SUCCESS`.
+
+#### 2. ¿Qué hubo que arreglar sobre la marcha?
+* **Incompatibilidad Lombok con JDK 21.0.11 (`TypeTag :: UNKNOWN`):** Al compilar con Oracle JDK 21.0.11, la versión anterior de Lombok arrojaba `ExceptionInInitializerError: com.sun.tools.javac.code.TypeTag :: UNKNOWN` por cambios internos en `javac`. Se resolvió explícitamente configurando `<lombok.version>1.18.38</lombok.version>` en las propiedades del compilador.
+* **Actualización a Spring Boot 4.0.8:** Se adoptó Spring Boot 4.0.8 en esta rama, resolviendo todas las dependencias transitivas desde Maven Central de forma limpia.
+
+#### 3. ¿En qué difiere con lo establecido en el Plan Original?
+* **Versión del Framework:** El plan original contemplaba Spring Boot 3.3.4. Se adaptó la rama a Spring Boot 4.0.8 y se dejó constancia formal en todos los artefactos de `docs/agentes/`.
+
+#### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
+* **Compatibilidad de Framework y JDK:** Explicar cómo la combinación de JDK 21 moderno requirió sincronizar la versión de Lombok y la transición hacia Spring Boot 4.0.8 asegurando que los módulos downstream consuman el JAR actualizado desde `.m2`.
