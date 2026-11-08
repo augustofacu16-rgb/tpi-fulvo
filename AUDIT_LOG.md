@@ -90,3 +90,30 @@
 #### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
 * **Demostración Individual y Colectiva:** Cada integrante puede explicar y demostrar en vivo su flujo específico con datos reales sin interferir con las otras partes: Santiago muestra el Gateway y Keycloak; Gastón muestra la inscripción y el fixture; Tomas muestra la asignación, acta y tabla de posiciones; Luis Miguel muestra los adaptadores, Mailpit y la suite completa de Postman.
 
+---
+
+### [AUDIT-20261108-02] Protocolo de Gestión de Código: Ramas por Tarea y Pull Requests (PR)
+
+- **Fecha y Hora de Cierre:** 2026-11-08 17:48 (Hora Local)
+- **Estado:** COMPLETADO
+- **Gate de Etapa Asociado:** Gate 0 (Planificación, Convenciones y Flujo de Trabajo) [SUPERADO]
+
+#### 1. ¿Qué y Cómo se hizo?
+* Se incorporó de manera formal a la documentación rectora ([CONTEXT.md](CONTEXT.md), [PLAN_DESARROLLO.md](PLAN_DESARROLLO.md) y [TASKS.md](TASKS.md)) el flujo de trabajo colaborativo mediante ramas de características y **Pull Requests (PR)** en GitHub.
+* Se definió la nomenclatura canónica: `feature/<etapa>-<subseccion>-<descripcion-corta>` (y `fix/<etapa>-<subseccion>-<descripcion-corta>`).
+* Se estipuló que cada desarrollador o agente debe:
+  1. Desarrollar y verificar en su rama local.
+  2. Pushear la rama al repositorio remoto (`git push -u origin feature/...`).
+  3. Crear una Pull Request (PR) hacia `main` en GitHub con la justificación y pruebas.
+  4. Incorporar los cambios a `main` tras la revisión del PR y eliminar la rama.
+* Se prohibió taxativamente el push o commit directo a `main`.
+
+#### 2. ¿Qué hubo que arreglar sobre la marcha?
+* Se sincronizó el ciclo de vida de ramas transversalmente en todos los documentos para asegurar que la integración a `main` se produzca siempre mediante revisión de PRs en GitHub.
+
+#### 3. ¿En qué difiere con lo establecido en el Plan Original?
+* Formaliza el estándar de la industria (Feature Branch + Pull Request) asegurando que no se mezclen cambios incompletos en la rama principal.
+
+#### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
+* **Trazabilidad y Calidad de Integración:** Cada PR en GitHub sirve como evidencia documentada del trabajo individual de cada integrante, permitiendo a los profesores auditar exactamente qué código aportó cada estudiante para cada funcionalidad.
+

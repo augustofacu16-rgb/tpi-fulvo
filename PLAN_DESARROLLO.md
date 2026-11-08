@@ -30,6 +30,15 @@
    * Cuando un Agente de IA tenga dudas sobre el alcance de una regla, un caso de borde no contemplado o una disyuntiva de diseño entre dos enfoques válidos, **está estrictamente prohibido que asuma o improvise**.
    * Debe pausar la ejecución y consultar al desarrollador presentando: 1) La duda concreta, 2) Las opciones viables con sus pros y contras fundamentadas en los apuntes, y 3) Su recomendación técnica.
    * La resolución final acordada con el desarrollador se asienta en `AUDIT_LOG.md` para garantizar la trazabilidad de las decisiones de diseño.
+7. **Estrategia de Ramas en Git y Pull Requests (Feature Branch Workflow):**
+   * **Prohibición de push/commit directo a `main`:** La rama `main` se preserva como rama de integración protegida y estable.
+   * **Una rama por tarea / subsección:** Cada desarrollador o agente debe crear una rama dedicada a partir de `main` actualizada antes de programar cualquier tarea:
+     * Nomenclatura oficial: `feature/<etapa>-<subseccion>-<descripcion-corta>` (ej. `feature/1.1-soporte-docker`, `feature/2.1-admision-torneos`).
+     * Hotfixes/ajustes: `fix/<etapa>-<subseccion>-<descripcion-corta>`.
+   * **Flujo de Publicación y Pull Request:** Tras implementar la subsección, verificarla con `GUIA_PRUEBAS_MANUALES.md`, actualizar `TASKS.md` y asentar la auditoría en `AUDIT_LOG.md`:
+     1. El desarrollador pushea su rama local al repositorio remoto: `git push -u origin feature/<etapa>-<subseccion>-<descripcion-corta>`.
+     2. Crea una **Pull Request (PR)** en GitHub hacia `main` con la evidencia de pruebas y justificación.
+     3. Tras la revisión y aprobación, el PR se incorpora a `main` y se eliminan las ramas (remota y local).
 
 ---
 

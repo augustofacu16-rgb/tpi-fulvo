@@ -24,6 +24,10 @@ Antes de comenzar a implementar cualquier tarea o subsección, el agente/desarro
    * En caso de dudas sobre el modelo de datos o diagramas de estados, verificar `docs/DER-Fulvo.pdf`, `docs/TPI-MEPartido.drawio.pdf`, etc.
 6. **Consultar la Guía de Pruebas Manuales (`GUIA_PRUEBAS_MANUALES.md`):**
    * Revisar el guion de prueba manual asignado a la subsección para conocer de antemano los comandos `curl`, payloads JSON, precondiciones y códigos HTTP esperados.
+7. **Crear la Rama de Trabajo Dedicada en Git (`feature/...`):**
+   * Partir siempre de `main` limpia y actualizada (`git checkout main && git pull origin main`).
+   * Crear la rama correspondiente a la tarea antes de tocar cualquier archivo (`git checkout -b feature/<etapa>-<subseccion>-<descripcion-corta>`).
+   * **PROHIBIDO desarrollar o commitear directamente sobre la rama `main`**.
 
 ---
 
@@ -73,6 +77,20 @@ Cualquier código generado en este proyecto debe respetar los siguientes princip
     * Si un dev ya tiene un PostgreSQL instalado localmente en su máquina, no necesita desinstalarlo ni detenerlo forzosamente: basta con crear un archivo `.env` en la raíz (basado en `.env.example`) configurando `DB_PORT_HOST=5433` (o 5434).
     * La comunicación interna entre contenedores en la red `bda-net` permanece inalterada en `postgres-db:5432`.
     * Para ejecutar microservicios desde el IDE fuera de Docker, los `application.yml` leen `jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/fulvo_db`, permitiendo pasar `-DDB_PORT=5433` sin tocar el código fuente.
+11. **Estrategia de Ramas en Git (Aislamiento Obligatorio por Tarea / Subsección):**
+    * **Prohibido desarrollar directamente sobre `main`:** La rama `main` refleja únicamente código integrado, probado y certificado con compuertas de calidad superadas.
+    * **Una rama por tarea / subsección:** Todo integrante o agente debe crear una rama dedicada a partir de `main` antes de modificar o crear archivos:
+      * Formato canónico: `feature/<etapa>-<subseccion>-<descripcion-corta>` (ej. `feature/1.1-soporte-docker`, `feature/1.2-common-lib`, `feature/2.1-admision-torneos`).
+      * Para correcciones puntuales o hotfixes: `fix/<etapa>-<subseccion>-<descripcion-corta>`.
+    * **Ciclo de vida de la rama (Feature Branch & Pull Request):**
+      1. Sincronizar local: `git checkout main && git pull origin main`
+      2. Crear rama: `git checkout -b feature/<etapa>-<subseccion>-<descripcion-corta>`
+      3. Desarrollar e implementar la subsección.
+      4. Validar mediante `GUIA_PRUEBAS_MANUALES.md`.
+      5. Commits atómicos con convención Conventional Commits (ej. `feat(infra): configurar postgres y keycloak`).
+      6. Pushear la rama al repositorio remoto: `git push -u origin feature/<etapa>-<subseccion>-<descripcion-corta>`
+      7. Crear Pull Request (PR) en GitHub hacia `main`, referenciando la subsección de `TASKS.md` y la entrada en `AUDIT_LOG.md`.
+      8. Tras la revisión y aprobación, mergear el PR en GitHub hacia `main` y eliminar la rama remota y local.
 
 ---
 
@@ -115,6 +133,12 @@ Una vez finalizada la codificación de una subsección o etapa completa, el agen
   2. **Qué se arregló sobre la marcha** (errores de compilación, choques de puertos, ajustes de configuración, dependencias faltantes).
   3. **En qué difiere del plan original** (ajustes al modelo de datos, cambios de nombres, simplificaciones o reglas adaptadas).
   4. **Puntos clave para la defensa oral** (argumentos y decisiones que el equipo debe justificar ante los profesores).
+
+### Acción 4: Publicación en Remoto y Creación de Pull Request (PR)
+* Generar commits atómicos y descriptivos en la rama local siguiendo Conventional Commits (ej. `feat(torneos): ...`, `fix(infra): ...`).
+* Pushear la rama al repositorio remoto en GitHub: `git push -u origin feature/<etapa>-<subseccion>-<descripcion-corta>`.
+* Abrir la **Pull Request (PR)** hacia la rama `main` en GitHub, adjuntando la descripción técnica de lo implementado, los criterios de aceptación cumplidos y la referencia a `TASKS.md` y `AUDIT_LOG.md`.
+* Una vez revisado y aprobado el PR, mergear en GitHub a `main` y eliminar la rama `feature/...` tanto en GitHub como en el repositorio local (`git branch -d feature/...`).
 
 ---
 

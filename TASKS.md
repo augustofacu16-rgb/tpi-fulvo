@@ -7,6 +7,7 @@
 > 3. Al concluir cada etapa formal, verificar la superación de su compuerta de calidad (Gate).
 > 4. **Directiva de Participación Balanceada:** En cada una de las 5 etapas, todos los integrantes (**Tomas, Gastón, Santiago y Luis Miguel**) son responsables de al menos una subsección.
 > 5. **Protocolo Anti-Suposición:** Ante cualquier duda de dominio, ambigüedad o dilema técnico, el agente debe pausar y consultar al desarrollador con opciones justificadas y recomendación técnica antes de implementar.
+> 6. **Aislamiento en Git y Flujo de PR por Tarea (Obligatorio):** Está prohibido desarrollar directamente en `main`. Cada tarea o subsección debe ejecutarse en una rama propia creada desde `main` (`feature/<etapa>-<subseccion>-<descripcion-corta>`). Al finalizar y validar, el desarrollador debe pushear la rama al repositorio remoto (`git push -u origin feature/...`), crear su correspondiente **Pull Request (PR)** en GitHub para incorporar los cambios a `main`, y tras la aprobación y merge, eliminar la rama.
 
 ---
 
