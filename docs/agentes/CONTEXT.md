@@ -18,8 +18,8 @@ Antes de comenzar a implementar cualquier tarea o subsección, el agente/desarro
    * Revisar las Reglas de Negocio Oficiales (`RN-01` a `RN-12`), las funcionalidades (`FN-01` a `FN-14`), el catálogo de endpoints canónicos, las exclusiones del MVP y los diagramas Mermaid C4 (Contexto y Contenedores), DER y máquinas de estado antes de escribir código.
 3. **Consultar la Especificación del Plan (`PLAN_DESARROLLO.md`):**
    * Leer en detalle la subsección asignada para conocer las entidades, campos, rutas de endpoints, reglas de negocio y flujos HTTP comprometidos.
-4. **Consultar la Bitácora de Auditoría (`AUDIT_LOG.md`):**
-   * Leer las últimas entradas registradas para entender qué decisiones técnicas, arreglos sobre la marcha o modificaciones del dominio ocurrieron en las etapas anteriores.
+4. **Consultar las Bitácoras de Auditoría (`docs/audit/`):**
+   * Leer las entradas registradas en `docs/audit/` para entender qué decisiones técnicas, arreglos sobre la marcha o modificaciones del dominio ocurrieron en las etapas anteriores.
 5. **Consultar la Documentación de Referencia (`docs/`):**
    * En caso de dudas sobre el modelo de datos o diagramas de estados, verificar `docs/DER-Fulvo.pdf`, `docs/TPI-MEPartido.drawio.pdf`, etc.
 6. **Consultar la Guía de Pruebas Manuales (`GUIA_PRUEBAS_MANUALES.md`):**
@@ -81,13 +81,13 @@ Cualquier código generado en este proyecto debe respetar los siguientes princip
     * **Prohibido desarrollar directamente sobre `main`:** La rama `main` refleja únicamente código integrado, probado y certificado con compuertas de calidad superadas.
     * **Una rama local por tarea / subsección (Obligación del Agente):** Antes de comenzar a escribir o modificar código para cualquier tarea o subsección, el agente **DEBE crear la rama local dedicada y cambiarse a esa misma rama** (`git checkout -b feature/<etapa>-<subseccion>-<descripcion-corta>`). Todo el desarrollo de la subsección debe quedar aislado en esa rama.
     * **PROHIBICIÓN ESTRICTA DE PUSH MEDIANTE AGENTES:** Ningún agente de IA debe ejecutar `git push`, interactuar con credenciales remotas, ni abrir Pull Requests en GitHub.
-    * **Subida y Pull Request 100% Manual por el Desarrollador:** Una vez que el agente finalice la codificación en la rama local, valide los flujos según `GUIA_PRUEBAS_MANUALES.md`, marque `TASKS.md` y registre la auditoría en `AUDIT_LOG.md`, el agente se detiene e informa al desarrollador. Es el desarrollador quien realiza el `git push -u origin feature/...` y abre la Pull Request (PR) a mano en GitHub hacia `main`.
+    * **Subida y Pull Request 100% Manual por el Desarrollador:** Una vez que el agente finalice la codificación en la rama local, valide los flujos según `GUIA_PRUEBAS_MANUALES.md`, marque `TASKS.md` y registre la auditoría creando su fragmento nuevo en `docs/audit/<etapa>.<subseccion>-<descripcion>.md`, el agente se detiene e informa al desarrollador. Es el desarrollador quien realiza el `git push -u origin feature/...` y abre la Pull Request (PR) a mano en GitHub hacia `main`.
     * **Ciclo de vida de la rama:**
       1. El agente verifica/sincroniza `main` local.
       2. El agente crea la rama local y se cambia a ella: `git checkout -b feature/<etapa>-<subseccion>-<descripcion-corta>`.
       3. El agente implementa la subsección en dicha rama.
       4. El agente valida mediante `GUIA_PRUEBAS_MANUALES.md`.
-      5. El agente actualiza `TASKS.md` y registra la auditoría en `AUDIT_LOG.md`.
+      5. El agente actualiza `TASKS.md` y crea un **nuevo archivo de fragmento** en `docs/audit/<etapa>.<subseccion>-<descripcion>.md` (evitando cualquier conflicto en Git).
       6. **El desarrollador a mano:** Revisa los cambios, ejecuta `git push -u origin feature/...`, crea la Pull Request en GitHub hacia `main`, la revisa y mergea.
       7. Se elimina la rama una vez integrada.
 
@@ -109,13 +109,13 @@ El agente no debe hacer preguntas vagas. Debe formular su consulta con rigor té
 * **2. Opciones Viables con Pros y Contras:** Presentar 2 o 3 alternativas claras, fundamentadas en las buenas prácticas de Java 21 / Spring Boot 3 y los apuntes de Backend de Aplicaciones.
 * **3. Recomendación del Agente:** Proponer cuál considera la mejor opción y la justificación técnica de por qué elegirla.
 * **4. Esperar Respuesta:** Detener la edición de código hasta que el desarrollador valide o corrija la dirección a seguir.
-* **5. Registro de Trazabilidad:** La decisión acordada con el desarrollador se registrará obligatoriamente en la siguiente auditoría de `AUDIT_LOG.md` (en la sección *Qué se arregló sobre la marcha* o *Diferencias con el plan original*).
+* **5. Registro de Trazabilidad:** La decisión acordada con el desarrollador se registrará obligatoriamente en el archivo de auditoría correspondiente dentro de `docs/audit/` (en la sección *Qué se arregló sobre la marcha* o *Diferencias con el plan original*).
 
 ---
 
 ## 4. Protocolo de Cierre Obligatorio por Subsección y Etapa
 
-Una vez finalizada la codificación de una subsección o etapa completa, el agente/desarrollador **DEBE ejecutar obligatoriamente las siguientes tres acciones antes de dar la tarea por concluida**:
+Una vez finalizada la codificación de una subsección o etapa completa, el agente/desarrollador **DEBE ejecutar obligatoriamente las siguientes cuatro acciones antes de dar la tarea por concluida**:
 
 ### Acción 1: Validación y Prueba Manual
 * Ejecutar las pruebas manuales correspondientes detalladas en `GUIA_PRUEBAS_MANUALES.md` (levantamiento, `curl`, base de datos, Mailpit, Keycloak o WireMock).
@@ -125,13 +125,14 @@ Una vez finalizada la codificación de una subsección o etapa completa, el agen
 * Marcar con `[X]` las tareas específicas completadas.
 * Si se completaron todas las subsecciones de una etapa y se validó su compuerta de calidad, marcar `Gate Superado` con `[X]` y actualizar la tabla resumen superior.
 
-### Acción 3: Registrar Auditoría en `AUDIT_LOG.md`
-* Crear una nueva entrada en `AUDIT_LOG.md` utilizando estrictamente la plantilla establecida.
+### Acción 3: Registrar Auditoría en Fragmento Modular (`docs/audit/`)
+* Crear un **nuevo archivo independiente** en `docs/audit/<etapa>.<subseccion>-<descripcion-corta>.md` (ej. `docs/audit/2.1-entidades-torneos.md`) copiando la estructura de `docs/audit/_TEMPLATE.md` (garantizando 0% de conflictos en Git).
 * Registrar con honestidad técnica:
   1. **Qué y cómo se hizo** (archivos, clases, endpoints, lógica).
   2. **Qué se arregló sobre la marcha** (errores de compilación, choques de puertos, ajustes de configuración, dependencias faltantes).
   3. **En qué difiere del plan original** (ajustes al modelo de datos, cambios de nombres, simplificaciones o reglas adaptadas).
   4. **Puntos clave para la defensa oral** (argumentos y decisiones que el equipo debe justificar ante los profesores).
+* Cada fragmento en `docs/audit/` es autosuficiente y constituye el registro oficial de la subsección para consulta y defensa oral.
 
 ### Acción 4: Entrega Local al Desarrollador para Push y PR Manual
 * El agente verifica que todos los cambios implementados se encuentren limpios y validados dentro de la rama local `feature/...`.
@@ -143,4 +144,4 @@ Una vez finalizada la codificación de una subsección o etapa completa, el agen
 
 ## 5. Instrucción de Arranque
 
-Cuando se solicite continuar o comenzar una subsección, el agente debe responder confirmando que leyó el estado en `TASKS.md` y `AUDIT_LOG.md` y proceder quirúrgicamente con las tareas asignadas.
+Cuando se solicite continuar o comenzar una subsección, el agente debe responder confirmando que leyó el estado en `TASKS.md` y las auditorías en `docs/audit/` y proceder quirúrgicamente con las tareas asignadas.

@@ -30,7 +30,7 @@ mvn spring-boot:run
 Verificar el arranque y la conexión a PostgreSQL:
 
 ```bash
-curl -i http://localhost:8082/actuator/health
+curl -i http://localhost:8082/health-check
 ```
 
 Se espera HTTP 200 y `{"status":"UP"}`. Actuator incluye la comprobación
@@ -48,7 +48,7 @@ Los paquetes base son `config`, `controller`, `domain`, `dto`, `repository`,
 Para comprobar la propagación del identificador de correlación:
 
 ```bash
-curl -i -H 'X-Correlation-ID: prueba-operaciones-1.4' http://localhost:8082/actuator/health
+curl -i -H 'X-Correlation-ID: prueba-operaciones-1.4' http://localhost:8082/health-check
 ```
 
 La respuesta debe incluir `X-Correlation-ID: prueba-operaciones-1.4`.

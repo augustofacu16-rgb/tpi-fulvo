@@ -291,18 +291,17 @@
       "name": "01 - Health Checks y Gateway",
       "item": [
         {
-          "name": "Gateway - Actuator Health",
+          "name": "Gateway - Health Check",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{gateway_url}}/actuator/health",
+              "raw": "{{gateway_url}}/health-check",
               "host": [
                 "{{gateway_url}}"
               ],
               "path": [
-                "actuator",
-                "health"
+                "health-check"
               ]
             },
             "description": "Chequeo de salud del API Gateway (puerto 8080)"
