@@ -1,7 +1,7 @@
 # Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
 
 > **Estado:** `PLAN APROBADO - EN ESPERA DE ARRANQUE`  
-> **Regla de Operación Obligatoria:** 
+> **Regla de Operación Obligatoria:**
 > 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las últimas entradas de `docs/audit/`.
 > 2. Al finalizar cada subsección, validar los endpoints y flujos según `GUIA_PRUEBAS_MANUALES.md`, marcar las casillas completadas `[X]` en este archivo y **registrar la auditoría correspondiente en `docs/audit/`** detallando qué se hizo, qué se arregló sobre la marcha y si hubo diferencias con el plan original.
 > 3. Al concluir cada etapa formal, verificar la superación de su compuerta de calidad (Gate).
@@ -47,13 +47,13 @@
 - [X] **1.2.5** Implementar `CorrelationIdFilter` (`OncePerRequestFilter`) propagando cabecera `X-Correlation-ID` al MDC de SLF4J (Apunte 23). `[Luis Miguel]`
 - [X] **1.2.6** Compilar e instalar librería en repositorio local: `mvn clean install -DskipTests`. `[Luis Miguel]`
 - *Criterio de Aceptación 1.2:* Artefacto disponible en `~/.m2` local listo para ser importado por los microservicios.
-- *Auditor?a Requerida:* Registrar entrada en `docs/audit/` al finalizar. [COMPLETADO - AUDIT-20261108-12]
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-12]`
 
 #### Subsección 1.3: Scaffolding Base y Configuración DataSource de `servicio-torneos`
-- [X] **1.3.1** Inicializar microservicio `servicio-torneos` (`com.fulvo:servicio-torneos`, Java 21, Spring Boot 4.0.8). `[GastÃ³n]`
-- [X] **1.3.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`. `[GastÃ³n]`
-- [X] **1.3.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.torneos.*`. `[GastÃ³n]`
-- [X] **1.3.4** Verificar compilaciÃ³n limpia y arranque inicial en puerto `8081`. `[GastÃ³n]`
+- [X] **1.3.1** Inicializar microservicio `servicio-torneos` (`com.fulvo:servicio-torneos`, Java 21, Spring Boot 4.0.8). `[Gastón]`
+- [X] **1.3.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`. `[Gastón]`
+- [X] **1.3.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.torneos.*`. `[Gastón]`
+- [X] **1.3.4** Verificar compilación limpia y arranque inicial en puerto `8081`. `[Gastón]`
 - *Criterio de Aceptación 1.3:* `mvn clean package -DskipTests` exitoso y conexión validada con el esquema lógico de torneos.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-13]`
 
@@ -75,7 +75,7 @@
 - *Criterio de Aceptación 1.5:* Petición sin token responde 401; token de fanático a POST torneo responde 403; health responde UP (200).
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-15]`
 
-> ?? **COMPUERTA DE CALIDAD (GATE 1):** No se inicia el Día 2 sin que Gateway, Postgres, Keycloak, `fulvo-common-lib` en `.m2` y los scaffoldings de torneos y operaciones estén certificados y auditados en `docs/audit/`.
+> 🔴 **COMPUERTA DE CALIDAD (GATE 1):** No se inicia el Día 2 sin que Gateway, Postgres, Keycloak, `fulvo-common-lib` en `.m2` y los scaffoldings de torneos y operaciones estén certificados y auditados en `docs/audit/`.
 
 ---
 
@@ -118,7 +118,7 @@
 - *Criterio de Aceptación 2.5:* El Gateway filtra las solicitudes y enruta correctamente al puerto 8081.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> ?? **COMPUERTA DE CALIDAD (GATE 2A):** Torneos y Operaciones interactúan fluidamente vía RestClient en la generación y recepción de fixtures.
+> 🔴 **COMPUERTA DE CALIDAD (GATE 2A):** Torneos y Operaciones interactúan fluidamente vía RestClient en la generación y recepción de fixtures.
 
 ---
 
@@ -164,7 +164,7 @@
 - *Criterio de Aceptación 3.6:* Artefacto común actualizado y consumible con excepciones arbitrales estandarizadas.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> ?? **COMPUERTA DE CALIDAD (GATE 2B):** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas en `docs/audit/`.
+> 🔴 **COMPUERTA DE CALIDAD (GATE 2B):** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas en `docs/audit/`.
 
 ---
 
@@ -211,7 +211,7 @@
 - *Criterio de Aceptación 4.6:* Rutas de adaptadores securizadas y operativas a través del Gateway.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> ?? **COMPUERTA DE CALIDAD (GATE 3):** Adaptadores y Scheduler integrados y certificados contra Mailpit y APIs públicas / WireMock, auditados en `docs/audit/`.
+> 🔴 **COMPUERTA DE CALIDAD (GATE 3):** Adaptadores y Scheduler integrados y certificados contra Mailpit y APIs públicas / WireMock, auditados en `docs/audit/`.
 
 ---
 
@@ -257,4 +257,4 @@
 - *Criterio de Aceptación 5.6:* 100% de las pruebas en Postman (`pm.test()`) ejecutadas con resultado verde sin fallos.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> ?? **COMPUERTA DE APROBACIÓN FINAL (GATE 4):** Backend completamente verificado, documentado en Swagger, desplegado en Docker y certificado de punta a punta con Postman y Mailpit, con la bitácora de auditoría cerrada en `docs/audit/`.
+> 🏆 **COMPUERTA DE APROBACIÓN FINAL (GATE 4):** Backend completamente verificado, documentado en Swagger, desplegado en Docker y certificado de punta a punta con Postman y Mailpit, con la bitácora de auditoría cerrada en `docs/audit/`.
