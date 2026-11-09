@@ -1,6 +1,6 @@
 # Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
 
-> **Estado:** `PLAN APROBADO - EN ESPERA DE ARRANQUE`  
+> **Estado:** `ETAPA 1 COMPLETADA - GATE 1 SUPERADO - EN ARRANQUE ETAPA 2`  
 > **Regla de Operación Obligatoria:**
 > 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las últimas entradas de `docs/audit/`.
 > 2. Al finalizar cada subsección, validar los endpoints y flujos según `GUIA_PRUEBAS_MANUALES.md`, marcar las casillas completadas `[X]` en este archivo y **registrar la auditoría correspondiente en `docs/audit/`** detallando qué se hizo, qué se arregló sobre la marcha y si hubo diferencias con el plan original.
@@ -16,8 +16,8 @@
 | Sprint | Etapa | Descripción | Responsables por Etapa | Estado | Gate Superado | Auditoría |
 |---|---|---|---|---|:---:|:---:|
 | **Día 0** | **Etapa 0** | Planificación, Convenciones y Roles | Todo el Equipo | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-00) |
-| **Día 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, Gastón, Santiago | `[PENDIENTE]` | `[ ]` | `[ ]` |
-| **Día 2** | **Etapa 2** | Core de Torneos, Admisiones y Contrato de Fixtures | Gastón, Santiago, Luis Miguel, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
+| **Día 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, Gastón, Santiago | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261109-GATE1) |
+| **Día 2** | **Etapa 2** | Core de Torneos, Admisiones y Contrato de Fixtures | Gastón, Santiago, Luis Miguel, Tomas | `[EN PROCESO]` | `[ ]` | `[ ]` |
 | **Día 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gastón, Tomas, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
 | **Día 3** | **Etapa 4** | Adaptadores Externos, Resiliencia y Scheduler | Luis Miguel, Santiago, Gastón, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
 | **Día 3** | **Etapa 5** | Despliegue Docker, Swagger y Postman E2E | Tomas, Gastón, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
@@ -47,13 +47,13 @@
 - [X] **1.2.5** Implementar `CorrelationIdFilter` (`OncePerRequestFilter`) propagando cabecera `X-Correlation-ID` al MDC de SLF4J (Apunte 23). `[Luis Miguel]`
 - [X] **1.2.6** Compilar e instalar librería en repositorio local: `mvn clean install -DskipTests`. `[Luis Miguel]`
 - *Criterio de Aceptación 1.2:* Artefacto disponible en `~/.m2` local listo para ser importado por los microservicios.
-- *Auditor?a Requerida:* Registrar entrada en `docs/audit/` al finalizar. [COMPLETADO - AUDIT-20261108-12]
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-12]`
 
 #### Subsección 1.3: Scaffolding Base y Configuración DataSource de `servicio-torneos`
-- [X] **1.3.1** Inicializar microservicio `servicio-torneos` (`com.fulvo:servicio-torneos`, Java 21, Spring Boot 4.0.8). `[GastÃ³n]`
-- [X] **1.3.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`. `[GastÃ³n]`
-- [X] **1.3.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.torneos.*`. `[GastÃ³n]`
-- [X] **1.3.4** Verificar compilaciÃ³n limpia y arranque inicial en puerto `8081`. `[GastÃ³n]`
+- [X] **1.3.1** Inicializar microservicio `servicio-torneos` (`com.fulvo:servicio-torneos`, Java 21, Spring Boot 4.0.8). `[Gastón]`
+- [X] **1.3.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`. `[Gastón]`
+- [X] **1.3.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.torneos.*`. `[Gastón]`
+- [X] **1.3.4** Verificar compilación limpia y arranque inicial en puerto `8081`. `[Gastón]`
 - *Criterio de Aceptación 1.3:* `mvn clean package -DskipTests` exitoso y conexión validada con el esquema lógico de torneos.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-13]`
 
@@ -75,7 +75,7 @@
 - *Criterio de Aceptación 1.5:* Petición sin token responde 401; token de fanático a POST torneo responde 403; health responde UP (200).
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-15]`
 
-> ?? **COMPUERTA DE CALIDAD (GATE 1):** No se inicia el Día 2 sin que Gateway, Postgres, Keycloak, `fulvo-common-lib` en `.m2` y los scaffoldings de torneos y operaciones estén certificados y auditados en `docs/audit/`.
+> 🔒 **COMPUERTA DE CALIDAD (GATE 1) [SUPERADA Y CERTIFICADA]:** No se inicia el Día 2 sin que Gateway, Postgres, Keycloak, `fulvo-common-lib` en `.m2` y los scaffoldings de torneos y operaciones estén certificados y auditados en `docs/audit/`. **Gate 1 superado y certificado en [docs/audit/1.0-cierre-etapa-1.md](../audit/1.0-cierre-etapa-1.md)**: Todos los componentes se encuentran compilados, enrutados y operativos.
 
 ---
 
