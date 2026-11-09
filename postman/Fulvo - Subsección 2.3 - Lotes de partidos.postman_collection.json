@@ -1,0 +1,144 @@
+{
+	"info": {
+		"_postman_id": "ca490552-7c64-4a02-8d32-613efeda76bc",
+		"name": "Fulvo - Subsección 2.3 - Lotes de partidos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "54325630",
+		"_collection_link": "https://sg2601710-wq-8358223.postman.co/workspace/Santiagolainen's-Workspace~187dfffd-46b2-402f-88f1-9342efb50566/collection/54325630-ca490552-7c64-4a02-8d32-613efeda76bc?action=share&source=collection_link&creator=54325630"
+	},
+	"item": [
+		{
+			"name": "01 - Recibir lote válido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Responde HTTP 202\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});",
+							"",
+							"pm.test(\"Confirma dos partidos recibidos\", function () {",
+							"    pm.expect(pm.response.json().recibidos).to.eql(2);",
+							"});",
+							"",
+							"pm.test(\"Devuelve un identificador de correlación\", function () {",
+							"    pm.expect(pm.response.headers.get(\"X-Correlation-ID\"))",
+							"        .to.be.a(\"string\").and.not.empty;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"torneoId\": 1,\n    \"formatoTorneo\": \"LIGA\",\n    \"fechaOFase\": 2,\n    \"equipoLocalId\": 3,\n    \"equipoVisitanteId\": 4\n  },\n  {\n    \"torneoId\": 1,\n    \"formatoTorneo\": \"LIGA\",\n    \"fechaOFase\": 2,\n    \"equipoLocalId\": 5,\n    \"equipoVisitanteId\": 6\n  }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{operaciones_url}}/v1/partidos/lote",
+					"host": [
+						"{{operaciones_url}}"
+					],
+					"path": [
+						"v1",
+						"partidos",
+						"lote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 - Lote inválido - verificar rollback",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Rechaza el lote inválido con HTTP 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"El error identifica la petición\", function () {",
+							"    const error = pm.response.json();",
+							"",
+							"    pm.expect(error.instance).to.eql(\"/v1/partidos/lote\");",
+							"    pm.expect(error.status).to.eql(pm.response.code);",
+							"    pm.expect(error.correlationId).to.be.a(\"string\").and.not.empty;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"torneoId\": 1,\n    \"formatoTorneo\": \"LIGA\",\n    \"fechaOFase\": 3,\n    \"equipoLocalId\": 7,\n    \"equipoVisitanteId\": 8\n  },\n  {\n    \"formatoTorneo\": \"LIGA\",\n    \"fechaOFase\": 3,\n    \"equipoLocalId\": 9,\n    \"equipoVisitanteId\": 10\n  }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{operaciones_url}}/v1/partidos/lote",
+					"host": [
+						"{{operaciones_url}}"
+					],
+					"path": [
+						"v1",
+						"partidos",
+						"lote"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "operaciones_url",
+			"value": ""
+		}
+	]
+}
