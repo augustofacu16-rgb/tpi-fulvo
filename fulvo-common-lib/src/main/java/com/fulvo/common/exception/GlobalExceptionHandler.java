@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -63,6 +64,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problem);
     }
 
+    @ExceptionHandler(EmpateNoPermitidoException.class)
+    public ResponseEntity<ProblemDetail> handleEmpateNoPermitido(EmpateNoPermitidoException ex,
+                                                                HttpServletRequest request) {
+        log.warn("Empate no permitido en llaves sin penales [{}]: {}", request.getRequestURI(), ex.getMessage());
+        ProblemDetail problem = buildProblemDetail(HttpStatus.BAD_REQUEST, "Empate No Permitido", ex.getMessage(), "empate-no-permitido", request);
+        if (ex.getCodigoRegla() != null) {
+            problem.setProperty("codigoRegla", ex.getCodigoRegla());
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
     @ExceptionHandler(BusinessRuleException.class)
     public ResponseEntity<ProblemDetail> handleBusinessRule(BusinessRuleException ex,
                                                            HttpServletRequest request) {
@@ -86,6 +98,20 @@ public class GlobalExceptionHandler {
         }
         problem.setProperty("invalidParams", invalidParams);
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ProblemDetail> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                      HttpServletRequest request) {
+        log.warn("Cuerpo de peticion ilegible o formato de fecha/JSON invalido [{}]: {}", request.getRequestURI(), ex.getMessage());
+        ProblemDetail problem = buildProblemDetail(
+                HttpStatus.BAD_REQUEST,
+                "Formato de Peticion Invalido",
+                "El cuerpo de la peticion contiene JSON malformado o campos de fecha/hora incompatibles con el formato estandar ISO-8601 (yyyy-MM-dd'T'HH:mm:ss).",
+                "formato-invalido",
+                request
+        );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 
