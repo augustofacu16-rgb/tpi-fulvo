@@ -21,8 +21,8 @@ public class SecurityConfig {
         http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .authorizeExchange(exchanges -> exchanges
-                // Endpoints de Actuator públicos
-                .pathMatchers("/actuator/health", "/actuator/info").permitAll()
+                // Endpoints de salud y diagnóstico públicos
+                .pathMatchers("/health-check", "/health-check/**", "/info").permitAll()
 
                 // Reglas perimetrales de Torneos (Subsecciones 1.5, 2.1, 2.2, 2.5)
                 .pathMatchers(HttpMethod.POST, "/v1/torneos").hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")

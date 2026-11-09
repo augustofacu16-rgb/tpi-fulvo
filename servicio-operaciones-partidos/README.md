@@ -30,7 +30,7 @@ mvn spring-boot:run
 Verificar el arranque y la conexión a PostgreSQL:
 
 ```bash
-curl -i http://localhost:8082/actuator/health
+curl -i http://localhost:8082/health-check
 ```
 
 Se espera HTTP 200 y `{"status":"UP"}`. Actuator incluye la comprobación

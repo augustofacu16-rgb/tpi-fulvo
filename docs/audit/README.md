@@ -15,3 +15,4 @@ Ejemplos:
 ## Regla de Oro para Desarrolladores y Agentes de IA
 1. **NUNCA modificar archivos de auditoría de otras tareas** ni editar directamente otros fragmentos existentes.
 2. Al finalizar una subsección, **crear un nuevo archivo `.md` en esta carpeta (`docs/audit/`)** copiando la estructura de `_TEMPLATE.md`.
+3. Para cambios transversales, refactors globales o ajustes arquitectónicos que no pertenezcan a una feature puntual (`ft/`), registrar la auditoría en `auditorias-generales.md`.

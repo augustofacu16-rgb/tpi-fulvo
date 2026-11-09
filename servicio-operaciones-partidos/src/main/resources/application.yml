@@ -19,6 +19,9 @@ spring:
 management:
   endpoints:
     web:
+      base-path: /
+      path-mapping:
+        health: health-check
       exposure:
         include: health
   endpoint:
