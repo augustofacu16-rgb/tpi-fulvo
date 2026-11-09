@@ -1,260 +1,260 @@
 # Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
 
 > **Estado:** `PLAN APROBADO - EN ESPERA DE ARRANQUE`  
-> **Regla de Operaci√≥n Obligatoria:**
-> 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las √∫ltimas entradas de `docs/audit/`.
-> 2. Al finalizar cada subsecci√≥n, validar los endpoints y flujos seg√∫n `GUIA_PRUEBAS_MANUALES.md`, marcar las casillas completadas `[X]` en este archivo y **registrar la auditor√≠a correspondiente en `docs/audit/`** detallando qu√© se hizo, qu√© se arregl√≥ sobre la marcha y si hubo diferencias con el plan original.
-> 3. Al concluir cada etapa formal, verificar la superaci√≥n de su compuerta de calidad (Gate).
-> 4. **Directiva de Participaci√≥n Balanceada:** En cada una de las 5 etapas, todos los integrantes (**Tomas, Gast√≥n, Santiago y Luis Miguel**) son responsables de al menos una subsecci√≥n.
-> 5. **Protocolo Anti-Suposici√≥n:** Ante cualquier duda de dominio, ambig√ºedad o dilema t√©cnico, el agente debe pausar y consultar al desarrollador con opciones justificadas y recomendaci√≥n t√©cnica antes de implementar.
-> 6. **Aislamiento en Git y Flujo de PR por el Desarrollador (Obligatorio):** Est√° prohibido desarrollar directamente en `main`. El agente **DEBE crear y cambiarse a una rama propia** desde `main` (`feature/<etapa>-<subseccion>-<descripcion-corta>`) antes de empezar a codear cualquier tarea. Los agentes tienen **estrictamente prohibido pushear a GitHub (`git push`)**. Al finalizar y validar la tarea, el desarrollador humano es quien pushea la rama a mano (`git push -u origin feature/...`), crea la correspondiente **Pull Request (PR)** en GitHub para incorporar los cambios a `main`, y tras la aprobaci√≥n y merge, elimina la rama.
+> **Regla de OperaciÛn Obligatoria:** 
+> 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las ˙ltimas entradas de `docs/audit/`.
+> 2. Al finalizar cada subsecciÛn, validar los endpoints y flujos seg˙n `GUIA_PRUEBAS_MANUALES.md`, marcar las casillas completadas `[X]` en este archivo y **registrar la auditorÌa correspondiente en `docs/audit/`** detallando quÈ se hizo, quÈ se arreglÛ sobre la marcha y si hubo diferencias con el plan original.
+> 3. Al concluir cada etapa formal, verificar la superaciÛn de su compuerta de calidad (Gate).
+> 4. **Directiva de ParticipaciÛn Balanceada:** En cada una de las 5 etapas, todos los integrantes (**Tomas, GastÛn, Santiago y Luis Miguel**) son responsables de al menos una subsecciÛn.
+> 5. **Protocolo Anti-SuposiciÛn:** Ante cualquier duda de dominio, ambig¸edad o dilema tÈcnico, el agente debe pausar y consultar al desarrollador con opciones justificadas y recomendaciÛn tÈcnica antes de implementar.
+> 6. **Aislamiento en Git y Flujo de PR por el Desarrollador (Obligatorio):** Est· prohibido desarrollar directamente en `main`. El agente **DEBE crear y cambiarse a una rama propia** desde `main` (`feature/<etapa>-<subseccion>-<descripcion-corta>`) antes de empezar a codear cualquier tarea. Los agentes tienen **estrictamente prohibido pushear a GitHub (`git push`)**. Al finalizar y validar la tarea, el desarrollador humano es quien pushea la rama a mano (`git push -u origin feature/...`), crea la correspondiente **Pull Request (PR)** en GitHub para incorporar los cambios a `main`, y tras la aprobaciÛn y merge, elimina la rama.
 
 ---
 
-## Estado Global del Proyecto (Sprint 3 D√≠as)
+## Estado Global del Proyecto (Sprint 3 DÌas)
 
-| Sprint | Etapa | Descripci√≥n | Responsables por Etapa | Estado | Gate Superado | Auditor√≠a |
+| Sprint | Etapa | DescripciÛn | Responsables por Etapa | Estado | Gate Superado | AuditorÌa |
 |---|---|---|---|---|:---:|:---:|
-| **D√≠a 0** | **Etapa 0** | Planificaci√≥n, Convenciones y Roles | Todo el Equipo | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-00) |
-| **D√≠a 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, Gast√≥n, Santiago | `[PENDIENTE]` | `[ ]` | `[ ]` |
-| **D√≠a 2** | **Etapa 2** | Core de Torneos, Admisiones y Contrato de Fixtures | Gast√≥n, Santiago, Luis Miguel, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
-| **D√≠a 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gast√≥n, Tomas, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
-| **D√≠a 3** | **Etapa 4** | Adaptadores Externos, Resiliencia y Scheduler | Luis Miguel, Santiago, Gast√≥n, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
-| **D√≠a 3** | **Etapa 5** | Despliegue Docker, Swagger y Postman E2E | Tomas, Gast√≥n, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
+| **DÌa 0** | **Etapa 0** | PlanificaciÛn, Convenciones y Roles | Todo el Equipo | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-00) |
+| **DÌa 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, GastÛn, Santiago | `[PENDIENTE]` | `[ ]` | `[ ]` |
+| **DÌa 2** | **Etapa 2** | Core de Torneos, Admisiones y Contrato de Fixtures | GastÛn, Santiago, Luis Miguel, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
+| **DÌa 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, GastÛn, Tomas, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
+| **DÌa 3** | **Etapa 4** | Adaptadores Externos, Resiliencia y Scheduler | Luis Miguel, Santiago, GastÛn, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
+| **DÌa 3** | **Etapa 5** | Despliegue Docker, Swagger y Postman E2E | Tomas, GastÛn, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
 
 ---
 
-## D√çA 1 / SPRINT 1: Infraestructura Base, Dominio Com√∫n, Scaffolding y Gateway
+## DÕA 1 / SPRINT 1: Infraestructura Base, Dominio Com˙n, Scaffolding y Gateway
 
 ### ETAPA 1: Infraestructura Base, Common Lib, Scaffolding y Gateway Reactivo
-- **Objetivo:** Infraestructura contenerizada (Postgres, Keycloak, Mailpit, WireMock), artefacto com√∫n en `.m2`, esqueletos de servicios y punto de acceso central seguro.
-- **Responsables:** Tomas Augusto Quir√≥z, Luis Miguel Urviola Due√±as, Gast√≥n Emiliano Cambos Berrondo, Santiago Mariano Gonzalez.
+- **Objetivo:** Infraestructura contenerizada (Postgres, Keycloak, Mailpit, WireMock), artefacto com˙n en `.m2`, esqueletos de servicios y punto de acceso central seguro.
+- **Responsables:** Tomas Augusto QuirÛz, Luis Miguel Urviola DueÒas, GastÛn Emiliano Cambos Berrondo, Santiago Mariano Gonzalez.
 
-#### Subsecci√≥n 1.1: Servicios de Soporte Contenerizados (Postgres, Keycloak, Mailpit y WireMock)
-- [X] **1.1.1** Configurar `docker-compose.yml` en la ra√≠z con puerto din√°mico `${DB_PORT_HOST:-5432}:5432`, archivo `.env.example`, PostgreSQL 16 (`fulvo_db`), Keycloak 26.5, Mailpit y WireMock. `[Tomas]`
-- [X] **1.1.2** Crear script SQL `initdb/init-schemas.sql` con creaci√≥n de `esquema_torneos` y `esquema_operaciones`. `[Tomas]`
-- [X] **1.1.3** Crear archivo de importaci√≥n de Keycloak `keycloak/realm-export.json` con Realm `fulvo-realm`, cliente `fulvo-backend` y usuarios (`admin1`, `arbitro1`, `delegado1`, `fanatico1`). `[Tomas]`
+#### SubsecciÛn 1.1: Servicios de Soporte Contenerizados (Postgres, Keycloak, Mailpit y WireMock)
+- [X] **1.1.1** Configurar `docker-compose.yml` en la raÌz con puerto din·mico `${DB_PORT_HOST:-5432}:5432`, archivo `.env.example`, PostgreSQL 16 (`fulvo_db`), Keycloak 26.5, Mailpit y WireMock. `[Tomas]`
+- [X] **1.1.2** Crear script SQL `initdb/init-schemas.sql` con creaciÛn de `esquema_torneos` y `esquema_operaciones`. `[Tomas]`
+- [X] **1.1.3** Crear archivo de importaciÛn de Keycloak `keycloak/realm-export.json` con Realm `fulvo-realm`, cliente `fulvo-backend` y usuarios (`admin1`, `arbitro1`, `delegado1`, `fanatico1`). `[Tomas]`
 - [X] **1.1.4** Configurar WireMock (:8086) y Mailpit (:1025/:8025) en el Compose. `[Luis Miguel]`
-- [X] **1.1.5** Verificar despliegue con `docker compose up -d` y obtenci√≥n de tokens JWT v√≠a Keycloak. `[Tomas & Luis Miguel]`
-- *Criterio de Aceptaci√≥n 1.1:* Postgres crea ambos esquemas limpios; Keycloak emite JWT v√°lidos; Mailpit expone Web UI en puerto 8025; WireMock responde mocks.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-11]`
+- [X] **1.1.5** Verificar despliegue con `docker compose up -d` y obtenciÛn de tokens JWT vÌa Keycloak. `[Tomas & Luis Miguel]`
+- *Criterio de AceptaciÛn 1.1:* Postgres crea ambos esquemas limpios; Keycloak emite JWT v·lidos; Mailpit expone Web UI en puerto 8025; WireMock responde mocks.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-11]`
 
-#### Subsecci√≥n 1.2: Librer√≠a Compartida `fulvo-common-lib` (Instalaci√≥n en `.m2`)
+#### SubsecciÛn 1.2: LibrerÌa Compartida `fulvo-common-lib` (InstalaciÛn en `.m2`)
 - [X] **1.2.1** Inicializar proyecto Maven `fulvo-common-lib` (`com.fulvo:fulvo-common-lib:1.0.0-SNAPSHOT`, empaquetado `.jar`). `[Luis Miguel]`
 - [X] **1.2.2** Implementar DTOs inter-servicio en `com.fulvo.common.dto`: `CrucePartidoDTO`, `NotificacionEmailDTO`, `GeocodificacionDTO`, `ClimaPronosticoDTO`. `[Luis Miguel]`
-- [X] **1.2.3** Definir jerarqu√≠a de excepciones en `com.fulvo.common.exception`: `BusinessRuleException`, `RecursoNoEncontradoException`, `ConflictoEstadoException`. `[Luis Miguel]`
+- [X] **1.2.3** Definir jerarquÌa de excepciones en `com.fulvo.common.exception`: `BusinessRuleException`, `RecursoNoEncontradoException`, `ConflictoEstadoException`. `[Luis Miguel]`
 - [X] **1.2.4** Implementar `@RestControllerAdvice` global retornando **RFC 7807 (`ProblemDetail`)** de Spring 6 (Apuntes 18 y 23). `[Luis Miguel]`
 - [X] **1.2.5** Implementar `CorrelationIdFilter` (`OncePerRequestFilter`) propagando cabecera `X-Correlation-ID` al MDC de SLF4J (Apunte 23). `[Luis Miguel]`
-- [X] **1.2.6** Compilar e instalar librer√≠a en repositorio local: `mvn clean install -DskipTests`. `[Luis Miguel]`
-- *Criterio de Aceptaci√≥n 1.2:* Artefacto disponible en `~/.m2` local listo para ser importado por los microservicios.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-12]`
+- [X] **1.2.6** Compilar e instalar librerÌa en repositorio local: `mvn clean install -DskipTests`. `[Luis Miguel]`
+- *Criterio de AceptaciÛn 1.2:* Artefacto disponible en `~/.m2` local listo para ser importado por los microservicios.
+- *Auditor?a Requerida:* Registrar entrada en `docs/audit/` al finalizar. [COMPLETADO - AUDIT-20261108-12]
 
-#### Subsecci√≥n 1.3: Scaffolding Base y Configuraci√≥n DataSource de `servicio-torneos`
+#### SubsecciÛn 1.3: Scaffolding Base y ConfiguraciÛn DataSource de `servicio-torneos`
 - [X] **1.3.1** Inicializar microservicio `servicio-torneos` (`com.fulvo:servicio-torneos`, Java 21, Spring Boot 4.0.8). `[Gast√≥n]`
 - [X] **1.3.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`. `[Gast√≥n]`
 - [X] **1.3.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.torneos.*`. `[Gast√≥n]`
 - [X] **1.3.4** Verificar compilaci√≥n limpia y arranque inicial en puerto `8081`. `[Gast√≥n]`
-- *Criterio de Aceptaci√≥n 1.3:* `mvn clean package -DskipTests` exitoso y conexi√≥n validada con el esquema l√≥gico de torneos.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-13]`
+- *Criterio de AceptaciÛn 1.3:* `mvn clean package -DskipTests` exitoso y conexiÛn validada con el esquema lÛgico de torneos.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-13]`
 
-#### Subsecci√≥n 1.4: Scaffolding Base y Configuraci√≥n DataSource de `servicio-operaciones-partidos`
-- **Estado:** `[COMPLETADO]`. Librer√≠a com√∫n integrada; compilaci√≥n, arranque en 8082 y conexi√≥n a PostgreSQL verificados.
+#### SubsecciÛn 1.4: Scaffolding Base y ConfiguraciÛn DataSource de `servicio-operaciones-partidos`
+- **Estado:** `[COMPLETADO]`. LibrerÌa com˙n integrada; compilaciÛn, arranque en 8082 y conexiÛn a PostgreSQL verificados.
 - [X] **1.4.1** Inicializar microservicio `servicio-operaciones-partidos` (`com.fulvo:servicio-operaciones-partidos`, Java 21, Spring Boot 4.0.8). `[Santiago]`
 - [X] **1.4.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_operaciones`. `[Santiago]`
 - [X] **1.4.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.operaciones.*`. `[Santiago]`
-- [X] **1.4.4** Verificar compilaci√≥n limpia y arranque inicial en puerto `8082`. `[Santiago]`
-- *Criterio de Aceptaci√≥n 1.4:* `mvn clean package -DskipTests` exitoso y conexi√≥n validada con el esquema l√≥gico de operaciones.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/1.4-cierre-operaciones.md` al finalizar. `[COMPLETADO - AUDIT-20261109-14]`
+- [X] **1.4.4** Verificar compilaciÛn limpia y arranque inicial en puerto `8082`. `[Santiago]`
+- *Criterio de AceptaciÛn 1.4:* `mvn clean package -DskipTests` exitoso y conexiÛn validada con el esquema lÛgico de operaciones.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/1.4-cierre-operaciones.md` al finalizar. `[COMPLETADO - AUDIT-20261109-14]`
 
-#### Subsecci√≥n 1.5: Gateway Reactivo (`api-gateway`) con `RouteLocatorBuilder` y Seguridad OIDC
+#### SubsecciÛn 1.5: Gateway Reactivo (`api-gateway`) con `RouteLocatorBuilder` y Seguridad OIDC
 - [X] **1.5.1** Inicializar proyecto Spring Boot `api-gateway` con `spring-cloud-starter-gateway-server-webflux` (`com.fulvo:api-gateway`, Java 21, Spring Boot 4.0.8 / Spring Cloud 2025.1.4). `[Tomas]`
 - [X] **1.5.2** Configurar bean `RouteLocator` con `RouteLocatorBuilder` (Apunte 19) enrutando hacia downstream (`/v1/torneos/**`, `/v1/partidos/**`, adaptadores). `[Tomas]`
 - [X] **1.5.3** Implementar convertidor reactivo de roles `realm_access.roles` $\to$ autoridades `ROL_*` (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) con `Converter<Jwt, Mono<AbstractAuthenticationToken>>` (Apunte 21). `[Tomas]`
-- [X] **1.5.4** Configurar `SecurityWebFilterChain` reactiva bloqueando an√≥nimos (401) y verificando roles (403). `[Tomas]`
+- [X] **1.5.4** Configurar `SecurityWebFilterChain` reactiva bloqueando anÛnimos (401) y verificando roles (403). `[Tomas]`
 - [X] **1.5.5** Exponer y verificar endpoint `/health-check` en puerto `8080`. `[Tomas]`
-- *Criterio de Aceptaci√≥n 1.5:* Petici√≥n sin token responde 401; token de fan√°tico a POST torneo responde 403; health responde UP (200).
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-15]`
+- *Criterio de AceptaciÛn 1.5:* PeticiÛn sin token responde 401; token de fan·tico a POST torneo responde 403; health responde UP (200).
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-15]`
 
-> üî¥ **COMPUERTA DE CALIDAD (GATE 1):** No se inicia el D√≠a 2 sin que Gateway, Postgres, Keycloak, `fulvo-common-lib` en `.m2` y los scaffoldings de torneos y operaciones est√©n certificados y auditados en `docs/audit/`.
+> ?? **COMPUERTA DE CALIDAD (GATE 1):** No se inicia el DÌa 2 sin que Gateway, Postgres, Keycloak, `fulvo-common-lib` en `.m2` y los scaffoldings de torneos y operaciones estÈn certificados y auditados en `docs/audit/`.
 
 ---
 
-## D√çA 2 / SPRINT 2: Servicios Core de Negocio y L√≥gica Transaccional
+## DÕA 2 / SPRINT 2: Servicios Core de Negocio y LÛgica Transaccional
 
 ### ETAPA 2: Core de Torneos, Admisiones y Contrato de Fixtures
-- **Objetivo:** Organizaci√≥n de cert√°menes, admisiones, validaci√≥n de planteles de buena fe, fixture determin√≠stico, recepci√≥n en operaciones y perimetr√≠a en Gateway.
-- **Responsables:** Gast√≥n Emiliano Cambos Berrondo, Santiago Mariano Gonzalez, Luis Miguel Urviola Due√±as, Tomas Augusto Quir√≥z.
+- **Objetivo:** OrganizaciÛn de cert·menes, admisiones, validaciÛn de planteles de buena fe, fixture determinÌstico, recepciÛn en operaciones y perimetrÌa en Gateway.
+- **Responsables:** GastÛn Emiliano Cambos Berrondo, Santiago Mariano Gonzalez, Luis Miguel Urviola DueÒas, Tomas Augusto QuirÛz.
 
-#### Subsecci√≥n 2.1: Modelado JPA y L√≥gica de Admisi√≥n de Torneos
-- [ ] **2.1.1** Crear entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo` y `Jugador` (DNI String PK natural) y repositorios. `[Gast√≥n]`
-- [ ] **2.1.2** `POST /v1/torneos` con validaci√≥n de cupo estricto (10/20 Liga, 8/16 Llaves) (FN-01, RN-01). `[Gast√≥n]`
-- [ ] **2.1.3** `POST /v1/torneos/{id}/solicitudes-inscripcion` validando 15-22 jugadores, arquero, capit√°n y DNI √∫nico por certamen (FN-04, RN-02, RN-03). `[Gast√≥n]`
-- [ ] **2.1.4** `PATCH /v1/solicitudes-inscripcion/{id}/admision`: Aprobaci√≥n administrativa, creaci√≥n de `Equipo` en `ACTIVO`, promoci√≥n a `ROL_DELEGADO` y descuento de cupo o rechazo con motivo (FN-05, RN-04). `[Gast√≥n]`
-- *Criterio de Aceptaci√≥n 2.1:* No se permite violar cupo ni reglas de buena fe; las solicitudes admitidas descuentan cupo y crean el equipo en estado activo.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 2.1: Modelado JPA y LÛgica de AdmisiÛn de Torneos
+- [ ] **2.1.1** Crear entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo` y `Jugador` (DNI String PK natural) y repositorios. `[GastÛn]`
+- [ ] **2.1.2** `POST /v1/torneos` con validaciÛn de cupo estricto (10/20 Liga, 8/16 Llaves) (FN-01, RN-01). `[GastÛn]`
+- [ ] **2.1.3** `POST /v1/torneos/{id}/solicitudes-inscripcion` validando 15-22 jugadores, arquero, capit·n y DNI ˙nico por certamen (FN-04, RN-02, RN-03). `[GastÛn]`
+- [ ] **2.1.4** `PATCH /v1/solicitudes-inscripcion/{id}/admision`: AprobaciÛn administrativa, creaciÛn de `Equipo` en `ACTIVO`, promociÛn a `ROL_DELEGADO` y descuento de cupo o rechazo con motivo (FN-05, RN-04). `[GastÛn]`
+- *Criterio de AceptaciÛn 2.1:* No se permite violar cupo ni reglas de buena fe; las solicitudes admitidas descuentan cupo y crean el equipo en estado activo.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 2.2: Generaci√≥n Algor√≠tmica Determin√≠stica de Fixtures
-- [ ] **2.2.1** `PATCH /v1/torneos/{id}/estado` cerrando inscripci√≥n √∫nicamente al 100% de cupo (FN-06, RN-01). `[Gast√≥n]`
-- [ ] **2.2.2** Implementar algoritmo Round Robin (Liga) y √°rbol de emparejamiento con cruces posteriores en `null` (Llaves); transici√≥n a `INICIADO`. `[Gast√≥n]`
-- [ ] **2.2.3** Cliente `RestClient` inyectado por constructor con `@RequiredArgsConstructor` (Apunte 18) para despachar lote de cruces a `servicio-operaciones-partidos`. `[Gast√≥n]`
-- *Criterio de Aceptaci√≥n 2.2:* Intento de cierre con cupo incompleto responde 409; cierre al 100% genera y despacha fixture completo.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 2.2: GeneraciÛn AlgorÌtmica DeterminÌstica de Fixtures
+- [ ] **2.2.1** `PATCH /v1/torneos/{id}/estado` cerrando inscripciÛn ˙nicamente al 100% de cupo (FN-06, RN-01). `[GastÛn]`
+- [ ] **2.2.2** Implementar algoritmo Round Robin (Liga) y ·rbol de emparejamiento con cruces posteriores en `null` (Llaves); transiciÛn a `INICIADO`. `[GastÛn]`
+- [ ] **2.2.3** Cliente `RestClient` inyectado por constructor con `@RequiredArgsConstructor` (Apunte 18) para despachar lote de cruces a `servicio-operaciones-partidos`. `[GastÛn]`
+- *Criterio de AceptaciÛn 2.2:* Intento de cierre con cupo incompleto responde 409; cierre al 100% genera y despacha fixture completo.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 2.3: Contrato y Recepci√≥n de Cruces en Lote en Operaciones
+#### SubsecciÛn 2.3: Contrato y RecepciÛn de Cruces en Lote en Operaciones
 - [ ] **2.3.1** Implementar endpoint `POST /v1/partidos/lote` en `servicio-operaciones-partidos` recibiendo `List<CrucePartidoDTO>`. `[Santiago]`
 - [ ] **2.3.2** Persistir masivamente los partidos recibidos en estado `PROGRAMADO` en `esquema_operaciones` desacoplados de tablas de torneos. `[Santiago]`
-- *Criterio de Aceptaci√≥n 2.3:* Operaciones persiste los partidos sin claves for√°neas f√≠sicas directas hacia el esquema de torneos.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Criterio de AceptaciÛn 2.3:* Operaciones persiste los partidos sin claves for·neas fÌsicas directas hacia el esquema de torneos.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 2.4: Integraci√≥n del Cliente RestClient y Notificaciones de Admisi√≥n
-- [ ] **2.4.1** Implementar cliente `RestClient` en `servicio-torneos` invocando as√≠ncronamente a `servicio-notificaciones` (`POST /v1/notificaciones/emails`). `[Luis Miguel]`
-- [ ] **2.4.2** Despachar confirmaci√≥n de postulaci√≥n (FN-14) y resoluci√≥n de admisi√≥n (aprobado/rechazado) v√≠a Mailpit (RN-12). `[Luis Miguel]`
-- *Criterio de Aceptaci√≥n 2.4:* Los correos de confirmaci√≥n y resoluci√≥n llegan a la bandeja web de Mailpit (`:8025`).
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 2.4: IntegraciÛn del Cliente RestClient y Notificaciones de AdmisiÛn
+- [ ] **2.4.1** Implementar cliente `RestClient` en `servicio-torneos` invocando asÌncronamente a `servicio-notificaciones` (`POST /v1/notificaciones/emails`). `[Luis Miguel]`
+- [ ] **2.4.2** Despachar confirmaciÛn de postulaciÛn (FN-14) y resoluciÛn de admisiÛn (aprobado/rechazado) vÌa Mailpit (RN-12). `[Luis Miguel]`
+- *Criterio de AceptaciÛn 2.4:* Los correos de confirmaciÛn y resoluciÛn llegan a la bandeja web de Mailpit (`:8025`).
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 2.5: Enrutamiento Perimetral y Reglas de Seguridad para Torneos en API Gateway
-- [ ] **2.5.1** Configurar rutas en Gateway `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**` con validaci√≥n reactiva de roles. `[Tomas]`
-- [ ] **2.5.2** Bloquear intentos de creaci√≥n de torneo por roles ajenos a `ROL_ORGANIZADOR` con 403 Forbidden. `[Tomas]`
-- *Criterio de Aceptaci√≥n 2.5:* El Gateway filtra las solicitudes y enruta correctamente al puerto 8081.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 2.5: Enrutamiento Perimetral y Reglas de Seguridad para Torneos en API Gateway
+- [ ] **2.5.1** Configurar rutas en Gateway `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**` con validaciÛn reactiva de roles. `[Tomas]`
+- [ ] **2.5.2** Bloquear intentos de creaciÛn de torneo por roles ajenos a `ROL_ORGANIZADOR` con 403 Forbidden. `[Tomas]`
+- *Criterio de AceptaciÛn 2.5:* El Gateway filtra las solicitudes y enruta correctamente al puerto 8081.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> üî¥ **COMPUERTA DE CALIDAD (GATE 2A):** Torneos y Operaciones interact√∫an fluidamente v√≠a RestClient en la generaci√≥n y recepci√≥n de fixtures.
+> ?? **COMPUERTA DE CALIDAD (GATE 2A):** Torneos y Operaciones interact˙an fluidamente vÌa RestClient en la generaciÛn y recepciÛn de fixtures.
 
 ---
 
 ### ETAPA 3: Core de Operaciones, Arbitraje, Posiciones y Planteles
-- **Objetivo:** Sedes, √°rbitros, agenda horaria, m√°quina de estados de partidos, actas por dorsal, definici√≥n en llaves, tabla de posiciones y perimetr√≠a arbitral.
-- **Responsables:** Santiago Mariano Gonzalez, Gast√≥n Emiliano Cambos Berrondo, Tomas Augusto Quir√≥z, Luis Miguel Urviola Due√±as.
+- **Objetivo:** Sedes, ·rbitros, agenda horaria, m·quina de estados de partidos, actas por dorsal, definiciÛn en llaves, tabla de posiciones y perimetrÌa arbitral.
+- **Responsables:** Santiago Mariano Gonzalez, GastÛn Emiliano Cambos Berrondo, Tomas Augusto QuirÛz, Luis Miguel Urviola DueÒas.
 
-#### Subsecci√≥n 3.1: Sedes, √Årbitros y Asignaci√≥n Anti-Superposici√≥n
+#### SubsecciÛn 3.1: Sedes, ¡rbitros y AsignaciÛn Anti-SuperposiciÛn
 - [ ] **3.1.1** Crear entidades JPA en `esquema_operaciones`: `Sede`, `Arbitro`, `Partido`, `ActuacionJugador`, `TablaPosicion`. `[Santiago]`
-- [ ] **3.1.2** Endpoints `POST /v1/sedes` y `POST /v1/arbitros`: Registro de predios y padr√≥n arbitral. `[Santiago]`
-- [ ] **3.1.3** `POST /v1/partidos/{id}/asignaciones` con validaci√≥n estricta de ventana anti-superposici√≥n ($\pm 2$ horas) para sede y √°rbitro (FN-07, RN-05). `[Santiago]`
-- *Criterio de Aceptaci√≥n 3.1:* Intento de superposici√≥n horaria en sede o √°rbitro responde 409 Conflict (ProblemDetail).
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- [ ] **3.1.2** Endpoints `POST /v1/sedes` y `POST /v1/arbitros`: Registro de predios y padrÛn arbitral. `[Santiago]`
+- [ ] **3.1.3** `POST /v1/partidos/{id}/asignaciones` con validaciÛn estricta de ventana anti-superposiciÛn ($\pm 2$ horas) para sede y ·rbitro (FN-07, RN-05). `[Santiago]`
+- *Criterio de AceptaciÛn 3.1:* Intento de superposiciÛn horaria en sede o ·rbitro responde 409 Conflict (ProblemDetail).
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 3.2: Circuito Arbitral, Actas Oficiales y Desempate en Llaves
-- [ ] **3.2.1** `PATCH /v1/partidos/{id}/estado` a `EN_CURSO` validando identidad del √°rbitro (`@AuthenticationPrincipal Jwt jwt` vs `partido.arbitro_dni`, FN-09, RN-08). `[Santiago]`
-- [ ] **3.2.2** `POST /v1/partidos/{id}/actas`: Registro de goles y tarjetas por dorsal. Si hay empate en Llaves, exigencia de penales con desempate obligatorio (RN-10). Transici√≥n a `FINALIZADO` y promoci√≥n del ganador a la siguiente fase de llaves. `[Santiago]`
-- [ ] **3.2.3** Cancelaci√≥n por incidentes en `EN_CURSO` transicionando a `CANCELADO` y asignando 0 puntos en tabla o descalificaci√≥n mutua (FN-10, RN-09). `[Santiago]`
-- *Criterio de Aceptaci√≥n 3.2:* √Årbitro no asignado es rechazado con 403 Forbidden; empate en Llaves sin penales rechaza con 400 Bad Request; acta actualiza estado del partido y promueve al ganador.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 3.2: Circuito Arbitral, Actas Oficiales y Desempate en Llaves
+- [ ] **3.2.1** `PATCH /v1/partidos/{id}/estado` a `EN_CURSO` validando identidad del ·rbitro (`@AuthenticationPrincipal Jwt jwt` vs `partido.arbitro_dni`, FN-09, RN-08). `[Santiago]`
+- [ ] **3.2.2** `POST /v1/partidos/{id}/actas`: Registro de goles y tarjetas por dorsal. Si hay empate en Llaves, exigencia de penales con desempate obligatorio (RN-10). TransiciÛn a `FINALIZADO` y promociÛn del ganador a la siguiente fase de llaves. `[Santiago]`
+- [ ] **3.2.3** CancelaciÛn por incidentes en `EN_CURSO` transicionando a `CANCELADO` y asignando 0 puntos en tabla o descalificaciÛn mutua (FN-10, RN-09). `[Santiago]`
+- *Criterio de AceptaciÛn 3.2:* ¡rbitro no asignado es rechazado con 403 Forbidden; empate en Llaves sin penales rechaza con 400 Bad Request; acta actualiza estado del partido y promueve al ganador.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 3.3: Motor de Tabla de Posiciones y Estad√≠sticas
-- [ ] **3.3.1** Implementar c√≥mputo transaccional de posiciones (PJ, PG [3 pts], PE [1 pt], PP [0 pts], GF, GC, DG, Pts). `[Santiago]`
+#### SubsecciÛn 3.3: Motor de Tabla de Posiciones y EstadÌsticas
+- [ ] **3.3.1** Implementar cÛmputo transaccional de posiciones (PJ, PG [3 pts], PE [1 pt], PP [0 pts], GF, GC, DG, Pts). `[Santiago]`
 - [ ] **3.3.2** Endpoints `GET /v1/torneos/{idTorneo}/posiciones` y `GET /v1/torneos/{idTorneo}/goleadores` (FN-12). `[Santiago]`
-- *Criterio de Aceptaci√≥n 3.3:* Al finalizar un partido, la tabla de posiciones refleja at√≥micamente los resultados y puntos.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Criterio de AceptaciÛn 3.3:* Al finalizar un partido, la tabla de posiciones refleja atÛmicamente los resultados y puntos.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 3.4: Sincronizaci√≥n de Brackets y Ciclo de Reemplazos de Jugadores
-- [ ] **3.4.1** `POST /v1/equipos/{id}/reemplazos-jugadores` validando m√°ximo 5 cambios y prohibici√≥n taxativa de sustituir futbolistas suspendidos (FN-11, RN-11). `[Gast√≥n]`
-- [ ] **3.4.2** `DELETE /v1/torneos/{idTorneo}/equipos/{idEquipo}` para baja voluntaria o descalificaci√≥n de planteles (FN-13). `[Gast√≥n]`
-- *Criterio de Aceptaci√≥n 3.4:* Sexto cambio o reemplazo de jugador suspendido rechaza con 400 Bad Request.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 3.4: SincronizaciÛn de Brackets y Ciclo de Reemplazos de Jugadores
+- [ ] **3.4.1** `POST /v1/equipos/{id}/reemplazos-jugadores` validando m·ximo 5 cambios y prohibiciÛn taxativa de sustituir futbolistas suspendidos (FN-11, RN-11). `[GastÛn]`
+- [ ] **3.4.2** `DELETE /v1/torneos/{idTorneo}/equipos/{idEquipo}` para baja voluntaria o descalificaciÛn de planteles (FN-13). `[GastÛn]`
+- *Criterio de AceptaciÛn 3.4:* Sexto cambio o reemplazo de jugador suspendido rechaza con 400 Bad Request.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 3.5: Seguridad Perimetral y Reglas de Autorizaci√≥n Arbitral en API Gateway
+#### SubsecciÛn 3.5: Seguridad Perimetral y Reglas de AutorizaciÛn Arbitral en API Gateway
 - [ ] **3.5.1** Configurar rutas en Gateway `/v1/partidos/**`, `/v1/sedes/**` y `/v1/arbitros/**`. `[Tomas]`
-- [ ] **3.5.2** Exigir rol `ROL_ARBITRO` para transiciones y actas; `ROL_ORGANIZADOR` para asignaciones; y acceso p√∫blico/fan√°tico para consultas de resultados. `[Tomas]`
-- *Criterio de Aceptaci√≥n 3.5:* Intentos de asentar acta sin token de √°rbitro son rechazados en el per√≠metro del Gateway.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- [ ] **3.5.2** Exigir rol `ROL_ARBITRO` para transiciones y actas; `ROL_ORGANIZADOR` para asignaciones; y acceso p˙blico/fan·tico para consultas de resultados. `[Tomas]`
+- *Criterio de AceptaciÛn 3.5:* Intentos de asentar acta sin token de ·rbitro son rechazados en el perÌmetro del Gateway.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 3.6: DTOs Especializados, Excepciones Arbitrales y Contratos Comunes
+#### SubsecciÛn 3.6: DTOs Especializados, Excepciones Arbitrales y Contratos Comunes
 - [ ] **3.6.1** Incorporar en `fulvo-common-lib` las excepciones `ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`. `[Luis Miguel]`
 - [ ] **3.6.2** Definir DTOs de actas y reinstalar en `.m2` (`mvn clean install -DskipTests`). `[Luis Miguel]`
-- *Criterio de Aceptaci√≥n 3.6:* Artefacto com√∫n actualizado y consumible con excepciones arbitrales estandarizadas.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Criterio de AceptaciÛn 3.6:* Artefacto com˙n actualizado y consumible con excepciones arbitrales estandarizadas.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> üî¥ **COMPUERTA DE CALIDAD (GATE 2B):** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas en `docs/audit/`.
+> ?? **COMPUERTA DE CALIDAD (GATE 2B):** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas en `docs/audit/`.
 
 ---
 
-## D√çA 3 / SPRINT 3: Adaptadores, Scheduler, Swagger y Validaci√≥n Postman E2E
+## DÕA 3 / SPRINT 3: Adaptadores, Scheduler, Swagger y ValidaciÛn Postman E2E
 
 ### ETAPA 4: Adaptadores Externos, Resiliencia y Scheduler Preventivo
-- **Objetivo:** Microservicios adaptadores protegidos con Circuit Breaker, emulaci√≥n WireMock, proceso desatendido clim√°tico y resiliencia en Gateway.
-- **Responsables:** Luis Miguel Urviola Due√±as, Santiago Mariano Gonzalez, Gast√≥n Emiliano Cambos Berrondo, Tomas Augusto Quir√≥z.
+- **Objetivo:** Microservicios adaptadores protegidos con Circuit Breaker, emulaciÛn WireMock, proceso desatendido clim·tico y resiliencia en Gateway.
+- **Responsables:** Luis Miguel Urviola DueÒas, Santiago Mariano Gonzalez, GastÛn Emiliano Cambos Berrondo, Tomas Augusto QuirÛz.
 
-#### Subsecci√≥n 4.1: Adaptador de Geocodificaci√≥n y Fallback (`servicio-geocodificacion`)
-- [ ] **4.1.1** Scaffolding Spring Boot y consumo de API OpenStreetMap Nominatim / WireMock v√≠a RestClient (Apunte 18). `[Luis Miguel]`
-- [ ] **4.1.2** Configurar Resilience4j Circuit Breaker y fallback manual ante corte de red o direcci√≥n inv√°lida (FN-02, RN-06). `[Luis Miguel]`
-- *Criterio de Aceptaci√≥n 4.1:* Si Nominatim/WireMock responde retorna lat/lon oficiales; si falla y vienen coordenadas manuales responde 201; si falla sin datos manuales responde 422.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 4.1: Adaptador de GeocodificaciÛn y Fallback (`servicio-geocodificacion`)
+- [ ] **4.1.1** Scaffolding Spring Boot y consumo de API OpenStreetMap Nominatim / WireMock vÌa RestClient (Apunte 18). `[Luis Miguel]`
+- [ ] **4.1.2** Configurar Resilience4j Circuit Breaker y fallback manual ante corte de red o direcciÛn inv·lida (FN-02, RN-06). `[Luis Miguel]`
+- *Criterio de AceptaciÛn 4.1:* Si Nominatim/WireMock responde retorna lat/lon oficiales; si falla y vienen coordenadas manuales responde 201; si falla sin datos manuales responde 422.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 4.2: Adaptador de Clima y Evaluaci√≥n de Severidad (`servicio-clima`)
-- [ ] **4.2.1** Scaffolding Spring Boot y consumo de API Open-Meteo / WireMock para coordenadas dadas v√≠a RestClient. `[Luis Miguel]`
-- [ ] **4.2.2** Evaluar umbral de severidad (>40mm de lluvia o c√≥digos de tormenta/granizo) (FN-08, RN-07). `[Luis Miguel]`
-- *Criterio de Aceptaci√≥n 4.2:* Retorna evaluaci√≥n clim√°tica correcta sin lanzar errores 500 ante ca√≠das externas.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 4.2: Adaptador de Clima y EvaluaciÛn de Severidad (`servicio-clima`)
+- [ ] **4.2.1** Scaffolding Spring Boot y consumo de API Open-Meteo / WireMock para coordenadas dadas vÌa RestClient. `[Luis Miguel]`
+- [ ] **4.2.2** Evaluar umbral de severidad (>40mm de lluvia o cÛdigos de tormenta/granizo) (FN-08, RN-07). `[Luis Miguel]`
+- *Criterio de AceptaciÛn 4.2:* Retorna evaluaciÛn clim·tica correcta sin lanzar errores 500 ante caÌdas externas.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 4.3: Adaptador de Notificaciones Transaccionales (`servicio-notificaciones`)
-- [ ] **4.3.1** Scaffolding Spring Boot y configuraci√≥n de `JavaMailSender` apuntando a Mailpit (puerto 1025). `[Luis Miguel]`
-- [ ] **4.3.2** `POST /v1/notificaciones/emails` con control silencioso de excepciones que preserve la transacci√≥n del llamador (FN-14, RN-12). `[Luis Miguel]`
-- *Criterio de Aceptaci√≥n 4.3:* Emails visibles en la bandeja web de Mailpit (`http://localhost:8025`).
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 4.3: Adaptador de Notificaciones Transaccionales (`servicio-notificaciones`)
+- [ ] **4.3.1** Scaffolding Spring Boot y configuraciÛn de `JavaMailSender` apuntando a Mailpit (puerto 1025). `[Luis Miguel]`
+- [ ] **4.3.2** `POST /v1/notificaciones/emails` con control silencioso de excepciones que preserve la transacciÛn del llamador (FN-14, RN-12). `[Luis Miguel]`
+- *Criterio de AceptaciÛn 4.3:* Emails visibles en la bandeja web de Mailpit (`http://localhost:8025`).
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 4.4: Scheduler Clim√°tico Preventivo a 24 Horas y Reprogramaci√≥n
+#### SubsecciÛn 4.4: Scheduler Clim·tico Preventivo a 24 Horas y ReprogramaciÛn
 - [ ] **4.4.1** Implementar `@Scheduled` en `servicio-operaciones-partidos` consultando partidos a 24h. `[Santiago]`
-- [ ] **4.4.2** Suspender autom√°ticamente encuentros ante tormenta severa (`SUSPENDIDO`, RN-07) e invocar Notificaciones (RN-12). `[Santiago]`
+- [ ] **4.4.2** Suspender autom·ticamente encuentros ante tormenta severa (`SUSPENDIDO`, RN-07) e invocar Notificaciones (RN-12). `[Santiago]`
 - [ ] **4.4.3** `POST /v1/partidos/{id}/reprogramaciones` para reasignar fecha y sede pasando a `REPROGRAMADO`. `[Santiago]`
-- *Criterio de Aceptaci√≥n 4.4:* El scheduler suspende el encuentro ante tormenta y env√≠a el correo de alerta al delegado.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Criterio de AceptaciÛn 4.4:* El scheduler suspende el encuentro ante tormenta y envÌa el correo de alerta al delegado.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 4.5: Consumo de Notificaciones de Suspensi√≥n y Consistencia de Torneos
-- [ ] **4.5.1** Integraci√≥n en `servicio-torneos` para procesar el impacto de suspensiones y reprogramaciones sobre el cronograma del torneo. `[Gast√≥n]`
-- [ ] **4.5.2** Mantener consistencia del certamen y trazabilidad de los partidos pendientes para los delegados. `[Gast√≥n]`
-- *Criterio de Aceptaci√≥n 4.5:* El cronograma del torneo refleja los partidos suspendidos sin corromper cruces.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 4.5: Consumo de Notificaciones de SuspensiÛn y Consistencia de Torneos
+- [ ] **4.5.1** IntegraciÛn en `servicio-torneos` para procesar el impacto de suspensiones y reprogramaciones sobre el cronograma del torneo. `[GastÛn]`
+- [ ] **4.5.2** Mantener consistencia del certamen y trazabilidad de los partidos pendientes para los delegados. `[GastÛn]`
+- *Criterio de AceptaciÛn 4.5:* El cronograma del torneo refleja los partidos suspendidos sin corromper cruces.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 4.6: Enrutamiento y Aislamiento de Servicios Adaptadores en API Gateway
-- [ ] **4.6.1** Configuraci√≥n de rutas en `api-gateway` para adaptadores (`/v1/geocodificaciones/**`, `/v1/clima/**`, `/v1/notificaciones/**`). `[Tomas]`
-- [ ] **4.6.2** Aislamiento perimetral impidiendo acceso p√∫blico an√≥nimo directo a las APIs internas de notificaci√≥n. `[Tomas]`
-- *Criterio de Aceptaci√≥n 4.6:* Rutas de adaptadores securizadas y operativas a trav√©s del Gateway.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 4.6: Enrutamiento y Aislamiento de Servicios Adaptadores en API Gateway
+- [ ] **4.6.1** ConfiguraciÛn de rutas en `api-gateway` para adaptadores (`/v1/geocodificaciones/**`, `/v1/clima/**`, `/v1/notificaciones/**`). `[Tomas]`
+- [ ] **4.6.2** Aislamiento perimetral impidiendo acceso p˙blico anÛnimo directo a las APIs internas de notificaciÛn. `[Tomas]`
+- *Criterio de AceptaciÛn 4.6:* Rutas de adaptadores securizadas y operativas a travÈs del Gateway.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> üî¥ **COMPUERTA DE CALIDAD (GATE 3):** Adaptadores y Scheduler integrados y certificados contra Mailpit y APIs p√∫blicas / WireMock, auditados en `docs/audit/`.
+> ?? **COMPUERTA DE CALIDAD (GATE 3):** Adaptadores y Scheduler integrados y certificados contra Mailpit y APIs p˙blicas / WireMock, auditados en `docs/audit/`.
 
 ---
 
 ### ETAPA 5: Despliegue Docker, Swagger y Postman E2E
-- **Objetivo:** Despliegue contenerizado en red cerrada, documentaci√≥n OpenAPI en todos los m√≥dulos y certificaci√≥n completa de escenarios oficiales en Postman.
-- **Responsables:** Tomas Augusto Quir√≥z, Gast√≥n Emiliano Cambos Berrondo, Santiago Mariano Gonzalez, Luis Miguel Urviola Due√±as.
+- **Objetivo:** Despliegue contenerizado en red cerrada, documentaciÛn OpenAPI en todos los mÛdulos y certificaciÛn completa de escenarios oficiales en Postman.
+- **Responsables:** Tomas Augusto QuirÛz, GastÛn Emiliano Cambos Berrondo, Santiago Mariano Gonzalez, Luis Miguel Urviola DueÒas.
 
-#### Subsecci√≥n 5.1: Orquestaci√≥n Integral Docker Compose y Red Perimetral `bda-net`
-- [ ] **5.1.1** Crear `Dockerfile` can√≥nico basado en `eclipse-temurin:21-jre-alpine` para cada uno de los 6 microservicios. `[Tomas]`
+#### SubsecciÛn 5.1: OrquestaciÛn Integral Docker Compose y Red Perimetral `bda-net`
+- [ ] **5.1.1** Crear `Dockerfile` canÛnico basado en `eclipse-temurin:21-jre-alpine` para cada uno de los 6 microservicios. `[Tomas]`
 - [ ] **5.1.2** Configurar `docker-compose.yml` final de red interna `bda-net` con aislamiento perimetral (solo puertos 8080, 8090, 8025 y 8086 WireMock expuestos). `[Tomas]`
-- [ ] **5.1.3** Configurar `docker-compose.override.yml` para depuraci√≥n en desarrollo y arranque en fr√≠o con `docker compose up -d --build`. `[Tomas]`
-- *Criterio de Aceptaci√≥n 5.1:* Todo el backend levanta con un solo comando sin intervenci√≥n manual.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- [ ] **5.1.3** Configurar `docker-compose.override.yml` para depuraciÛn en desarrollo y arranque en frÌo con `docker compose up -d --build`. `[Tomas]`
+- *Criterio de AceptaciÛn 5.1:* Todo el backend levanta con un solo comando sin intervenciÛn manual.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 5.2: Documentaci√≥n OpenAPI 3.0 de Torneos (`servicio-torneos`)\n- [ ] **5.2.1** Integrar `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos`. `[Gast√≥n]`
-- [ ] **5.2.2** Anotar endpoints, par√°metros, esquemas de admisi√≥n, planteles y respuestas de error RFC 7807. `[Gast√≥n]`
-- *Criterio de Aceptaci√≥n 5.2:* Endpoints del ciclo registral documentados exhaustivamente.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 5.2: DocumentaciÛn OpenAPI 3.0 de Torneos (`servicio-torneos`)\n- [ ] **5.2.1** Integrar `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos`. `[GastÛn]`
+- [ ] **5.2.2** Anotar endpoints, par·metros, esquemas de admisiÛn, planteles y respuestas de error RFC 7807. `[GastÛn]`
+- *Criterio de AceptaciÛn 5.2:* Endpoints del ciclo registral documentados exhaustivamente.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 5.3: Documentaci√≥n OpenAPI 3.0 de Operaciones (`servicio-operaciones-partidos`)
+#### SubsecciÛn 5.3: DocumentaciÛn OpenAPI 3.0 de Operaciones (`servicio-operaciones-partidos`)
 - [ ] **5.3.1** Integrar `springdoc-openapi-starter-webmvc-ui` en `servicio-operaciones-partidos`. `[Santiago]`
 - [ ] **5.3.2** Anotar endpoints de partidos, asignaciones, actas, sedes y tabla de posiciones. `[Santiago]`
-- *Criterio de Aceptaci√≥n 5.3:* Endpoints operativos y de arbitraje documentados con sus c√≥digos de respuesta.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Criterio de AceptaciÛn 5.3:* Endpoints operativos y de arbitraje documentados con sus cÛdigos de respuesta.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 5.4: Agregaci√≥n de Swagger UI en API Gateway y Esquemas de Seguridad JWT
-- [ ] **5.4.1** Exponer agregaci√≥n centralizada de Swagger en `api-gateway` accesible en `http://localhost:8080/swagger-ui.html`. `[Tomas]`
+#### SubsecciÛn 5.4: AgregaciÛn de Swagger UI en API Gateway y Esquemas de Seguridad JWT
+- [ ] **5.4.1** Exponer agregaciÛn centralizada de Swagger en `api-gateway` accesible en `http://localhost:8080/swagger-ui.html`. `[Tomas]`
 - [ ] **5.4.2** Configurar seguridad JWT Bearer en OpenAPI y descripciones de respuestas RFC 7807 (`ProblemDetail`). `[Tomas]`
-- *Criterio de Aceptaci√≥n 5.4:* Swagger UI unificado accesible desde el puerto 8080.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Criterio de AceptaciÛn 5.4:* Swagger UI unificado accesible desde el puerto 8080.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 5.5: Automatizaci√≥n de Suite Postman Integral y Entorno de Pruebas
-- [ ] **5.5.1** Crear colecci√≥n `postman/Fulvo_Backend_Collection.postman_collection.json` y entorno `postman/Fulvo_Local_Environment.postman_environment.json`. `[Luis Miguel]`
-- [ ] **5.5.2** Scripts de pre-request con auto-login en Keycloak para Admin, Delegado, √Årbitro y Fan√°tico extrayendo tokens e IDs din√°micamente. `[Luis Miguel]`
-- *Criterio de Aceptaci√≥n 5.5:* Ejecuci√≥n 100% automatizada sin copia ni pega manual.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+#### SubsecciÛn 5.5: AutomatizaciÛn de Suite Postman Integral y Entorno de Pruebas
+- [ ] **5.5.1** Crear colecciÛn `postman/Fulvo_Backend_Collection.postman_collection.json` y entorno `postman/Fulvo_Local_Environment.postman_environment.json`. `[Luis Miguel]`
+- [ ] **5.5.2** Scripts de pre-request con auto-login en Keycloak para Admin, Delegado, ¡rbitro y Fan·tico extrayendo tokens e IDs din·micamente. `[Luis Miguel]`
+- *Criterio de AceptaciÛn 5.5:* EjecuciÛn 100% automatizada sin copia ni pega manual.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsecci√≥n 5.6: Certificaci√≥n Colaborativa de Escenarios Oficiales Positivos y Negativos (EP y EN)
+#### SubsecciÛn 5.6: CertificaciÛn Colaborativa de Escenarios Oficiales Positivos y Negativos (EP y EN)
 - [ ] **5.6.1** Certificar escenarios de seguridad perimetral (`EN-01` 401, `EN-02` 403). `[Tomas]`
-- [ ] **5.6.2** Certificar escenarios del ciclo registral y torneos (`EP-01` a `EP-03`, `EN-03` a `EN-05`, `EN-10`). `[Gast√≥n]`
+- [ ] **5.6.2** Certificar escenarios del ciclo registral y torneos (`EP-01` a `EP-03`, `EN-03` a `EN-05`, `EN-10`). `[GastÛn]`
 - [ ] **5.6.3** Certificar escenarios operativos de partidos y arbitraje (`EP-04` a `EP-07`, `EN-07` a `EN-09`). `[Santiago]`
 - [ ] **5.6.4** Certificar escenarios de resiliencia, clima y notificaciones (`EP-08`, `EP-09`, `EN-06`, `EN-11`, `EN-12`) y corrida integral en Newman. `[Luis Miguel]`
-- *Criterio de Aceptaci√≥n 5.6:* 100% de las pruebas en Postman (`pm.test()`) ejecutadas con resultado verde sin fallos.
-- *Auditor√≠a Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Criterio de AceptaciÛn 5.6:* 100% de las pruebas en Postman (`pm.test()`) ejecutadas con resultado verde sin fallos.
+- *AuditorÌa Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> üèÜ **COMPUERTA DE APROBACI√ìN FINAL (GATE 4):** Backend completamente verificado, documentado en Swagger, desplegado en Docker y certificado de punta a punta con Postman y Mailpit, con la bit√°cora de auditor√≠a cerrada en `docs/audit/`.
+> ?? **COMPUERTA DE APROBACI”N FINAL (GATE 4):** Backend completamente verificado, documentado en Swagger, desplegado en Docker y certificado de punta a punta con Postman y Mailpit, con la bit·cora de auditorÌa cerrada en `docs/audit/`.
