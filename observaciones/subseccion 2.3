@@ -1,0 +1,32 @@
+Array pruebas:
+
+[
+  {
+    "idTorneo": 1,
+    "idEquipoLocal": 10,
+    "idEquipoVisitante": 11,
+    "fechaHora": "2026-12-01T18:00:00",
+    "ronda": 1
+  },
+  {
+    "idTorneo": 1,
+    "idEquipoLocal": 12,
+    "idEquipoVisitante": 13,
+    "fechaHora": "2026-12-01T20:00:00",
+    "ronda": 1
+  }
+]
+
+El header debe ser Content-Type application/json
+
+* Hay que cambiar el nombre de los repositorios de los microservicios a los que quiere la cátedra
+
+* torneo_id es solo una referencia lógica, no una clave foranea, hay que ver si eso se puede cambiar o estaría bien dejarlo asi
+
+* qué representa fechaOFase??
+
+* por qué usamos ddl-auto: validate??
+
+* Coordinar con Luis la validación del DTO para que los datos inválidos devuelvan 400, en lugar de 500.
+* Resolver el tratamiento de sedeId y arbitroDni: el DTO los admite, pero el mapeo actual los ignora.
+* Me mandé un moquito con el tasks y le cambié el formato de UTF-8 a no se que cosa y después lo volví a cambiar a UTF-8
