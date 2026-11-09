@@ -58,13 +58,13 @@
 - *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar. `[COMPLETADO - AUDIT-20261108-13]`
 
 #### Subsección 1.4: Scaffolding Base y Configuración DataSource de `servicio-operaciones-partidos`
-- **Estado:** `[EN PROCESO]`. Estructura y configuración creadas; compilación y conexión pendientes de validación con la librería común y PostgreSQL disponibles.
+- **Estado:** `[COMPLETADO]`. Librería común integrada; compilación, arranque en 8082 y conexión a PostgreSQL verificados.
 - [X] **1.4.1** Inicializar microservicio `servicio-operaciones-partidos` (`com.fulvo:servicio-operaciones-partidos`, Java 21, Spring Boot 4.0.8). `[Santiago]`
 - [X] **1.4.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_operaciones`. `[Santiago]`
-- [ ] **1.4.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.operaciones.*`. `[Santiago]`
-- [ ] **1.4.4** Verificar compilación limpia y arranque inicial en puerto `8082`. `[Santiago]`
+- [X] **1.4.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.operaciones.*`. `[Santiago]`
+- [X] **1.4.4** Verificar compilación limpia y arranque inicial en puerto `8082`. `[Santiago]`
 - *Criterio de Aceptación 1.4:* `mvn clean package -DskipTests` exitoso y conexión validada con el esquema lógico de operaciones.
-- *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `AUDIT_LOG.md` al finalizar. `[COMPLETADO - AUDIT-20261109-14]`
 
 #### Subsección 1.5: Gateway Reactivo (`api-gateway`) con `RouteLocatorBuilder` y Seguridad OIDC
 - [ ] **1.5.1** Inicializar proyecto Spring Boot `api-gateway` con `spring-cloud-starter-gateway` (`com.fulvo:api-gateway`, Java 21, Spring Boot 4.0.8). `[Tomas]`

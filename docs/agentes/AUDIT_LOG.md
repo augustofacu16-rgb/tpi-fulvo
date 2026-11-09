@@ -287,3 +287,33 @@
 #### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
 * **Decisiones de diseño a defender:** Proyecto Maven autónomo, contratos compartidos mediante un JAR y persistencia restringida al esquema de operaciones. `ddl-auto: validate` evita modificar automáticamente tablas; el esquema debe existir previamente.
 * **Preguntas probables de los profesores:** Cómo cambia la conexión entre IDE y Docker mediante `DB_HOST` y `DB_PORT`; por qué un scaffold creado no equivale a un servicio validado y por qué Gate 1 sigue pendiente.
+
+
+---
+
+### [AUDIT-20261109-14] Etapa 1 - Subsección 1.4: Cierre del Scaffolding de Operaciones
+
+- **Fecha y Hora de Cierre:** 2026-11-09 04:24 (Hora Local, America/Argentina/Cordoba)
+- **Estado:** COMPLETADO
+- **Gate de Etapa Asociado:** Gate 1 [PENDIENTE]
+
+#### 1. ¿Qué y Cómo se hizo?
+* **Componentes / Módulos intervenidos:** `servicio-operaciones-partidos`, en la rama local existente `feature/1.4-scaffolding-operaciones` de Santiago.
+* **Archivos creados o modificados:** `package-info.java` en los paquetes `com.fulvo.operaciones.config`, `controller`, `domain`, `dto`, `repository`, `service` y `client`; `servicio-operaciones-partidos/README.md`, `docs/agentes/TASKS.md` y esta bitácora.
+* **Endpoints y Contratos implementados:** Se verificó el endpoint existente `GET http://localhost:8082/actuator/health`: HTTP 200 y estado `UP`. No se agregaron endpoints de negocio.
+* **Lógica técnica y de dominio aplicada:** Se instaló la librería real `com.fulvo:fulvo-common-lib:1.0.0-SNAPSHOT` con `mvn -B -f fulvo-common-lib/pom.xml clean install -DskipTests` durante la revisión previa. Con la estructura final de paquetes, `mvn -B -f servicio-operaciones-partidos/pom.xml clean package -DskipTests` terminó en `BUILD SUCCESS` sobre Java 21 y Spring Boot 4.0.8. El JAR ejecutable arrancó en 8082; Hikari y Hibernate confirmaron PostgreSQL 16.15 y la URL `jdbc:postgresql://localhost:5432/fulvo_db?currentSchema=esquema_operaciones`.
+* **Validación manual:** Se comprobó la existencia de ambos esquemas y la selección SQL de `esquema_operaciones`. Para inspeccionar el componente `db` se arrancó temporalmente con `--management.endpoint.health.show-details=always`: servicio y PostgreSQL respondieron `UP`. Se comprobó que `X-Correlation-ID: prueba-operaciones-1.4` vuelve en la respuesta y que se genera una cabecera cuando falta. La configuración persistida mantiene `show-details: never`. En la revisión previa, el arranque sin argumentos también respondió HTTP 200 con `status: UP`. No se incorporaron tests Java.
+
+#### 2. ¿Qué hubo que arreglar sobre la marcha?
+* **Problemas técnicos encontrados:** La auditoría inicial de 1.4 estaba pendiente por falta de la librería común y de PostgreSQL en aquella revisión. Ambas dependencias ya están disponibles. El README conservaba referencias a Boot 3.3.4 y a una contraseña sin valor predeterminado.
+* **Soluciones y Workarounds aplicados:** Se verificó la integración con el artefacto común real instalado en `.m2`, se completaron los paquetes base y se corrigió el README para reflejar Boot 4.0.8 y `DB_PASSWORD` con valor local predeterminado `postgres`. La documentación describe la prueba de correlación. El proceso Java temporal se detiene al cerrar la validación.
+* **Incidencias compartidas pendientes:** La revisión general detectó WireMock sin mappings visibles dentro del contenedor y respuestas 500 ante rutas inexistentes en ambos servicios. Estas incidencias de infraestructura y de `GlobalExceptionHandler` compartido no se corrigen en esta subsección; no afectan la compilación, el arranque ni la conexión requeridos por 1.4 y deben resolverse antes de certificar la etapa completa.
+
+#### 3. ¿En qué difiere con lo establecido en el Plan Original?
+* **Modificaciones del Modelo de Datos / Entidades:** Ninguna. Los paquetes solo documentan responsabilidades; no se implementan entidades ni reglas de etapas posteriores.
+* **Ajustes en Funcionalidades o Reglas:** Se conserva la actualización previa y documentada del stack a Spring Boot 4.0.8 y Lombok 1.18.38. Este cierre no modifica versiones ni funcionalidades de negocio.
+* **Motivo del cambio:** Completar la estructura prevista y registrar evidencia real de integración y arranque. Gate 1 continúa pendiente del Gateway y de la resolución de incidencias compartidas.
+
+#### 4. Puntos Clave para la Defensa Oral (Coloquio con Docentes)
+* **Decisiones de diseño a defender:** Proyecto Maven independiente; DTOs de integración consumidos como JAR; esquema propio mediante `currentSchema` y `hibernate.default_schema`; `ddl-auto: validate` evita generar tablas automáticamente. El health verifica conectividad y el filtro común propaga la correlación.
+* **Preguntas probables de los profesores:** Cómo parametrizar host y puerto al alternar entre IDE y Docker; cómo se incorpora la librería desde `.m2`; por qué un scaffold operativo todavía no implica que Gate 1 esté superado. La selección de esquema es configuración lógica, no una restricción de permisos del usuario PostgreSQL.
