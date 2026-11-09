@@ -17,10 +17,10 @@
 |---|---|---|---|---|:---:|:---:|
 | **Día 0** | **Etapa 0** | Planificación, Convenciones y Roles | Todo el Equipo | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-00) |
 | **Día 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, Gastón, Santiago | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261109-GATE1) |
-| **Día 2** | **Etapa 2** | Core de Torneos, Admisiones y Contrato de Fixtures | Gastón, Santiago, Luis Miguel, Tomas | `[EN PROCESO]` | `[ ]` | `[ ]` |
+| **Día 2** | **Etapa 2** | Core de Torneos, Admisiones, Fixtures y Swagger Base | Tomas, Gastón, Santiago, Luis Miguel | `[EN PROCESO]` | `[ ]` | `[ ]` |
 | **Día 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gastón, Tomas, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
 | **Día 3** | **Etapa 4** | Adaptadores Externos, Resiliencia y Scheduler | Luis Miguel, Santiago, Gastón, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
-| **Día 3** | **Etapa 5** | Despliegue Docker, Swagger y Postman E2E | Tomas, Gastón, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
+| **Día 3** | **Etapa 5** | Despliegue Docker, Auditoría OpenAPI y Postman E2E | Tomas, Gastón, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
 
 ---
 
@@ -117,6 +117,13 @@
 - [ ] **2.5.1** Configurar rutas en Gateway `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**` con validación reactiva de roles. `[Tomas]`
 - [ ] **2.5.2** Bloquear intentos de creación de torneo por roles ajenos a `ROL_ORGANIZADOR` con 403 Forbidden. `[Tomas]`
 - *Criterio de Aceptación 2.5:* El Gateway filtra las solicitudes y enruta correctamente al puerto 8081.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+
+#### Subsección 2.6: Habilitación de OpenAPI 3.0, Swagger UI y Agregación Perimetral en API Gateway
+- [ ] **2.6.1** Integrar dependencia `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos` y `servicio-operaciones-partidos`, configurando OpenAPI base y esquema de seguridad Bearer JWT (`SecurityScheme`). `[Tomas]`
+- [ ] **2.6.2** Integrar dependencia `springdoc-openapi-starter-webflux-ui` en `api-gateway` y configurar agregación dinámica de Swagger UI (`springdoc.swagger-ui.urls`) apuntando a las definiciones de los microservicios (`/api/torneos/v3/api-docs` y `/api/partidos/v3/api-docs`). `[Tomas]`
+- [ ] **2.6.3** Exponer perimetralmente en Gateway el acceso público a Swagger UI (`/swagger-ui.html`, `/swagger-ui/**`, `/v3/api-docs/**`) y verificar navegación interactiva en `http://localhost:8080/swagger-ui.html` para probar dinámicamente los endpoints a medida que se implementan. `[Tomas]`
+- *Criterio de Aceptación 2.6:* Swagger UI unificado y accesible desde el puerto 8080 en `http://localhost:8080/swagger-ui.html`, permitiendo alternar y probar interactivamente los contratos vivos de `servicio-torneos` y `servicio-operaciones-partidos`.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 > ?? **COMPUERTA DE CALIDAD (GATE 2A):** Torneos y Operaciones interactúan fluidamente vía RestClient en la generación y recepción de fixtures.
@@ -227,21 +234,20 @@
 - *Criterio de Aceptación 5.1:* Todo el backend levanta con un solo comando sin intervención manual.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.2: Documentación OpenAPI 3.0 de Torneos (`servicio-torneos`)\n- [ ] **5.2.1** Integrar `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos`. `[Gastón]`
-- [ ] **5.2.2** Anotar endpoints, parámetros, esquemas de admisión, planteles y respuestas de error RFC 7807. `[Gastón]`
-- *Criterio de Aceptación 5.2:* Endpoints del ciclo registral documentados exhaustivamente.
+#### Subsección 5.2: Enriquecimiento y Documentación OpenAPI 3.0 Detallada de Torneos (`servicio-torneos`)
+- [ ] **5.2.1** Anotar endpoints, parámetros, esquemas de admisión, planteles y respuestas de error RFC 7807 (`ProblemDetail`) en `servicio-torneos`. `[Gastón]`
+- *Criterio de Aceptación 5.2:* Endpoints del ciclo registral enriquecidos y documentados exhaustivamente.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.3: Documentación OpenAPI 3.0 de Operaciones (`servicio-operaciones-partidos`)
-- [ ] **5.3.1** Integrar `springdoc-openapi-starter-webmvc-ui` en `servicio-operaciones-partidos`. `[Santiago]`
-- [ ] **5.3.2** Anotar endpoints de partidos, asignaciones, actas, sedes y tabla de posiciones. `[Santiago]`
-- *Criterio de Aceptación 5.3:* Endpoints operativos y de arbitraje documentados con sus códigos de respuesta.
+#### Subsección 5.3: Enriquecimiento y Documentación OpenAPI 3.0 Detallada de Operaciones (`servicio-operaciones-partidos`)
+- [ ] **5.3.1** Anotar endpoints de partidos, asignaciones, actas, sedes, tabla de posiciones y respuestas de error RFC 7807 en `servicio-operaciones-partidos`. `[Santiago]`
+- *Criterio de Aceptación 5.3:* Endpoints operativos y de arbitraje enriquecidos con sus códigos de respuesta y esquemas.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.4: Agregación de Swagger UI en API Gateway y Esquemas de Seguridad JWT
-- [ ] **5.4.1** Exponer agregación centralizada de Swagger en `api-gateway` accesible en `http://localhost:8080/swagger-ui.html`. `[Tomas]`
-- [ ] **5.4.2** Configurar seguridad JWT Bearer en OpenAPI y descripciones de respuestas RFC 7807 (`ProblemDetail`). `[Tomas]`
-- *Criterio de Aceptación 5.4:* Swagger UI unificado accesible desde el puerto 8080.
+#### Subsección 5.4: Auditoría y Verificación de Swagger UI y Respuestas RFC 7807
+- [ ] **5.4.1** Auditar la agregación completa en `api-gateway` con todas las rutas y esquemas de todos los microservicios en `http://localhost:8080/swagger-ui.html`. `[Tomas]`
+- [ ] **5.4.2** Verificar funcionamiento del esquema JWT Bearer y formato estándar RFC 7807 (`ProblemDetail`) en toda la suite. `[Tomas]`
+- *Criterio de Aceptación 5.4:* Swagger UI unificado y verificado al 100% en el Gateway.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 5.5: Automatización de Suite Postman Integral y Entorno de Pruebas

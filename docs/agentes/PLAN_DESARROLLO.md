@@ -1,6 +1,6 @@
-# Plan de Desarrollo Integral - TPI Backend "Fulvo'" (Definitivo y Aprobado)
+# Plan de Desarrollo Integral - TPI Backend "Fulvo" (Definitivo y Aprobado)
 
-## Estado del Plan: APROBADO (En Espera de SeÒal de Inicio)
+## Estado del Plan: APROBADO (En Espera de Se√±al de Inicio)
 
 ---
 
@@ -8,393 +8,399 @@
 
 1. **Nomenclatura de Paquetes y Maven:**
    * `groupId`: `com.fulvo`
-   * RaÌz de paquetes Java: `com.fulvo.*` (`com.fulvo.torneos`, `com.fulvo.operaciones`, `com.fulvo.gateway`, `com.fulvo.common`, etc.).
-   * Proyectos Spring Boot est·ndar e independientes que heredan de `spring-boot-starter-parent:4.0.8`. La librerÌa `fulvo-common-lib` se instala en `.m2` (`mvn clean install -DskipTests`).
-   * CompilaciÛn ·gil sin tests Java: `mvn clean package -DskipTests`.
+   * Ra√≠z de paquetes Java: `com.fulvo.*` (`com.fulvo.torneos`, `com.fulvo.operaciones`, `com.fulvo.gateway`, `com.fulvo.common`, etc.).
+   * Proyectos Spring Boot est√°ndar e independientes que heredan de `spring-boot-starter-parent:4.0.8`. La librer√≠a `fulvo-common-lib` se instala en `.m2` (`mvn clean install -DskipTests`).
+   * Compilaci√≥n √°gil sin tests Java: `mvn clean package -DskipTests`.
 2. **Contingencia Offline con WireMock:**
    * Se incluye el servicio `wiremock` en el `docker-compose.yml` para emular las respuestas de OpenStreetMap (Nominatim) y Open-Meteo durante la defensa oral en caso de cortes de red o falta de conectividad en la facultad.
 3. **Mecanismo de Brackets en Llaves (8 o 16 Equipos):**
    * Los partidos de fases avanzadas (semifinales, final) se persisten inicialmente con `equipo_uno_id = null` y `equipo_dos_id = null`.
-   * Al asentar el ·rbitro el acta oficial del partido previo (`FINALIZADO`), el sistema promueve autom·ticamente al equipo ganador al cruce correspondiente de la siguiente fase.
-4. **ValidaciÛn y VerificaciÛn 100% en Postman (Criterio API-01):**
-   * Se descarta la implementaciÛn de tests unitarios y de integraciÛn en cÛdigo Java (JUnit / MockMvc) para maximizar la velocidad en 3 dÌas.
-   * La verificaciÛn de las reglas de negocio, cÛdigos de error (400, 401, 403, 409, 422) y el proceso central se realiza exclusivamente a travÈs de la colecciÛn automatizada en Postman (`pm.test()`).
+   * Al asentar el √°rbitro el acta oficial del partido previo (`FINALIZADO`), el sistema promueve autom√°ticamente al equipo ganador al cruce correspondiente de la siguiente fase.
+4. **Validaci√≥n y Verificaci√≥n 100% en Postman (Criterio API-01):**
+   * Se descarta la implementaci√≥n de tests unitarios y de integraci√≥n en c√≥digo Java (JUnit / MockMvc) para maximizar la velocidad en 3 d√≠as.
+   * La verificaci√≥n de las reglas de negocio, c√≥digos de error (400, 401, 403, 409, 422) y el proceso central se realiza exclusivamente a trav√©s de la colecci√≥n automatizada en Postman (`pm.test()`).
 5. **Resiliencia ante Conflicto de Puerto en PostgreSQL (Puerto 5432 Ocupado en el Host):**
    * **Problema:** Es muy habitual que los desarrolladores tengan instalado PostgreSQL de forma nativa en sus computadoras (ej. servicio Windows `postgresql-x64-16`), ocupando el puerto `5432`. Al ejecutar `docker compose up`, Docker falla con error `bind: address already in use` o `port is already allocated`.
-   * **SoluciÛn ArquitectÛnica Din·mica (Sin Romper el Sistema):**
-     * **Aislamiento en Red Interna (`bda-net`):** Los microservicios desplegados en Docker se comunican entre sÌ y con la base de datos a travÈs del DNS interno `postgres-db:5432`. El mapeo del puerto hacia el host **no afecta en absoluto** la comunicaciÛn inter-contenedor.
-     * **Mapeo Din·mico vÌa `.env`:** En `docker-compose.yml`, el puerto de PostgreSQL se define como `"${DB_PORT_HOST:-5432}:5432"`. Se provee una plantilla `.env.example`. Si un integrante tiene el `5432` ocupado, crea su archivo `.env` local con `DB_PORT_HOST=5433` (o 5434).
-     * **Desarrollo en IDE Local (Fuera de Docker):** Los microservicios configuran su datasource de forma parametrizada: `url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/fulvo_db?currentSchema=...`. AsÌ, si ejecutan Spring Boot directamente en el IDE, pueden sobreescribir la propiedad pasando `-DDB_PORT=5433` o seteando la variable de entorno `DB_PORT=5433` sin tocar el cÛdigo fuente ni romper el entorno de los dem·s integrantes.
+   * **Soluci√≥n Arquitect√≥nica Din√°mica (Sin Romper el Sistema):**
+     * **Aislamiento en Red Interna (`bda-net`):** Los microservicios desplegados en Docker se comunican entre s√≠ y con la base de datos a trav√©s del DNS interno `postgres-db:5432`. El mapeo del puerto hacia el host **no afecta en absoluto** la comunicaci√≥n inter-contenedor.
+     * **Mapeo Din√°mico v√≠a `.env`:** En `docker-compose.yml`, el puerto de PostgreSQL se define como `"${DB_PORT_HOST:-5432}:5432"`. Se provee una plantilla `.env.example`. Si un integrante tiene el `5432` ocupado, crea su archivo `.env` local con `DB_PORT_HOST=5433` (o 5434).
+     * **Desarrollo en IDE Local (Fuera de Docker):** Los microservicios configuran su datasource de forma parametrizada: `url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/fulvo_db?currentSchema=...`. As√≠, si ejecutan Spring Boot directamente en el IDE, pueden sobreescribir la propiedad pasando `-DDB_PORT=5433` o seteando la variable de entorno `DB_PORT=5433` sin tocar el c√≥digo fuente ni romper el entorno de los dem√°s integrantes.
      * **Alternativa Administrativa:** Si el desarrollador prefiere liberar el puerto nativo, puede detener el servicio de Windows con: `Stop-Service -Name postgresql*` en PowerShell como Administrador.
-6. **Protocolo de Consulta ante Ambig¸edades del Agente de IA (Anti-SuposiciÛn):**
-   * Cuando un Agente de IA tenga dudas sobre el alcance de una regla, un caso de borde no contemplado o una disyuntiva de diseÒo entre dos enfoques v·lidos, **est· estrictamente prohibido que asuma o improvise**.
-   * Debe pausar la ejecuciÛn y consultar al desarrollador presentando: 1) La duda concreta, 2) Las opciones viables con sus pros y contras fundamentadas en los apuntes, y 3) Su recomendaciÛn tÈcnica.
-   * La resoluciÛn final acordada con el desarrollador se asienta en `docs/audit/` para garantizar la trazabilidad de las decisiones de diseÒo.
+6. **Protocolo de Consulta ante Ambig√ºedades del Agente de IA (Anti-Suposici√≥n):**
+   * Cuando un Agente de IA tenga dudas sobre el alcance de una regla, un caso de borde no contemplado o una disyuntiva de dise√±o entre dos enfoques v√°lidos, **est√° estrictamente prohibido que asuma o improvise**.
+   * Debe pausar la ejecuci√≥n y consultar al desarrollador presentando: 1) La duda concreta, 2) Las opciones viables con sus pros y contras fundamentadas en los apuntes, y 3) Su recomendaci√≥n t√©cnica.
+   * La resoluci√≥n final acordada con el desarrollador se asienta en `docs/audit/` para garantizar la trazabilidad de las decisiones de dise√±o.
 7. **Estrategia de Ramas en Git y Pull Requests (Feature Branch Workflow):**
-   * **ProhibiciÛn de push/commit directo a `main`:** La rama `main` se preserva como rama de integraciÛn protegida y estable.
-   * **Una rama por tarea / subsecciÛn (ObligaciÛn del Agente):** Antes de programar cualquier tarea, el agente **DEBE crear la rama local y cambiarse a esa misma rama** (`git checkout -b feature/<etapa>-<subseccion>-<descripcion-corta>`).
-   * **ProhibiciÛn de Push mediante Agentes:** Los agentes de IA **no deben pushear nada a GitHub**. Todo push y apertura de PR lo gestiona el desarrollador a mano.
-   * **Flujo de PublicaciÛn y Pull Request por el Desarrollador:** Tras implementar la subsecciÛn, verificarla con `GUIA_PRUEBAS_MANUALES.md`, actualizar `TASKS.md` y asentar la auditorÌa en `docs/audit/`:
+   * **Prohibici√≥n de push/commit directo a `main`:** La rama `main` se preserva como rama de integraci√≥n protegida y estable.
+   * **Una rama por tarea / subsecci√≥n (Obligaci√≥n del Agente):** Antes de programar cualquier tarea, el agente **DEBE crear la rama local y cambiarse a esa misma rama** (`git checkout -b feature/<etapa>-<subseccion>-<descripcion-corta>`).
+   * **Prohibici√≥n de Push mediante Agentes:** Los agentes de IA **no deben pushear nada a GitHub**. Todo push y apertura de PR lo gestiona el desarrollador a mano.
+   * **Flujo de Publicaci√≥n y Pull Request por el Desarrollador:** Tras implementar la subsecci√≥n, verificarla con `GUIA_PRUEBAS_MANUALES.md`, actualizar `TASKS.md` y asentar la auditor√≠a en `docs/audit/`:
      1. El desarrollador revisa los cambios locales y pushea la rama al repositorio remoto a mano: `git push -u origin feature/<etapa>-<subseccion>-<descripcion-corta>`.
-     2. Crea una **Pull Request (PR)** en GitHub hacia `main` con la evidencia de pruebas y justificaciÛn.
-     3. Tras la revisiÛn y aprobaciÛn, el PR se incorpora a `main` y se eliminan las ramas (remota y local).
+     2. Crea una **Pull Request (PR)** en GitHub hacia `main` con la evidencia de pruebas y justificaci√≥n.
+     3. Tras la revisi√≥n y aprobaci√≥n, el PR se incorpora a `main` y se eliminan las ramas (remota y local).
 
 ---
 
-## 2. AsignaciÛn Equilibrada de Responsabilidades por Integrante
+## 2. Asignaci√≥n Equilibrada de Responsabilidades por Integrante
 
-Considerando que los 4 integrantes poseen el **mismo nivel de conocimiento de backend en Java**, las responsabilidades se distribuyen en **4 ejes tem·ticos cohesivos**:
+Considerando que los 4 integrantes poseen el **mismo nivel de conocimiento de backend en Java**, las responsabilidades se distribuyen en **4 ejes tem√°ticos cohesivos**:
 
-| Integrante | Eje Tem·tico Asignado | Alcance Funcional y MÛdulos | øCÛmo prueba manualmente su parte? |
+| Integrante | Eje Tem√°tico Asignado | Alcance Funcional y M√≥dulos | ¬øC√≥mo prueba manualmente su parte? |
 |---|---|---|---|
-| **Tomas Augusto QuirÛz** | **PerÌmetro de Acceso, Seguridad y Gateway** | ï Docker Compose base y orquestaciÛn.<br>ï `api-gateway` (Spring Cloud Gateway, `RouteLocatorBuilder`).<br>ï Seguridad reactiva OIDC (Keycloak 26, JWT y autoridades de rol `ROL_*`).<br>ï AgregaciÛn de Swagger UI en Gateway. | Levanta la infraestructura con Docker, obtiene tokens en Keycloak con distintos roles, y prueba desde Postman/curl que el Gateway bloquee accesos anÛnimos (401), filtre por rol (403) y enrute a las URLs correctas. |
-| **GastÛn Emiliano Cambos Berrondo** | **Ciclo Registral, Torneos y Admisiones** | ï `servicio-torneos` (`esquema_torneos`).<br>ï Entidades `Torneo`, `SolicitudInscripcion`, `Equipo`, `Jugador`.<br>ï Reglas de admisiÛn y buena fe (15-22 jugadores, arquero, capit·n, DNI ˙nico).<br>ï Algoritmo de fixtures (Round Robin y Llaves).<br>ï LÌmite de 5 reemplazos (RN-11). | Crea un torneo con cupo estricto, postula un equipo con lista de buena fe (probando casos v·lidos y rechazos), aprueba solicitudes como organizador, cierra cupo al 100%, genera el fixture y prueba sustituciones de futbolistas. |
-| **Santiago Mariano Gonzalez** | **OperaciÛn en Campo, Arbitraje y Posiciones** | ï `servicio-operaciones-partidos` (`esquema_operaciones`).<br>ï Entidades `Sede`, `Arbitro`, `Partido`, `ActuacionJugador`, `TablaPosicion`.<br>ï RecepciÛn de fixture en lote (`POST /v1/partidos/lote`).<br>ï AsignaciÛn horaria anti-superposiciÛn (±2h).<br>ï Circuito arbitral (actas por dorsal, penales y m·quina de estados).<br>ï CÛmputo atÛmico de tabla de posiciones. | Recibe el fixture generado, da de alta sede y ·rbitro, los asigna a un partido validando conflicto horario, cambia estado a `EN_CURSO`, carga acta con goles/tarjetas y penales, finaliza el partido y consulta la tabla de posiciones actualizada. |
-| **Luis Miguel Urviola DueÒas** | **Contratos Comunes, Adaptadores Externos, Clima y QA Postman** | ï `fulvo-common-lib` (DTOs, RFC 7807 `ProblemDetail`, MDC).<br>ï `servicio-notificaciones` (Mailpit SMTP).<br>ï `servicio-geocodificacion` (Nominatim + WireMock + fallback).<br>ï `servicio-clima` (Open-Meteo + WireMock) + Scheduler a 24h.<br>ï ColecciÛn Postman automatizada integral (`pm.test()`). | Instala la librerÌa com˙n en `.m2`; prueba resoluciÛn de direcciones satelitales y fallback manual; dispara el scheduler de tormenta severa y verifica los correos transaccionales en Mailpit (`:8025`); corre la colecciÛn Postman de punta a punta. |
+| **Tomas Augusto Quir√≥z** | **Per√≠metro de Acceso, Seguridad y Gateway** | ‚Ä¢ Docker Compose base y orquestaci√≥n.<br>‚Ä¢ `api-gateway` (Spring Cloud Gateway, `RouteLocatorBuilder`).<br>‚Ä¢ Seguridad reactiva OIDC (Keycloak 26, JWT y autoridades de rol `ROL_*`).<br>‚Ä¢ Agregaci√≥n de Swagger UI en Gateway. | Levanta la infraestructura con Docker, obtiene tokens en Keycloak con distintos roles, y prueba desde Postman/curl que el Gateway bloquee accesos an√≥nimos (401), filtre por rol (403) y enrute a las URLs correctas. |
+| **Gast√≥n Emiliano Cambos Berrondo** | **Ciclo Registral, Torneos y Admisiones** | ‚Ä¢ `servicio-torneos` (`esquema_torneos`).<br>‚Ä¢ Entidades `Torneo`, `SolicitudInscripcion`, `Equipo`, `Jugador`.<br>‚Ä¢ Reglas de admisi√≥n y buena fe (15-22 jugadores, arquero, capit√°n, DNI √∫nico).<br>‚Ä¢ Algoritmo de fixtures (Round Robin y Llaves).<br>‚Ä¢ L√≠mite de 5 reemplazos (RN-11). | Crea un torneo con cupo estricto, postula un equipo con lista de buena fe (probando casos v√°lidos y rechazos), aprueba solicitudes como organizador, cierra cupo al 100%, genera el fixture y prueba sustituciones de futbolistas. |
+| **Santiago Mariano Gonzalez** | **Operaci√≥n en Campo, Arbitraje y Posiciones** | ‚Ä¢ `servicio-operaciones-partidos` (`esquema_operaciones`).<br>‚Ä¢ Entidades `Sede`, `Arbitro`, `Partido`, `ActuacionJugador`, `TablaPosicion`.<br>‚Ä¢ Recepci√≥n de fixture en lote (`POST /v1/partidos/lote`).<br>‚Ä¢ Asignaci√≥n horaria anti-superposici√≥n (¬±2h).<br>‚Ä¢ Circuito arbitral (actas por dorsal, penales y m√°quina de estados).<br>‚Ä¢ C√≥mputo at√≥mico de tabla de posiciones. | Recibe el fixture generado, da de alta sede y √°rbitro, los asigna a un partido validando conflicto horario, cambia estado a `EN_CURSO`, carga acta con goles/tarjetas y penales, finaliza el partido y consulta la tabla de posiciones actualizada. |
+| **Luis Miguel Urviola Due√±as** | **Contratos Comunes, Adaptadores Externos, Clima y QA Postman** | ‚Ä¢ `fulvo-common-lib` (DTOs, RFC 7807 `ProblemDetail`, MDC).<br>‚Ä¢ `servicio-notificaciones` (Mailpit SMTP).<br>‚Ä¢ `servicio-geocodificacion` (Nominatim + WireMock + fallback).<br>‚Ä¢ `servicio-clima` (Open-Meteo + WireMock) + Scheduler a 24h.<br>‚Ä¢ Colecci√≥n Postman automatizada integral (`pm.test()`). | Instala la librer√≠a com√∫n en `.m2`; prueba resoluci√≥n de direcciones satelitales y fallback manual; dispara el scheduler de tormenta severa y verifica los correos transaccionales en Mailpit (`:8025`); corre la colecci√≥n Postman de punta a punta. |
 
 ---
 
-## 3. Cronograma de Sprints (3 DÌas) y Compuertas de Calidad
+## 3. Cronograma de Sprints (3 D√≠as) y Compuertas de Calidad
 
 ```mermaid
 flowchart TD
-    subgraph D1["DÕA 1 - SPRINT 1: Infraestructura Base, Common Lib y Gateway"]
+    subgraph D1["D√çA 1 - SPRINT 1: Infraestructura Base, Common Lib y Gateway"]
         E1["ETAPA 1: Infraestructura Base, Scaffolding y Gateway"]
         E1_1["1.1 Docker Compose, Postgres, Keycloak (Tomas)"]
         E1_2["1.2 fulvo-common-lib (.m2 local, DTOs, RFC 7807) (Luis Miguel)"]
-        E1_3["1.3 Scaffolding Base servicio-torneos (GastÛn)"]
+        E1_3["1.3 Scaffolding Base servicio-torneos (Gast√≥n)"]
         E1_4["1.4 Scaffolding Base servicio-operaciones-partidos (Santiago)"]
         E1_5["1.5 api-gateway y Seguridad OIDC (Tomas)"]
         E1 --> G1{"GATE 1: Infra + Scaffolding + Token + Gateway OK"}
     end
 
-    subgraph D2["DÕA 2 - SPRINT 2: Servicios Core de Negocio y LÛgica Transaccional"]
+    subgraph D2["D√çA 2 - SPRINT 2: Servicios Core de Negocio y L√≥gica Transaccional"]
         G1 --> E2["ETAPA 2: Torneos, Admisiones y Fixture"]
         G1 --> E3["ETAPA 3: Operaciones, Arbitraje y Posiciones"]
-        E2_1["2.1 Admisiones y Buena Fe (GastÛn)"]
-        E2_2["2.2 Fixture DeterminÌstico (GastÛn)"]
-        E2_3["2.3 RecepciÛn Cruces en Operaciones (Santiago)"]
+        E2_1["2.1 Admisiones y Buena Fe (Gast√≥n)"]
+        E2_2["2.2 Fixture Determin√≠stico (Gast√≥n)"]
+        E2_3["2.3 Recepci√≥n Cruces en Operaciones (Santiago)"]
         E2_4["2.4 RestClient y Notificaciones (Luis Miguel)"]
         E2_5["2.5 Gateway Perimetral Torneos (Tomas)"]
-        E3_1["3.1 Sedes, ¡rbitros y AsignaciÛn (Santiago)"]
+        E2_6["2.6 OpenAPI Base y Swagger Gateway (Tomas)"]
+        E3_1["3.1 Sedes, √Årbitros y Asignaci√≥n (Santiago)"]
         E3_2["3.2 Circuito Arbitral y Actas (Santiago)"]
         E3_3["3.3 Posiciones y Goleadores (Santiago)"]
-        E3_4["3.4 Reemplazos y SincronizaciÛn (GastÛn)"]
+        E3_4["3.4 Reemplazos y Sincronizaci√≥n (Gast√≥n)"]
         E3_5["3.5 Gateway Perimetral Operaciones (Tomas)"]
         E3_6["3.6 Contratos y Excepciones Arbitrales (Luis Miguel)"]
         E2 --> G2{"GATE 2: Torneos & Partidos Operativos"}
         E3 --> G2
     end
 
-    subgraph D3["DÕA 3 - SPRINT 3: Adaptadores, Scheduler, Swagger y Postman E2E"]
+    subgraph D3["D√çA 3 - SPRINT 3: Adaptadores, Scheduler, Swagger y Postman E2E"]
         G2 --> E4["ETAPA 4: Adaptadores Externos y Scheduler"]
-        E4_1["4.1 Adaptador GeocodificaciÛn (Luis Miguel)"]
+        E4_1["4.1 Adaptador Geocodificaci√≥n (Luis Miguel)"]
         E4_2["4.2 Adaptador Clima (Luis Miguel)"]
         E4_3["4.3 Adaptador Notificaciones (Luis Miguel)"]
-        E4_4["4.4 Scheduler Clim·tico 24h (Santiago)"]
-        E4_5["4.5 Consumo Alertas en Torneos (GastÛn)"]
+        E4_4["4.4 Scheduler Clim√°tico 24h (Santiago)"]
+        E4_5["4.5 Consumo Alertas en Torneos (Gast√≥n)"]
         E4_6["4.6 Gateway Perimetral Adaptadores (Tomas)"]
         E4 --> G3{"GATE 3: Integraciones Resilientes OK"}
         G3 --> E5["ETAPA 5: Despliegue Final, Swagger y Postman E2E"]
         E5_1["5.1 Docker Compose Red bda-net (Tomas)"]
-        E5_2["5.2 OpenAPI Torneos (GastÛn)"]
-        E5_3["5.3 OpenAPI Operaciones (Santiago)"]
-        E5_4["5.4 Swagger UI Gateway (Tomas)"]
+        E5_2["5.2 Auditor√≠a OpenAPI Torneos (Gast√≥n)"]
+        E5_3["5.3 Auditor√≠a OpenAPI Operaciones (Santiago)"]
+        E5_4["5.4 Auditor√≠a Swagger Gateway (Tomas)"]
         E5_5["5.5 Suite Postman Integral (Luis Miguel)"]
-        E5_6["5.6 CertificaciÛn E2E (Todo el Equipo)"]
-        E5 --> G4{"GATE 4: ValidaciÛn Final de AprobaciÛn"}
+        E5_6["5.6 Certificaci√≥n E2E (Todo el Equipo)"]
+        E5 --> G4{"GATE 4: Validaci√≥n Final de Aprobaci√≥n"}
     end
 ```
 
 ---
 
-## 4. EspecificaciÛn por Etapas y Subsecciones con Asignaciones Detalladas
+## 4. Especificaci√≥n por Etapas y Subsecciones con Asignaciones Detalladas
 
-> **Directiva de Trabajo en Equipo:** En cada una de las 5 etapas del proyecto, **todos los integrantes del equipo** son responsables de al menos una subsecciÛn tÈcnica especÌfica, asegurando una carga balanceada, cohesiva y comprobable.
+> **Directiva de Trabajo en Equipo:** En cada una de las 5 etapas del proyecto, **todos los integrantes del equipo** son responsables de al menos una subsecci√≥n t√©cnica espec√≠fica, asegurando una carga balanceada, cohesiva y comprobable.
 
-### ETAPA 1 (DÌa 1 / Sprint 1): Infraestructura Base, Common Lib, Scaffolding y Gateway Reactivo
-**Objetivo:** Disponer de los contenedores de soporte, compilar e instalar la librerÌa com˙n en el repositorio local `.m2`, levantar los esqueletos base de los servicios de negocio y configurar el API Gateway perimetral con enrutamiento y seguridad OIDC.
+### ETAPA 1 (D√≠a 1 / Sprint 1): Infraestructura Base, Common Lib, Scaffolding y Gateway Reactivo
+**Objetivo:** Disponer de los contenedores de soporte, compilar e instalar la librer√≠a com√∫n en el repositorio local `.m2`, levantar los esqueletos base de los servicios de negocio y configurar el API Gateway perimetral con enrutamiento y seguridad OIDC.
 
-#### SubsecciÛn 1.1: Servicios de Soporte Contenerizados (Postgres, Keycloak, Mailpit y WireMock)
-- **Responsable:** **Tomas Augusto QuirÛz** (asistido por Luis Miguel en stubs y correo).
+#### Subsecci√≥n 1.1: Servicios de Soporte Contenerizados (Postgres, Keycloak, Mailpit y WireMock)
+- **Responsable:** **Tomas Augusto Quir√≥z** (asistido por Luis Miguel en stubs y correo).
 - **Partes a Desarrollar:**
-  - ConfiguraciÛn del servicio `postgres-db` en `tpi-fulvo/docker-compose.yml` (imagen `postgres:16-alpine`, base `fulvo_db`, puerto din·mico hacia el host `${DB_PORT_HOST:-5432}:5432` y creaciÛn de `.env.example` para evitar colisiones con PostgreSQL local preinstalado).
-  - CreaciÛn del script SQL `initdb/init-schemas.sql` con creaciÛn de `esquema_torneos` y `esquema_operaciones`.
-  - ConfiguraciÛn del servicio `keycloak-server` en `docker-compose.yml` (`quay.io/keycloak/keycloak:26.5.0`, `start-dev`, puerto host `8090`).
-  - ConfiguraciÛn y parametrizaciÛn del Realm en `keycloak/realm-export.json` con `fulvo-realm`, cliente p˙blico `fulvo-backend`, roles (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) y usuarios de prueba (`admin1`, `arbitro1`, `delegado1`, `fanatico1`) con clave `admin123`.
-  - ConfiguraciÛn de `mailpit` (:1025/:8025) y `wiremock` (:8086) en `docker-compose.yml` para contingencia offline.
-  - VerificaciÛn del levantamiento de contenedores con `docker compose up -d` y obtenciÛn de tokens JWT (`POST http://localhost:8090/realms/fulvo-realm/protocol/openid-connect/token`).
-- **Criterios de AceptaciÛn:**
+  - Configuraci√≥n del servicio `postgres-db` en `tpi-fulvo/docker-compose.yml` (imagen `postgres:16-alpine`, base `fulvo_db`, puerto din√°mico hacia el host `${DB_PORT_HOST:-5432}:5432` y creaci√≥n de `.env.example` para evitar colisiones con PostgreSQL local preinstalado).
+  - Creaci√≥n del script SQL `initdb/init-schemas.sql` con creaci√≥n de `esquema_torneos` y `esquema_operaciones`.
+  - Configuraci√≥n del servicio `keycloak-server` en `docker-compose.yml` (`quay.io/keycloak/keycloak:26.5.0`, `start-dev`, puerto host `8090`).
+  - Configuraci√≥n y parametrizaci√≥n del Realm en `keycloak/realm-export.json` con `fulvo-realm`, cliente p√∫blico `fulvo-backend`, roles (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) y usuarios de prueba (`admin1`, `arbitro1`, `delegado1`, `fanatico1`) con clave `admin123`.
+  - Configuraci√≥n de `mailpit` (:1025/:8025) y `wiremock` (:8086) en `docker-compose.yml` para contingencia offline.
+  - Verificaci√≥n del levantamiento de contenedores con `docker compose up -d` y obtenci√≥n de tokens JWT (`POST http://localhost:8090/realms/fulvo-realm/protocol/openid-connect/token`).
+- **Criterios de Aceptaci√≥n:**
   - `docker compose up -d` inicia todos los contenedores en estado `healthy`.
-  - PostgreSQL expone los dos esquemas lÛgicos limpios.
-  - Se obtienen tokens JWT v·lidos mediante Keycloak.
+  - PostgreSQL expone los dos esquemas l√≥gicos limpios.
+  - Se obtienen tokens JWT v√°lidos mediante Keycloak.
 
-#### SubsecciÛn 1.2: LibrerÌa Compartida `fulvo-common-lib` (InstalaciÛn en `.m2`)
-- **Responsable:** **Luis Miguel Urviola DueÒas**
+#### Subsecci√≥n 1.2: Librer√≠a Compartida `fulvo-common-lib` (Instalaci√≥n en `.m2`)
+- **Responsable:** **Luis Miguel Urviola Due√±as**
 - **Partes a Desarrollar:**
-  - Scaffolding de proyecto Maven est·ndar en `tpi-fulvo/fulvo-common-lib/` con `groupId: com.fulvo`, empaquetado `jar` y versiÛn `1.0.0-SNAPSHOT`.
+  - Scaffolding de proyecto Maven est√°ndar en `tpi-fulvo/fulvo-common-lib/` con `groupId: com.fulvo`, empaquetado `jar` y versi√≥n `1.0.0-SNAPSHOT`.
   - Paquete base `com.fulvo.common.*`.
   - DTOs inter-servicio: `CrucePartidoDTO`, `NotificacionEmailDTO`, `GeocodificacionDTO`, `ClimaPronosticoDTO`.
-  - JerarquÌa de excepciones de dominio: `BusinessRuleException`, `RecursoNoEncontradoException`, `ConflictoEstadoException`.
-  - Manejador `@RestControllerAdvice` estandarizado bajo el est·ndar **RFC 7807 (`ProblemDetail`)**.
+  - Jerarqu√≠a de excepciones de dominio: `BusinessRuleException`, `RecursoNoEncontradoException`, `ConflictoEstadoException`.
+  - Manejador `@RestControllerAdvice` estandarizado bajo el est√°ndar **RFC 7807 (`ProblemDetail`)**.
   - Filtro de trazabilidad `CorrelationIdFilter` (`OncePerRequestFilter`) propagando el encabezado `X-Correlation-ID` al contexto `MDC` de SLF4J (Apunte 23).
-  - CompilaciÛn e instalaciÛn en el repositorio local `.m2` mediante `mvn clean install -DskipTests`.
-- **Criterios de AceptaciÛn:**
+  - Compilaci√≥n e instalaci√≥n en el repositorio local `.m2` mediante `mvn clean install -DskipTests`.
+- **Criterios de Aceptaci√≥n:**
   - El JAR queda compilado e instalado en `~/.m2/repository/com/fulvo/fulvo-common-lib/1.0.0-SNAPSHOT/`.
   - Contratos listos para ser consumidos por los microservicios.
 
-#### SubsecciÛn 1.3: Scaffolding Base y ConfiguraciÛn DataSource de `servicio-torneos`
-- **Responsable:** **GastÛn Emiliano Cambos Berrondo**
+#### Subsecci√≥n 1.3: Scaffolding Base y Configuraci√≥n DataSource de `servicio-torneos`
+- **Responsable:** **Gast√≥n Emiliano Cambos Berrondo**
 - **Partes a Desarrollar:**
-  - CreaciÛn del proyecto Maven Spring Boot en `tpi-fulvo/servicio-torneos/` (`spring-boot-starter-web`, `spring-boot-starter-data-jpa`, PostgreSQL).
-  - ConfiguraciÛn de `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`.
-  - InclusiÛn de la dependencia de `fulvo-common-lib` instalada en `.m2`.
-  - DefiniciÛn de paquetes base `com.fulvo.torneos.*` y verificaciÛn del arranque inicial del microservicio en puerto `8081`.
-- **Criterios de AceptaciÛn:**
+  - Creaci√≥n del proyecto Maven Spring Boot en `tpi-fulvo/servicio-torneos/` (`spring-boot-starter-web`, `spring-boot-starter-data-jpa`, PostgreSQL).
+  - Configuraci√≥n de `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`.
+  - Inclusi√≥n de la dependencia de `fulvo-common-lib` instalada en `.m2`.
+  - Definici√≥n de paquetes base `com.fulvo.torneos.*` y verificaci√≥n del arranque inicial del microservicio en puerto `8081`.
+- **Criterios de Aceptaci√≥n:**
   - El microservicio compila limpiamente (`mvn clean package -DskipTests`) y conecta al esquema de torneos.
 
-#### SubsecciÛn 1.4: Scaffolding Base y ConfiguraciÛn DataSource de `servicio-operaciones-partidos`
+#### Subsecci√≥n 1.4: Scaffolding Base y Configuraci√≥n DataSource de `servicio-operaciones-partidos`
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
-  - CreaciÛn del proyecto Maven Spring Boot en `tpi-fulvo/servicio-operaciones-partidos/` (`spring-boot-starter-web`, `spring-boot-starter-data-jpa`, PostgreSQL).
-  - ConfiguraciÛn de `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_operaciones`.
-  - InclusiÛn de la dependencia de `fulvo-common-lib` instalada en `.m2`.
-  - DefiniciÛn de paquetes base `com.fulvo.operaciones.*` y verificaciÛn del arranque inicial del microservicio en puerto `8082`.
-- **Criterios de AceptaciÛn:**
+  - Creaci√≥n del proyecto Maven Spring Boot en `tpi-fulvo/servicio-operaciones-partidos/` (`spring-boot-starter-web`, `spring-boot-starter-data-jpa`, PostgreSQL).
+  - Configuraci√≥n de `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_operaciones`.
+  - Inclusi√≥n de la dependencia de `fulvo-common-lib` instalada en `.m2`.
+  - Definici√≥n de paquetes base `com.fulvo.operaciones.*` y verificaci√≥n del arranque inicial del microservicio en puerto `8082`.
+- **Criterios de Aceptaci√≥n:**
   - El microservicio compila limpiamente (`mvn clean package -DskipTests`) y conecta al esquema de operaciones.
 
-#### SubsecciÛn 1.5: Gateway Reactivo (`api-gateway`) con `RouteLocatorBuilder` y Seguridad OIDC
-- **Responsable:** **Tomas Augusto QuirÛz**
+#### Subsecci√≥n 1.5: Gateway Reactivo (`api-gateway`) con `RouteLocatorBuilder` y Seguridad OIDC
+- **Responsable:** **Tomas Augusto Quir√≥z**
 - **Partes a Desarrollar:**
-  - CreaciÛn del microservicio Spring Boot reactivo en `tpi-fulvo/api-gateway/` heredando de `spring-boot-starter-parent:4.0.8` con `spring-cloud-starter-gateway`.
-  - ConfiguraciÛn de rutas program·ticas mediante bean `RouteLocator` con `RouteLocatorBuilder` (Apunte 19) apuntando a los microservicios de backend.
-  - ConfiguraciÛn de seguridad reactiva `SecurityWebFilterChain` con validaciÛn de JWT emitido por Keycloak y convertidor reactivo de roles `realm_access.roles` a autoridades `ROL_*` (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) (Apunte 21).
-  - Bloqueo perimetral: accesos anÛnimos con `401 Unauthorized` y accesos sin permisos suficientes con `403 Forbidden`. ExposiciÛn de endpoints de Actuator (`/health-check`).
-- **Criterios de AceptaciÛn:**
-  - PeticiÛn sin token a `/v1/torneos` rechaza con `401 Unauthorized`.
-  - PeticiÛn con rol `ROL_FANATICO` a `POST /v1/torneos` rechaza con `403 Forbidden`.
+  - Creaci√≥n del microservicio Spring Boot reactivo en `tpi-fulvo/api-gateway/` heredando de `spring-boot-starter-parent:4.0.8` con `spring-cloud-starter-gateway`.
+  - Configuraci√≥n de rutas program√°ticas mediante bean `RouteLocator` con `RouteLocatorBuilder` (Apunte 19) apuntando a los microservicios de backend.
+  - Configuraci√≥n de seguridad reactiva `SecurityWebFilterChain` con validaci√≥n de JWT emitido por Keycloak y convertidor reactivo de roles `realm_access.roles` a autoridades `ROL_*` (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) (Apunte 21).
+  - Bloqueo perimetral: accesos an√≥nimos con `401 Unauthorized` y accesos sin permisos suficientes con `403 Forbidden`. Exposici√≥n de endpoints de Actuator (`/health-check`).
+- **Criterios de Aceptaci√≥n:**
+  - Petici√≥n sin token a `/v1/torneos` rechaza con `401 Unauthorized`.
+  - Petici√≥n con rol `ROL_FANATICO` a `POST /v1/torneos` rechaza con `403 Forbidden`.
   - `GET /health-check` responde `{"status":"UP"}` con HTTP 200.
 
-> ?? **COMPUERTA DE CALIDAD (GATE 1):** No se avanza a la Etapa 2 sin que Gateway, Postgres, Keycloak, `fulvo-common-lib` en `.m2` y los scaffoldings de torneos y operaciones estÈn verificados y operativos.
+> ?? **COMPUERTA DE CALIDAD (GATE 1):** No se avanza a la Etapa 2 sin que Gateway, Postgres, Keycloak, `fulvo-common-lib` en `.m2` y los scaffoldings de torneos y operaciones est√©n verificados y operativos.
 
 ---
 
-### ETAPA 2 (DÌa 2 / Sprint 2 - Parte A): Core de Torneos, Admisiones y Contrato de Fixtures
-**Objetivo:** Implementar la lÛgica organizativa, control de admisiones, reglas de planteles de buena fe, motor determinÌstico de fixture, recepciÛn desacoplada en Operaciones y seguridad perimetral de torneos en Gateway.
+### ETAPA 2 (D√≠a 2 / Sprint 2 - Parte A): Core de Torneos, Admisiones y Contrato de Fixtures
+**Objetivo:** Implementar la l√≥gica organizativa, control de admisiones, reglas de planteles de buena fe, motor determin√≠stico de fixture, recepci√≥n desacoplada en Operaciones y seguridad perimetral de torneos en Gateway.
 
-#### SubsecciÛn 2.1: Modelado JPA y LÛgica de AdmisiÛn de Torneos (FN-01, FN-04, FN-05, RN-01 a RN-04)
-- **Responsable:** **GastÛn Emiliano Cambos Berrondo**
+#### Subsecci√≥n 2.1: Modelado JPA y L√≥gica de Admisi√≥n de Torneos (FN-01, FN-04, FN-05, RN-01 a RN-04)
+- **Responsable:** **Gast√≥n Emiliano Cambos Berrondo**
 - **Partes a Desarrollar:**
   - Entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo` y `Jugador` (utilizando DNI String como PK natural).
-  - Endpoint `POST /v1/torneos`: validaciÛn de cupo estricto (10/20 Liga, 8/16 Llaves). Cupo inv·lido $\to$ `400 Bad Request`.
+  - Endpoint `POST /v1/torneos`: validaci√≥n de cupo estricto (10/20 Liga, 8/16 Llaves). Cupo inv√°lido $\to$ `400 Bad Request`.
   - Endpoint `POST /v1/torneos/{id}/solicitudes-inscripcion`:
-    - ValidaciÛn de solicitud ˙nica por usuario fan·tico en el certamen (RN-03 $\to$ `409 Conflict`).
-    - ValidaciÛn de lista de buena fe (RN-02): 15 a 22 jugadores, al menos un arquero (`posicion == ARQUERO`), exactamente un capit·n (`es_capitan == true`), y DNI ˙nico en todo el certamen.
+    - Validaci√≥n de solicitud √∫nica por usuario fan√°tico en el certamen (RN-03 $\to$ `409 Conflict`).
+    - Validaci√≥n de lista de buena fe (RN-02): 15 a 22 jugadores, al menos un arquero (`posicion == ARQUERO`), exactamente un capit√°n (`es_capitan == true`), y DNI √∫nico en todo el certamen.
   - Endpoint `PATCH /v1/solicitudes-inscripcion/{id}/admision` (exclusivo `ROL_ORGANIZADOR`):
     - Al aprobar: pasa a `ACEPTADA`, descuenta cupo, crea `Equipo` en `ACTIVO` y promueve al solicitante a `ROL_DELEGADO` (RN-04).
     - Al rechazar: pasa a `RECHAZADA` persistiendo `motivo_rechazo`.
 
-#### SubsecciÛn 2.2: GeneraciÛn AlgorÌtmica DeterminÌstica de Fixtures (FN-06, RN-01)
-- **Responsable:** **GastÛn Emiliano Cambos Berrondo**
+#### Subsecci√≥n 2.2: Generaci√≥n Algor√≠tmica Determin√≠stica de Fixtures (FN-06, RN-01)
+- **Responsable:** **Gast√≥n Emiliano Cambos Berrondo**
 - **Partes a Desarrollar:**
-  - Endpoint `PATCH /v1/torneos/{id}/estado`: Cierre de inscripciÛn. Bloquea con `409 Conflict` si el cupo de equipos no alcanzÛ el 100% (RN-01).
+  - Endpoint `PATCH /v1/torneos/{id}/estado`: Cierre de inscripci√≥n. Bloquea con `409 Conflict` si el cupo de equipos no alcanz√≥ el 100% (RN-01).
   - Endpoint `POST /v1/torneos/{id}/fixtures`:
-    - Algoritmo Round Robin (Liga) o ·rbol de emparejamiento con cruces de fases posteriores inicializados en `null` (Llaves).
-    - TransiciÛn de estado del torneo a `INICIADO`.
+    - Algoritmo Round Robin (Liga) o √°rbol de emparejamiento con cruces de fases posteriores inicializados en `null` (Llaves).
+    - Transici√≥n de estado del torneo a `INICIADO`.
     - Cliente `RestClient` para despachar los cruces generados a `servicio-operaciones-partidos` mediante `POST /v1/partidos/lote` con `CrucePartidoDTO`.
 
-#### SubsecciÛn 2.3: Contrato y RecepciÛn de Cruces en Lote en Operaciones (`POST /v1/partidos/lote`)
+#### Subsecci√≥n 2.3: Contrato y Recepci√≥n de Cruces en Lote en Operaciones (`POST /v1/partidos/lote`)
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
-  - Endpoint `POST /v1/partidos/lote` en `servicio-operaciones-partidos`: recepciÛn de la lista de `CrucePartidoDTO`.
+  - Endpoint `POST /v1/partidos/lote` en `servicio-operaciones-partidos`: recepci√≥n de la lista de `CrucePartidoDTO`.
   - Persistencia transaccional de los partidos recibidos en estado `PROGRAMADO` en `esquema_operaciones`.
-  - Desacoplamiento total respecto a las tablas de torneos (claves for·neas lÛgicas: `torneo_id`, `equipo_local_id`, `equipo_visitante_id`).
+  - Desacoplamiento total respecto a las tablas de torneos (claves for√°neas l√≥gicas: `torneo_id`, `equipo_local_id`, `equipo_visitante_id`).
 
-#### SubsecciÛn 2.4: IntegraciÛn del Cliente RestClient y Notificaciones de AdmisiÛn (FN-14, RN-12)
-- **Responsable:** **Luis Miguel Urviola DueÒas**
+#### Subsecci√≥n 2.4: Integraci√≥n del Cliente RestClient y Notificaciones de Admisi√≥n (FN-14, RN-12)
+- **Responsable:** **Luis Miguel Urviola Due√±as**
 - **Partes a Desarrollar:**
-  - ImplementaciÛn e instrumentaciÛn del cliente `RestClient` en `servicio-torneos` hacia `servicio-notificaciones` (`POST /v1/notificaciones/emails`).
-  - Disparo asÌncrono de confirmaciÛn al fan·tico ante postulaciÛn de equipo (FN-14).
-  - Disparo de notificaciÛn de resoluciÛn (aprobaciÛn o rechazo con motivo) hacia el delegado vÌa Mailpit (RN-12).
+  - Implementaci√≥n e instrumentaci√≥n del cliente `RestClient` en `servicio-torneos` hacia `servicio-notificaciones` (`POST /v1/notificaciones/emails`).
+  - Disparo as√≠ncrono de confirmaci√≥n al fan√°tico ante postulaci√≥n de equipo (FN-14).
+  - Disparo de notificaci√≥n de resoluci√≥n (aprobaci√≥n o rechazo con motivo) hacia el delegado v√≠a Mailpit (RN-12).
 
-#### SubsecciÛn 2.5: Enrutamiento Perimetral y Reglas de Seguridad para Torneos en API Gateway
-- **Responsable:** **Tomas Augusto QuirÛz**
+#### Subsecci√≥n 2.5: Enrutamiento Perimetral y Reglas de Seguridad para Torneos en API Gateway
+- **Responsable:** **Tomas Augusto Quir√≥z**
 - **Partes a Desarrollar:**
-  - ConfiguraciÛn en `RouteLocatorBuilder` de rutas `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**`.
-  - Reglas reactivas de autorizaciÛn perimetral: `POST /v1/torneos` y admisiÛn solo para `ROL_ORGANIZADOR`; creaciÛn de solicitudes para `ROL_FANATICO`; consultas de torneos accesibles seg˙n roles.
+  - Configuraci√≥n en `RouteLocatorBuilder` de rutas `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**`.
+  - Reglas reactivas de autorizaci√≥n perimetral: `POST /v1/torneos` y admisi√≥n solo para `ROL_ORGANIZADOR`; creaci√≥n de solicitudes para `ROL_FANATICO`; consultas de torneos accesibles seg√∫n roles.
 
-> ?? **COMPUERTA DE CALIDAD (GATE 2A):** Microservicios `servicio-torneos` y `servicio-operaciones-partidos` interact˙an limpiamente en el despacho y recepciÛn de fixture sin acoplamiento fÌsico.
+#### Subsecci√≥n 2.6: Habilitaci√≥n de OpenAPI 3.0, Swagger UI y Agregaci√≥n Perimetral en API Gateway
+- **Responsable:** **Tomas Augusto Quir√≥z**
+- **Partes a Desarrollar:**
+  - Integraci√≥n de `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos` y `servicio-operaciones-partidos`, configurando bean `@OpenAPIDefinition` base y esquema de seguridad Bearer JWT (`SecurityScheme`).
+  - Integraci√≥n de `springdoc-openapi-starter-webflux-ui` en `api-gateway` y configuraci√≥n de agregaci√≥n din√°mica de Swagger UI (`springdoc.swagger-ui.urls`) apuntando a las especificaciones vivas de los microservicios downstream (`/api/torneos/v3/api-docs` y `/api/partidos/v3/api-docs`).
+  - Exposici√≥n perimetral y bypass de seguridad en el Gateway para las rutas de Swagger (`/swagger-ui.html`, `/swagger-ui/**`, `/v3/api-docs/**`), permitiendo la inspecci√≥n y prueba interactiva en tiempo real en `http://localhost:8080/swagger-ui.html` de todos los endpoints a medida que se implementan en las distintas etapas.
+
+> ?? **COMPUERTA DE CALIDAD (GATE 2A):** Microservicios `servicio-torneos` y `servicio-operaciones-partidos` interact√∫an limpiamente en el despacho y recepci√≥n de fixture sin acoplamiento f√≠sico.
 
 ---
 
-### ETAPA 3 (DÌa 2 / Sprint 2 - Parte B): Core de Operaciones, Arbitraje, Posiciones y Planteles
-**Objetivo:** Gestionar sedes, ·rbitros, agenda horaria, m·quina de estados de partidos, actas por dorsal, penales, tabla de posiciones, ciclo de reemplazos de planteles y seguridad arbitral en Gateway.
+### ETAPA 3 (D√≠a 2 / Sprint 2 - Parte B): Core de Operaciones, Arbitraje, Posiciones y Planteles
+**Objetivo:** Gestionar sedes, √°rbitros, agenda horaria, m√°quina de estados de partidos, actas por dorsal, penales, tabla de posiciones, ciclo de reemplazos de planteles y seguridad arbitral en Gateway.
 
-#### SubsecciÛn 3.1: Sedes, ¡rbitros y AsignaciÛn Anti-SuperposiciÛn (FN-02, FN-03, FN-07, RN-05)
+#### Subsecci√≥n 3.1: Sedes, √Årbitros y Asignaci√≥n Anti-Superposici√≥n (FN-02, FN-03, FN-07, RN-05)
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
   - Entidades JPA en `esquema_operaciones`: `Sede`, `Arbitro`, `Partido`, `ActuacionJugador` y `TablaPosicion`.
   - Endpoints `POST /v1/sedes` y `POST /v1/arbitros`: Registro y persistencia de predios deportivos y colegiados arbitrales.
   - Endpoint `POST /v1/partidos/{id}/asignaciones`:
-    - AsignaciÛn de `sede_id`, `arbitro_dni` y `fecha_hora`.
-    - **Regla Anti-SuperposiciÛn (RN-05):** ValidaciÛn algorÌtmica de que ni la sede ni el ·rbitro tengan otro partido asignado en la ventana de `fecha_hora ± 2 horas`. Conflicto $\to$ `409 Conflict`.
+    - Asignaci√≥n de `sede_id`, `arbitro_dni` y `fecha_hora`.
+    - **Regla Anti-Superposici√≥n (RN-05):** Validaci√≥n algor√≠tmica de que ni la sede ni el √°rbitro tengan otro partido asignado en la ventana de `fecha_hora ¬± 2 horas`. Conflicto $\to$ `409 Conflict`.
 
-#### SubsecciÛn 3.2: Circuito Arbitral, Actas Oficiales y Desempate en Llaves (FN-09, FN-10, RN-08 a RN-10)
+#### Subsecci√≥n 3.2: Circuito Arbitral, Actas Oficiales y Desempate en Llaves (FN-09, FN-10, RN-08 a RN-10)
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
   - Endpoint `PATCH /v1/partidos/{id}/estado`:
-    - TransiciÛn a `EN_CURSO`: ValidaciÛn estricta de identidad del ·rbitro asignado (`@AuthenticationPrincipal Jwt jwt` vs `partido.arbitro_dni`, RN-08 $\to$ `403 Forbidden`).
-    - CancelaciÛn por incidentes (RN-09): Pasa a `CANCELADO`, asigna 0 puntos a ambos en tabla y en Llaves descalifica a ambos equipos.
+    - Transici√≥n a `EN_CURSO`: Validaci√≥n estricta de identidad del √°rbitro asignado (`@AuthenticationPrincipal Jwt jwt` vs `partido.arbitro_dni`, RN-08 $\to$ `403 Forbidden`).
+    - Cancelaci√≥n por incidentes (RN-09): Pasa a `CANCELADO`, asigna 0 puntos a ambos en tabla y en Llaves descalifica a ambos equipos.
   - Endpoint `POST /v1/partidos/{id}/actas`:
     - Registro de incidencias por dorsal (goles, tarjetas amarillas y rojas).
-    - DefiniciÛn por penales (RN-10): Si es Llaves y finaliza empatado en los 90', exige `penales_local` y `penales_visitante` sin empate. Asigna `ganador_equipo_id` y promueve autom·ticamente al equipo a la siguiente fase de llaves.
-    - TransiciÛn del partido a `FINALIZADO` y disparo transaccional de rec·lculo de tabla de posiciones.
+    - Definici√≥n por penales (RN-10): Si es Llaves y finaliza empatado en los 90', exige `penales_local` y `penales_visitante` sin empate. Asigna `ganador_equipo_id` y promueve autom√°ticamente al equipo a la siguiente fase de llaves.
+    - Transici√≥n del partido a `FINALIZADO` y disparo transaccional de rec√°lculo de tabla de posiciones.
 
-#### SubsecciÛn 3.3: Motor de Tabla de Posiciones y EstadÌsticas (FN-12)
+#### Subsecci√≥n 3.3: Motor de Tabla de Posiciones y Estad√≠sticas (FN-12)
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
-  - Servicio transaccional de estadÌsticas: cÛmputo atÛmico de PJ, PG (3 pts), PE (1 pt), PP (0 pts), c·lculo de GF, GC y DG.
+  - Servicio transaccional de estad√≠sticas: c√≥mputo at√≥mico de PJ, PG (3 pts), PE (1 pt), PP (0 pts), c√°lculo de GF, GC y DG.
   - Endpoint `GET /v1/torneos/{idTorneo}/posiciones`: Consulta de tabla de posiciones ordenada bajo criterios reglamentarios.
-  - Endpoint `GET /v1/torneos/{idTorneo}/goleadores`: Ranking acumulado de m·ximos artilleros por dorsal y equipo.
+  - Endpoint `GET /v1/torneos/{idTorneo}/goleadores`: Ranking acumulado de m√°ximos artilleros por dorsal y equipo.
 
-#### SubsecciÛn 3.4: SincronizaciÛn de Brackets y Ciclo de Reemplazos de Jugadores (FN-11, FN-13, RN-11)
-- **Responsable:** **GastÛn Emiliano Cambos Berrondo**
+#### Subsecci√≥n 3.4: Sincronizaci√≥n de Brackets y Ciclo de Reemplazos de Jugadores (FN-11, FN-13, RN-11)
+- **Responsable:** **Gast√≥n Emiliano Cambos Berrondo**
 - **Partes a Desarrollar:**
   - Endpoint `POST /v1/equipos/{id}/reemplazos-jugadores` para el delegado (`ROL_DELEGADO`):
-    - ValidaciÛn de lÌmite reglamentario: `cambios_realizados < 5` y prohibiciÛn de sustituir futbolistas con `suspendido == true` (RN-11). Violaciones $\to$ `400 Bad Request`.
-    - Baja lÛgica del jugador saliente (`activo = false`) y registro e incorporaciÛn del entrante.
-  - Endpoint `DELETE /v1/torneos/{idTorneo}/equipos/{idEquipo}`: LÛgica de baja voluntaria o descalificaciÛn de un plantel (FN-13).
+    - Validaci√≥n de l√≠mite reglamentario: `cambios_realizados < 5` y prohibici√≥n de sustituir futbolistas con `suspendido == true` (RN-11). Violaciones $\to$ `400 Bad Request`.
+    - Baja l√≥gica del jugador saliente (`activo = false`) y registro e incorporaci√≥n del entrante.
+  - Endpoint `DELETE /v1/torneos/{idTorneo}/equipos/{idEquipo}`: L√≥gica de baja voluntaria o descalificaci√≥n de un plantel (FN-13).
 
-#### SubsecciÛn 3.5: Seguridad Perimetral y Reglas de AutorizaciÛn Arbitral en API Gateway
-- **Responsable:** **Tomas Augusto QuirÛz**
+#### Subsecci√≥n 3.5: Seguridad Perimetral y Reglas de Autorizaci√≥n Arbitral en API Gateway
+- **Responsable:** **Tomas Augusto Quir√≥z**
 - **Partes a Desarrollar:**
-  - ConfiguraciÛn en el Gateway de rutas `/v1/partidos/**`, `/v1/sedes/**` y `/v1/arbitros/**`.
-  - Asegurar que la iniciaciÛn de partidos y la carga de actas requieran obligatoriamente el rol `ROL_ARBITRO`, las asignaciones de predios requieran `ROL_ORGANIZADOR`, y las consultas de tablas estÈn abiertas a `ROL_FANATICO`.
+  - Configuraci√≥n en el Gateway de rutas `/v1/partidos/**`, `/v1/sedes/**` y `/v1/arbitros/**`.
+  - Asegurar que la iniciaci√≥n de partidos y la carga de actas requieran obligatoriamente el rol `ROL_ARBITRO`, las asignaciones de predios requieran `ROL_ORGANIZADOR`, y las consultas de tablas est√©n abiertas a `ROL_FANATICO`.
 
-#### SubsecciÛn 3.6: DTOs Especializados, Excepciones Arbitrales y Contratos Comunes
-- **Responsable:** **Luis Miguel Urviola DueÒas**
+#### Subsecci√≥n 3.6: DTOs Especializados, Excepciones Arbitrales y Contratos Comunes
+- **Responsable:** **Luis Miguel Urviola Due√±as**
 - **Partes a Desarrollar:**
-  - IncorporaciÛn en `fulvo-common-lib` de excepciones de dominio especÌficas: `ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`.
+  - Incorporaci√≥n en `fulvo-common-lib` de excepciones de dominio espec√≠ficas: `ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`.
   - DTOs normalizados para actas e incidencias de partidos.
-  - Mapeo en `@RestControllerAdvice` con cÛdigos RFC 7807 (400, 403, 409) y reinstalaciÛn en `.m2`.
+  - Mapeo en `@RestControllerAdvice` con c√≥digos RFC 7807 (400, 403, 409) y reinstalaci√≥n en `.m2`.
 
-> ?? **COMPUERTA DE CALIDAD (GATE 2B):** Circuito arbitral completo, asignaciÛn horaria anti-superposiciÛn verificada y tabla de posiciones calculada atÛmicamente.
+> ?? **COMPUERTA DE CALIDAD (GATE 2B):** Circuito arbitral completo, asignaci√≥n horaria anti-superposici√≥n verificada y tabla de posiciones calculada at√≥micamente.
 
 ---
 
-### ETAPA 4 (DÌa 3 / Sprint 3 - Parte A): Adaptadores Externos, Resiliencia y Scheduler Preventivo
-**Objetivo:** Microservicios adaptadores aislados consumiendo APIs externas con Resilience4j, soporte de WireMock, Scheduler preventivo a 24 horas y consistencia de cert·menes ante contingencias clim·ticas.
+### ETAPA 4 (D√≠a 3 / Sprint 3 - Parte A): Adaptadores Externos, Resiliencia y Scheduler Preventivo
+**Objetivo:** Microservicios adaptadores aislados consumiendo APIs externas con Resilience4j, soporte de WireMock, Scheduler preventivo a 24 horas y consistencia de cert√°menes ante contingencias clim√°ticas.
 
-#### SubsecciÛn 4.1: Adaptador de GeocodificaciÛn y Fallback (`servicio-geocodificacion`) (FN-02, RN-06)
-- **Responsable:** **Luis Miguel Urviola DueÒas**
+#### Subsecci√≥n 4.1: Adaptador de Geocodificaci√≥n y Fallback (`servicio-geocodificacion`) (FN-02, RN-06)
+- **Responsable:** **Luis Miguel Urviola Due√±as**
 - **Partes a Desarrollar:**
   - Scaffolding del microservicio Spring Boot `servicio-geocodificacion`.
   - Cliente `RestClient` hacia la API satelital OpenStreetMap (Nominatim) o WireMock (:8086).
-  - ProtecciÛn de tolerancia a fallos con Circuit Breaker (`Resilience4j`).
-  - **LÛgica de Fallback Manual (RN-06):** Si el servicio externo falla y la peticiÛn incluye latitud/longitud manuales, retorna coordenadas con HTTP 201. Si no se proveyeron $\to$ `422 Unprocessable Entity`.
+  - Protecci√≥n de tolerancia a fallos con Circuit Breaker (`Resilience4j`).
+  - **L√≥gica de Fallback Manual (RN-06):** Si el servicio externo falla y la petici√≥n incluye latitud/longitud manuales, retorna coordenadas con HTTP 201. Si no se proveyeron $\to$ `422 Unprocessable Entity`.
 
-#### SubsecciÛn 4.2: Adaptador de Clima y EvaluaciÛn de Severidad (`servicio-clima`) (FN-08, RN-07)
-- **Responsable:** **Luis Miguel Urviola DueÒas**
+#### Subsecci√≥n 4.2: Adaptador de Clima y Evaluaci√≥n de Severidad (`servicio-clima`) (FN-08, RN-07)
+- **Responsable:** **Luis Miguel Urviola Due√±as**
 - **Partes a Desarrollar:**
   - Scaffolding del microservicio Spring Boot `servicio-clima`.
   - Cliente `RestClient` hacia la API de Open-Meteo o WireMock (:8086).
-  - Algoritmo de evaluaciÛn clim·tica: precipitaciÛn acumulada $> 40\text{ mm}$ o cÛdigos de tormenta severa $\to$ condiciÛn clim·tica adversa (`condicion_adversa = true`, RN-07).
+  - Algoritmo de evaluaci√≥n clim√°tica: precipitaci√≥n acumulada $> 40\text{ mm}$ o c√≥digos de tormenta severa $\to$ condici√≥n clim√°tica adversa (`condicion_adversa = true`, RN-07).
 
-#### SubsecciÛn 4.3: Adaptador de Notificaciones Transaccionales (`servicio-notificaciones`) (FN-14, RN-12)
-- **Responsable:** **Luis Miguel Urviola DueÒas**
+#### Subsecci√≥n 4.3: Adaptador de Notificaciones Transaccionales (`servicio-notificaciones`) (FN-14, RN-12)
+- **Responsable:** **Luis Miguel Urviola Due√±as**
 - **Partes a Desarrollar:**
   - Scaffolding del microservicio Spring Boot `servicio-notificaciones` con `spring-boot-starter-mail`.
-  - ConfiguraciÛn de `JavaMailSender` apuntando al host `mailpit` (puerto 1025).
+  - Configuraci√≥n de `JavaMailSender` apuntando al host `mailpit` (puerto 1025).
   - Endpoint transaccional `POST /v1/notificaciones/emails` con captura silenciosa de excepciones SMTP para preservar la resiliencia operativa.
 
-#### SubsecciÛn 4.4: Scheduler Clim·tico Preventivo a 24 Horas y ReprogramaciÛn (FN-08, RN-07)
+#### Subsecci√≥n 4.4: Scheduler Clim√°tico Preventivo a 24 Horas y Reprogramaci√≥n (FN-08, RN-07)
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
-  - Componente `@Scheduled` en `servicio-operaciones-partidos` consultando de forma periÛdica partidos programados a 24 horas vista.
-  - IntegraciÛn mediante `RestClient` con `servicio-clima`; si las condiciones son adversas, transiciona el partido a `SUSPENDIDO` (RN-07).
-  - Endpoint de reprogramaciÛn `POST /v1/partidos/{id}/reprogramaciones` para reasignar fecha y sede pasando el partido a `REPROGRAMADO`.
+  - Componente `@Scheduled` en `servicio-operaciones-partidos` consultando de forma peri√≥dica partidos programados a 24 horas vista.
+  - Integraci√≥n mediante `RestClient` con `servicio-clima`; si las condiciones son adversas, transiciona el partido a `SUSPENDIDO` (RN-07).
+  - Endpoint de reprogramaci√≥n `POST /v1/partidos/{id}/reprogramaciones` para reasignar fecha y sede pasando el partido a `REPROGRAMADO`.
 
-#### SubsecciÛn 4.5: Consumo de Notificaciones de SuspensiÛn y Consistencia de Torneos (RN-12)
-- **Responsable:** **GastÛn Emiliano Cambos Berrondo**
+#### Subsecci√≥n 4.5: Consumo de Notificaciones de Suspensi√≥n y Consistencia de Torneos (RN-12)
+- **Responsable:** **Gast√≥n Emiliano Cambos Berrondo**
 - **Partes a Desarrollar:**
-  - Manejo en `servicio-torneos` de los eventos de suspensiÛn y reprogramaciÛn de partidos para mantener la coherencia del calendario general del certamen.
-  - ActualizaciÛn de estados para los delegados de los equipos involucrados y seguimiento de fechas pospuestas.
+  - Manejo en `servicio-torneos` de los eventos de suspensi√≥n y reprogramaci√≥n de partidos para mantener la coherencia del calendario general del certamen.
+  - Actualizaci√≥n de estados para los delegados de los equipos involucrados y seguimiento de fechas pospuestas.
 
-#### SubsecciÛn 4.6: Enrutamiento y Aislamiento de Servicios Adaptadores en API Gateway
-- **Responsable:** **Tomas Augusto QuirÛz**
+#### Subsecci√≥n 4.6: Enrutamiento y Aislamiento de Servicios Adaptadores en API Gateway
+- **Responsable:** **Tomas Augusto Quir√≥z**
 - **Partes a Desarrollar:**
-  - ConfiguraciÛn de rutas en `api-gateway` para los microservicios adaptadores (`/v1/geocodificaciones/**`, `/v1/clima/**`, `/v1/notificaciones/**`).
-  - Aislamiento perimetral y validaciÛn de seguridad de modo que los adaptadores solo puedan ser invocados por los microservicios autorizados o el organizador, evitando exposiciÛn indebida.
+  - Configuraci√≥n de rutas en `api-gateway` para los microservicios adaptadores (`/v1/geocodificaciones/**`, `/v1/clima/**`, `/v1/notificaciones/**`).
+  - Aislamiento perimetral y validaci√≥n de seguridad de modo que los adaptadores solo puedan ser invocados por los microservicios autorizados o el organizador, evitando exposici√≥n indebida.
 
-> ?? **COMPUERTA DE CALIDAD (GATE 3):** Scheduler clim·tico verificado, emails auditados en Mailpit (`http://localhost:8025`) y fallbacks probados.
+> ?? **COMPUERTA DE CALIDAD (GATE 3):** Scheduler clim√°tico verificado, emails auditados en Mailpit (`http://localhost:8025`) y fallbacks probados.
 
 ---
 
-### ETAPA 5 (DÌa 3 / Sprint 3 - Parte B): Despliegue Docker, Swagger y Postman E2E
-**Objetivo:** OrquestaciÛn final en Docker con aislamiento perimetral, documentaciÛn Swagger agregada en todos los mÛdulos y validaciÛn de los 21 escenarios oficiales de prueba en Postman.
+### ETAPA 5 (D√≠a 3 / Sprint 3 - Parte B): Despliegue Docker, Swagger y Postman E2E
+**Objetivo:** Orquestaci√≥n final en Docker con aislamiento perimetral, documentaci√≥n Swagger agregada en todos los m√≥dulos y validaci√≥n de los 21 escenarios oficiales de prueba en Postman.
 
-#### SubsecciÛn 5.1: OrquestaciÛn Integral Docker Compose y Red Perimetral `bda-net`
-- **Responsable:** **Tomas Augusto QuirÛz**
+#### Subsecci√≥n 5.1: Orquestaci√≥n Integral Docker Compose y Red Perimetral `bda-net`
+- **Responsable:** **Tomas Augusto Quir√≥z**
 - **Partes a Desarrollar:**
-  - CreaciÛn del `Dockerfile` canÛnico multi-etapa/JRE (`eclipse-temurin:21-jre-alpine`) en cada uno de los 6 microservicios.
-  - OrquestaciÛn unificada en `docker-compose.yml`:
+  - Creaci√≥n del `Dockerfile` can√≥nico multi-etapa/JRE (`eclipse-temurin:21-jre-alpine`) en cada uno de los 6 microservicios.
+  - Orquestaci√≥n unificada en `docker-compose.yml`:
     - Despliegue de los 6 contenedores Java, Postgres, Keycloak, Mailpit y WireMock conectados en la red interna `bda-net`.
-    - **Aislamiento Perimetral:** ⁄nicamente `api-gateway` expone el puerto `8080`, Keycloak `8090`, Mailpit `8025` y WireMock `8086`. Los microservicios de negocio operan exclusivamente en la red interna aislada.
-  - ConfiguraciÛn de `docker-compose.override.yml` para desarrollo local ·gil.
+    - **Aislamiento Perimetral:** √önicamente `api-gateway` expone el puerto `8080`, Keycloak `8090`, Mailpit `8025` y WireMock `8086`. Los microservicios de negocio operan exclusivamente en la red interna aislada.
+  - Configuraci√≥n de `docker-compose.override.yml` para desarrollo local √°gil.
 
-#### SubsecciÛn 5.2: DocumentaciÛn OpenAPI 3.0 del Ciclo Registral y Torneos (`servicio-torneos`)
-- **Responsable:** **GastÛn Emiliano Cambos Berrondo**
+#### Subsecci√≥n 5.2: Enriquecimiento y Documentaci√≥n OpenAPI 3.0 del Ciclo Registral y Torneos (`servicio-torneos`)
+- **Responsable:** **Gast√≥n Emiliano Cambos Berrondo**
 - **Partes a Desarrollar:**
-  - ConfiguraciÛn de `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos`.
-  - AnotaciÛn de endpoints de cert·menes, solicitudes de inscripciÛn, admisiÛn, planteles y fixtures.
-  - DocumentaciÛn de schemas de entrada/salida y cÛdigos HTTP de negocio (200, 201, 202, 400, 409).
+  - Anotaci√≥n detallada de endpoints de cert√°menes, solicitudes de inscripci√≥n, admisi√≥n, planteles y fixtures (`@Operation`, `@ApiResponse`).
+  - Documentaci√≥n de schemas de entrada/salida y c√≥digos HTTP de negocio (200, 201, 202, 400, 409).
 
-#### SubsecciÛn 5.3: DocumentaciÛn OpenAPI 3.0 de Operaciones, Sedes y Arbitraje (`servicio-operaciones-partidos`)
+#### Subsecci√≥n 5.3: Enriquecimiento y Documentaci√≥n OpenAPI 3.0 de Operaciones, Sedes y Arbitraje (`servicio-operaciones-partidos`)
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
-  - ConfiguraciÛn de `springdoc-openapi-starter-webmvc-ui` en `servicio-operaciones-partidos`.
-  - AnotaciÛn de endpoints de sedes, ·rbitros, asignaciones horarias, estados de partido, actas y tablas de posiciones.
-  - DocumentaciÛn de esquemas de respuesta y cÛdigos de error (401, 403, 409).
+  - Anotaci√≥n detallada de endpoints de sedes, √°rbitros, asignaciones horarias, estados de partido, actas y tablas de posiciones (`@Operation`, `@ApiResponse`).
+  - Documentaci√≥n de esquemas de respuesta y c√≥digos de error (401, 403, 409).
 
-#### SubsecciÛn 5.4: AgregaciÛn de Swagger UI en API Gateway y Esquemas de Seguridad JWT
-- **Responsable:** **Tomas Augusto QuirÛz**
+#### Subsecci√≥n 5.4: Auditor√≠a y Verificaci√≥n de Swagger UI en API Gateway y Esquemas de Seguridad JWT
+- **Responsable:** **Tomas Augusto Quir√≥z**
 - **Partes a Desarrollar:**
-  - AgregaciÛn centralizada de las especificaciones OpenAPI 3.0 en `api-gateway` para visualizaciÛn unificada en Swagger UI (`http://localhost:8080/swagger-ui.html`).
-  - DocumentaciÛn del esquema de seguridad JWT Bearer y del formato est·ndar de errores RFC 7807 (`ProblemDetail`).
+  - Verificaci√≥n final de la agregaci√≥n centralizada OpenAPI 3.0 en `api-gateway` para visualizaci√≥n unificada en Swagger UI (`http://localhost:8080/swagger-ui.html`).
+  - Auditor√≠a del esquema de seguridad JWT Bearer y del formato est√°ndar de errores RFC 7807 (`ProblemDetail`).
 
-#### SubsecciÛn 5.5: AutomatizaciÛn de Suite Postman Integral y Entorno de Pruebas
-- **Responsable:** **Luis Miguel Urviola DueÒas**
+#### Subsecci√≥n 5.5: Automatizaci√≥n de Suite Postman Integral y Entorno de Pruebas
+- **Responsable:** **Luis Miguel Urviola Due√±as**
 - **Partes a Desarrollar:**
-  - EstructuraciÛn de archivos en `/postman`: `Fulvo_Backend_Collection.postman_collection.json` y `Fulvo_Local_Environment.postman_environment.json`.
-  - ImplementaciÛn de pre-request scripts y tests en JavaScript (`pm.test()`) con auto-login en Keycloak para Admin, Delegado, ¡rbitro y Fan·tico, extrayendo tokens JWT y variables de entorno de forma din·mica.
+  - Estructuraci√≥n de archivos en `/postman`: `Fulvo_Backend_Collection.postman_collection.json` y `Fulvo_Local_Environment.postman_environment.json`.
+  - Implementaci√≥n de pre-request scripts y tests en JavaScript (`pm.test()`) con auto-login en Keycloak para Admin, Delegado, √Årbitro y Fan√°tico, extrayendo tokens JWT y variables de entorno de forma din√°mica.
 
-#### SubsecciÛn 5.6: CertificaciÛn Colaborativa de Escenarios Oficiales Positivos y Negativos (EP y EN)
-- **Responsables y Partes a Desarrollar (Liderado por Luis Miguel Urviola DueÒas):**
-  - **Tomas Augusto QuirÛz:** CertificaciÛn de escenarios de seguridad perimetral y control de acceso (`EN-01` 401 Unauthorized sin token, `EN-02` 403 Forbidden por rol insuficiente).
-  - **GastÛn Emiliano Cambos Berrondo:** CertificaciÛn de escenarios del ciclo registral y torneos (`EP-01` alta torneo, `EP-02` postulaciÛn y aprobaciÛn, `EP-03` fixture y cierre, `EN-03` cupo inv·lido, `EN-04` plantilla no reglamentaria, `EN-05` doble inscripciÛn, `EN-10` lÌmite de reemplazos).
-  - **Santiago Mariano Gonzalez:** CertificaciÛn de escenarios operativos de partidos y arbitraje (`EP-04` asignaciÛn sede/·rbitro, `EP-05` acta regular y tabla, `EP-06` definiciÛn por penales en llaves, `EP-07` suspensiÛn clim·tica y reprogramaciÛn, `EN-07` conflicto horario $\pm 2$h, `EN-08` acta por ·rbitro no asignado, `EN-09` descalificaciÛn por incidentes).
-  - **Luis Miguel Urviola DueÒas (LÌder QA):** AutomatizaciÛn, orquestaciÛn general y certificaciÛn de escenarios de adaptadores, clima y notificaciones (`EP-08`, `EP-09`, `EN-06`, `EN-11`, `EN-12`) y ejecuciÛn completa en Newman.
+#### Subsecci√≥n 5.6: Certificaci√≥n Colaborativa de Escenarios Oficiales Positivos y Negativos (EP y EN)
+- **Responsables y Partes a Desarrollar (Liderado por Luis Miguel Urviola Due√±as):**
+  - **Tomas Augusto Quir√≥z:** Certificaci√≥n de escenarios de seguridad perimetral y control de acceso (`EN-01` 401 Unauthorized sin token, `EN-02` 403 Forbidden por rol insuficiente).
+  - **Gast√≥n Emiliano Cambos Berrondo:** Certificaci√≥n de escenarios del ciclo registral y torneos (`EP-01` alta torneo, `EP-02` postulaci√≥n y aprobaci√≥n, `EP-03` fixture y cierre, `EN-03` cupo inv√°lido, `EN-04` plantilla no reglamentaria, `EN-05` doble inscripci√≥n, `EN-10` l√≠mite de reemplazos).
+  - **Santiago Mariano Gonzalez:** Certificaci√≥n de escenarios operativos de partidos y arbitraje (`EP-04` asignaci√≥n sede/√°rbitro, `EP-05` acta regular y tabla, `EP-06` definici√≥n por penales en llaves, `EP-07` suspensi√≥n clim√°tica y reprogramaci√≥n, `EN-07` conflicto horario $\pm 2$h, `EN-08` acta por √°rbitro no asignado, `EN-09` descalificaci√≥n por incidentes).
+  - **Luis Miguel Urviola Due√±as (L√≠der QA):** Automatizaci√≥n, orquestaci√≥n general y certificaci√≥n de escenarios de adaptadores, clima y notificaciones (`EP-08`, `EP-09`, `EN-06`, `EN-11`, `EN-12`) y ejecuci√≥n completa en Newman.
 
-> ?? **COMPUERTA DE APROBACI”N FINAL (GATE 4):** Backend 100% verificado, documentado en Swagger, desplegado en Docker y certificado de punta a punta con Postman y Mailpit.
+> ?? **COMPUERTA DE APROBACI√ìN FINAL (GATE 4):** Backend 100% verificado, documentado en Swagger, desplegado en Docker y certificado de punta a punta con Postman y Mailpit.
 
 ---
 
 ## 5. Verification Plan
 
-### VerificaciÛn Automatizada (Suite Postman con Newman)
+### Verificaci√≥n Automatizada (Suite Postman con Newman)
 ```bash
 newman run postman/Fulvo_Backend_Collection.postman_collection.json -e postman/Fulvo_Local_Environment.postman_environment.json --reporters cli
 ```
 
-### VerificaciÛn Manual y Servicios de Soporte
+### Verificaci√≥n Manual y Servicios de Soporte
 1. **Health Check del Gateway:** `curl http://localhost:8080/health-check` $\to$ `{"status":"UP"}`.
-2. **InspecciÛn de Correos en Mailpit:** Abrir `http://localhost:8025` y verificar la llegada de correos transaccionales.
+2. **Inspecci√≥n de Correos en Mailpit:** Abrir `http://localhost:8025` y verificar la llegada de correos transaccionales.
 3. **Consola Keycloak:** Verificar en `http://localhost:8090` que el Realm tenga los roles y usuarios configurados.
 4. **Swagger UI Agregado:** Acceder a `http://localhost:8080/swagger-ui.html` para probar interactivamente los endpoints.
 
 ---
 
-## 6. InstrucciÛn para el Inicio de la ImplementaciÛn
+## 6. Instrucci√≥n para el Inicio de la Implementaci√≥n
 
 Cuando el equipo decida comenzar a programar, solo debe emitir el comando:
-> **"Arrancar con la Etapa 1 - SubsecciÛn 1.1"**
+> **"Arrancar con la Etapa 1 - Subsecci√≥n 1.1"**
