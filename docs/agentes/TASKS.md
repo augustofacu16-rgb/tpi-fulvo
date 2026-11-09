@@ -67,13 +67,13 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 1.5: Gateway Reactivo (`api-gateway`) con `RouteLocatorBuilder` y Seguridad OIDC
-- [ ] **1.5.1** Inicializar proyecto Spring Boot `api-gateway` con `spring-cloud-starter-gateway` (`com.fulvo:api-gateway`, Java 21, Spring Boot 4.0.8). `[Tomas]`
-- [ ] **1.5.2** Configurar bean `RouteLocator` con `RouteLocatorBuilder` (Apunte 19) enrutando hacia downstream (`/v1/torneos/**`, `/v1/partidos/**`, adaptadores). `[Tomas]`
-- [ ] **1.5.3** Implementar convertidor reactivo de roles `realm_access.roles` $\to$ autoridades `ROL_*` (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) con `Converter<Jwt, Mono<AbstractAuthenticationToken>>` (Apunte 21). `[Tomas]`
-- [ ] **1.5.4** Configurar `SecurityWebFilterChain` reactiva bloqueando anónimos (401) y verificando roles (403). `[Tomas]`
-- [ ] **1.5.5** Exponer y verificar endpoint `/actuator/health` en puerto `8080`. `[Tomas]`
+- [X] **1.5.1** Inicializar proyecto Spring Boot `api-gateway` con `spring-cloud-starter-gateway-server-webflux` (`com.fulvo:api-gateway`, Java 21, Spring Boot 4.0.8 / Spring Cloud 2025.1.4). `[Tomas]`
+- [X] **1.5.2** Configurar bean `RouteLocator` con `RouteLocatorBuilder` (Apunte 19) enrutando hacia downstream (`/v1/torneos/**`, `/v1/partidos/**`, adaptadores). `[Tomas]`
+- [X] **1.5.3** Implementar convertidor reactivo de roles `realm_access.roles` $\to$ autoridades `ROL_*` (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) con `Converter<Jwt, Mono<AbstractAuthenticationToken>>` (Apunte 21). `[Tomas]`
+- [X] **1.5.4** Configurar `SecurityWebFilterChain` reactiva bloqueando anónimos (401) y verificando roles (403). `[Tomas]`
+- [X] **1.5.5** Exponer y verificar endpoint `/actuator/health` en puerto `8080`. `[Tomas]`
 - *Criterio de Aceptación 1.5:* Petición sin token responde 401; token de fanático a POST torneo responde 403; health responde UP (200).
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-15]`
 
 > 🔴 **COMPUERTA DE CALIDAD (GATE 1):** No se inicia el Día 2 sin que Gateway, Postgres, Keycloak, `fulvo-common-lib` en `.m2` y los scaffoldings de torneos y operaciones estén certificados y auditados en `docs/audit/`.
 
