@@ -108,10 +108,10 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 2.4: Integración del Cliente RestClient y Notificaciones de Admisión
-- [ ] **2.4.1** Implementar cliente `RestClient` en `servicio-torneos` invocando asíncronamente a `servicio-notificaciones` (`POST /v1/notificaciones/emails`). `[Luis Miguel]`
-- [ ] **2.4.2** Despachar confirmación de postulación (FN-14) y resolución de admisión (aprobado/rechazado) vía Mailpit (RN-12). `[Luis Miguel]`
+- [X] **2.4.1** Implementar cliente `RestClient` en `servicio-torneos` invocando asíncronamente a `servicio-notificaciones` (`POST /v1/notificaciones/emails`). `[Luis Miguel]`
+- [X] **2.4.2** Despachar confirmación de postulación (FN-14) y resolución de admisión (aprobado/rechazado) vía Mailpit (RN-12). `[Luis Miguel]`
 - *Criterio de Aceptación 2.4:* Los correos de confirmación y resolución llegan a la bandeja web de Mailpit (`:8025`).
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261110-24]`
 
 #### Subsección 2.5: Enrutamiento Perimetral y Reglas de Seguridad para Torneos en API Gateway
 - [ ] **2.5.1** Configurar rutas en Gateway `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**` con validación reactiva de roles. `[Tomas]`
