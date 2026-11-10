@@ -38,7 +38,7 @@ Cualquier código generado en este proyecto debe respetar los siguientes princip
 1. **Stack Tecnológico:**
    * Java 21 LTS.
    * Spring Boot 4.0.8 (fijado en rama `subseccion1.2`).
-   * Spring Cloud 2023.0.x (para el API Gateway).
+   * Spring Cloud 2025.1.x (fijado en `2025.1.4` para el API Gateway con Spring Boot 4.0.8).
    * PostgreSQL 16.
    * Keycloak 26.5.0 (OIDC / OAuth2 Resource Server).
 2. **Organización de Proyectos y Maven:**
