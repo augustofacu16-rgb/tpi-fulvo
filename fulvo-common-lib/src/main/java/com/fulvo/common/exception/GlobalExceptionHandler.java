@@ -2,6 +2,8 @@ package com.fulvo.common.exception;
 
 import com.fulvo.common.filter.CorrelationIdFilter;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
@@ -9,10 +11,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.net.URI;
 import java.time.Instant;
@@ -63,6 +67,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problem);
     }
 
+    @ExceptionHandler(EmpateNoPermitidoException.class)
+    public ResponseEntity<ProblemDetail> handleEmpateNoPermitido(EmpateNoPermitidoException ex,
+                                                                HttpServletRequest request) {
+        log.warn("Empate no permitido en llaves sin penales [{}]: {}", request.getRequestURI(), ex.getMessage());
+        ProblemDetail problem = buildProblemDetail(HttpStatus.BAD_REQUEST, "Empate No Permitido", ex.getMessage(), "empate-no-permitido", request);
+        if (ex.getCodigoRegla() != null) {
+            problem.setProperty("codigoRegla", ex.getCodigoRegla());
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
     @ExceptionHandler(BusinessRuleException.class)
     public ResponseEntity<ProblemDetail> handleBusinessRule(BusinessRuleException ex,
                                                            HttpServletRequest request) {
@@ -86,6 +101,57 @@ public class GlobalExceptionHandler {
         }
         problem.setProperty("invalidParams", invalidParams);
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ProblemDetail> handleHandlerMethodValidation(HandlerMethodValidationException ex,
+                                                                       HttpServletRequest request) {
+        log.warn("Fallo de validacion en elementos de coleccion o parametros [{}]: {}", request.getRequestURI(), ex.getMessage());
+        ProblemDetail problem = buildProblemDetail(HttpStatus.BAD_REQUEST, "Validacion Fallida", "La peticion contiene elementos de coleccion o parametros invalidos.", "validacion", request);
+
+        Map<String, String> invalidParams = new HashMap<>();
+        ex.getParameterValidationResults().forEach(result -> {
+            String paramName = result.getMethodParameter().getParameterName();
+            result.getResolvableErrors().forEach(error -> {
+                String key = (paramName != null ? paramName : "parametro");
+                if (error instanceof FieldError fe) {
+                    key = fe.getField();
+                }
+                invalidParams.put(key, error.getDefaultMessage());
+            });
+        });
+        problem.setProperty("invalidParams", invalidParams);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ProblemDetail> handleConstraintViolation(ConstraintViolationException ex,
+                                                                   HttpServletRequest request) {
+        log.warn("Violacion de restricciones de validacion [{}]: {}", request.getRequestURI(), ex.getMessage());
+        ProblemDetail problem = buildProblemDetail(HttpStatus.BAD_REQUEST, "Validacion Fallida", "La peticion contiene restricciones de validacion incumplidas.", "validacion", request);
+
+        Map<String, String> invalidParams = new HashMap<>();
+        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            invalidParams.put(violation.getPropertyPath().toString(), violation.getMessage());
+        }
+        problem.setProperty("invalidParams", invalidParams);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ProblemDetail> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                      HttpServletRequest request) {
+        log.warn("Cuerpo de peticion ilegible o formato de fecha/JSON invalido [{}]: {}", request.getRequestURI(), ex.getMessage());
+        ProblemDetail problem = buildProblemDetail(
+                HttpStatus.BAD_REQUEST,
+                "Formato de Peticion Invalido",
+                "El cuerpo de la peticion contiene JSON malformado o campos de fecha/hora incompatibles con el formato estandar ISO-8601 (yyyy-MM-dd'T'HH:mm:ss).",
+                "formato-invalido",
+                request
+        );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 
