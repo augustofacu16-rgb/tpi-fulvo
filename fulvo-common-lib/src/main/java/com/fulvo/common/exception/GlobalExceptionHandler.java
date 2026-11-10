@@ -2,6 +2,8 @@ package com.fulvo.common.exception;
 
 import com.fulvo.common.filter.CorrelationIdFilter;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
@@ -14,6 +16,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.net.URI;
 import java.time.Instant;
@@ -95,6 +98,43 @@ public class GlobalExceptionHandler {
         Map<String, String> invalidParams = new HashMap<>();
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             invalidParams.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+        problem.setProperty("invalidParams", invalidParams);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ProblemDetail> handleHandlerMethodValidation(HandlerMethodValidationException ex,
+                                                                       HttpServletRequest request) {
+        log.warn("Fallo de validacion en elementos de coleccion o parametros [{}]: {}", request.getRequestURI(), ex.getMessage());
+        ProblemDetail problem = buildProblemDetail(HttpStatus.BAD_REQUEST, "Validacion Fallida", "La peticion contiene elementos de coleccion o parametros invalidos.", "validacion", request);
+
+        Map<String, String> invalidParams = new HashMap<>();
+        ex.getParameterValidationResults().forEach(result -> {
+            String paramName = result.getMethodParameter().getParameterName();
+            result.getResolvableErrors().forEach(error -> {
+                String key = (paramName != null ? paramName : "parametro");
+                if (error instanceof FieldError fe) {
+                    key = fe.getField();
+                }
+                invalidParams.put(key, error.getDefaultMessage());
+            });
+        });
+        problem.setProperty("invalidParams", invalidParams);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ProblemDetail> handleConstraintViolation(ConstraintViolationException ex,
+                                                                   HttpServletRequest request) {
+        log.warn("Violacion de restricciones de validacion [{}]: {}", request.getRequestURI(), ex.getMessage());
+        ProblemDetail problem = buildProblemDetail(HttpStatus.BAD_REQUEST, "Validacion Fallida", "La peticion contiene restricciones de validacion incumplidas.", "validacion", request);
+
+        Map<String, String> invalidParams = new HashMap<>();
+        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            invalidParams.put(violation.getPropertyPath().toString(), violation.getMessage());
         }
         problem.setProperty("invalidParams", invalidParams);
 
