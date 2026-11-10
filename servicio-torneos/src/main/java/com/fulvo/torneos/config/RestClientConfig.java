@@ -14,9 +14,8 @@ public class RestClientConfig {
 
     @Bean
     public RestClient notificacionesRestClient(
-            @Value("${servicios.notificaciones.url:http://localhost:8083}") String notificacionesUrl,
-            RestClient.Builder builder) {
-        return builder
+            @Value("${servicios.notificaciones.url:http://localhost:8083}") String notificacionesUrl) {
+        return RestClient.builder()
                 .baseUrl(notificacionesUrl)
                 .build();
     }
