@@ -43,7 +43,7 @@
 - [X] **1.2.1** Inicializar proyecto Maven `fulvo-common-lib` (`com.fulvo:fulvo-common-lib:1.0.0-SNAPSHOT`, empaquetado `.jar`). `[Luis Miguel]`
 - [X] **1.2.2** Implementar DTOs inter-servicio en `com.fulvo.common.dto`: `CrucePartidoDTO`, `NotificacionEmailDTO`, `GeocodificacionDTO`, `ClimaPronosticoDTO`. `[Luis Miguel]`
 - [X] **1.2.3** Definir jerarquía de excepciones en `com.fulvo.common.exception`: `BusinessRuleException`, `RecursoNoEncontradoException`, `ConflictoEstadoException`. `[Luis Miguel]`
-- [X] **1.2.4** Implementar `@RestControllerAdvice` global retornando **RFC 7807 (`ProblemDetail`)** de Spring 6 (Apuntes 18 y 23). `[Luis Miguel]`
+- [X] **1.2.4** Implementar `@RestControllerAdvice` global retornando **RFC 7807 (`ProblemDetail`)** de Spring Boot 4 (Apuntes 18 y 23). `[Luis Miguel]`
 - [X] **1.2.5** Implementar `CorrelationIdFilter` (`OncePerRequestFilter`) propagando cabecera `X-Correlation-ID` al MDC de SLF4J (Apunte 23). `[Luis Miguel]`
 - [X] **1.2.6** Compilar e instalar librería en repositorio local: `mvn clean install -DskipTests`. `[Luis Miguel]`
 - *Criterio de Aceptación 1.2:* Artefacto disponible en `~/.m2` local listo para ser importado por los microservicios.
