@@ -114,10 +114,10 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261110-24]`
 
 #### Subsección 2.5: Enrutamiento Perimetral y Reglas de Seguridad para Torneos en API Gateway
-- [ ] **2.5.1** Configurar rutas en Gateway `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**` con validación reactiva de roles. `[Tomas]`
-- [ ] **2.5.2** Bloquear intentos de creación de torneo por roles ajenos a `ROL_ORGANIZADOR` con 403 Forbidden. `[Tomas]`
+- [X] **2.5.1** Configurar rutas en Gateway `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**` con validación reactiva de roles. `[Tomas]`
+- [X] **2.5.2** Bloquear intentos de creación de torneo por roles ajenos a `ROL_ORGANIZADOR` con 403 Forbidden. `[Tomas]`
 - *Criterio de Aceptación 2.5:* El Gateway filtra las solicitudes y enruta correctamente al puerto 8081.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/2.5-gateway-perimetral-torneos.md` al finalizar. `[COMPLETADO - AUDIT-20261111-25]`
 
 #### Subsección 2.6: Habilitación de OpenAPI 3.0, Swagger UI y Agregación Perimetral en API Gateway
 - [ ] **2.6.1** Integrar dependencia `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos` y `servicio-operaciones-partidos`, configurando OpenAPI base y esquema de seguridad Bearer JWT (`SecurityScheme`). `[Tomas]`

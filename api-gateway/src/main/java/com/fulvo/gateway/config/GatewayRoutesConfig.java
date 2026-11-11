@@ -22,12 +22,20 @@ public class GatewayRoutesConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                // Rutas hacia servicio-torneos (puerto interno 8081)
+                // Rutas hacia servicio-operaciones-partidos para subrecursos de torneos (partidos, posiciones, goleadores)
+                // Se configuran previamente para asegurar precedencia estricta sobre la ruta genérica de torneos
+                .route("servicio-operaciones-torneos-subrecursos-route", r -> r
+                        .path("/v1/torneos/*/partidos", "/v1/torneos/*/partidos/**",
+                              "/v1/torneos/*/posiciones", "/v1/torneos/*/posiciones/**",
+                              "/v1/torneos/*/goleadores", "/v1/torneos/*/goleadores/**")
+                        .filters(f -> f.setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
+                        .uri(operacionesServiceUrl))
+                // Rutas principales hacia servicio-torneos (puerto interno 8081)
                 .route("servicio-torneos-route", r -> r
                         .path("/v1/torneos/**", "/v1/solicitudes-inscripcion/**", "/v1/equipos/**")
                         .filters(f -> f.setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
                         .uri(torneosServiceUrl))
-                // Rutas hacia servicio-operaciones-partidos (puerto interno 8082)
+                // Rutas principales hacia servicio-operaciones-partidos (puerto interno 8082)
                 .route("servicio-operaciones-route", r -> r
                         .path("/v1/partidos/**", "/v1/sedes/**", "/v1/arbitros/**", "/v1/tablas-posiciones/**")
                         .filters(f -> f.setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
