@@ -47,20 +47,13 @@ public class TorneoService {
 
     @Transactional(readOnly = true)
     public List<TorneoResponseDTO> listarTorneos() {
-        return torneoRepository.findAll().stream()
-                .map(t -> {
-                    long inscriptos = equipoRepository.countByTorneoIdAndEstado(t.getId(), EstadoEquipo.ACTIVO);
-                    return mapToResponseDTO(t, (int) inscriptos);
-                })
-                .toList();
+        return torneoRepository.findAllConConteoEquipos();
     }
 
     @Transactional(readOnly = true)
     public TorneoResponseDTO obtenerTorneoPorId(Long id) {
-        Torneo torneo = torneoRepository.findById(id)
+        return torneoRepository.findTorneoDTOById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Torneo no encontrado con ID: " + id));
-        long inscriptos = equipoRepository.countByTorneoIdAndEstado(torneo.getId(), EstadoEquipo.ACTIVO);
-        return mapToResponseDTO(torneo, (int) inscriptos);
     }
 
     private void validarCupoPorFormato(FormatoTorneo formato, Integer cupo) {

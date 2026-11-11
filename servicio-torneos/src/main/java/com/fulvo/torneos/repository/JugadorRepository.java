@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface JugadorRepository extends JpaRepository<Jugador, String> {
+public interface JugadorRepository extends JpaRepository<Jugador, Long> {
 
     List<Jugador> findByEquipoId(Long equipoId);
 

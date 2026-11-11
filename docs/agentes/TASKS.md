@@ -1,7 +1,7 @@
 # Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
 
-> **Estado:** `PLAN APROBADO - EN ESPERA DE ARRANQUE`  
-> **Regla de Operación Obligatoria:** 
+> **Estado:** `ETAPA 1 COMPLETADA - GATE 1 SUPERADO - EN ARRANQUE ETAPA 2`  
+> **Regla de Operación Obligatoria:**
 > 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las últimas entradas de `docs/audit/`.
 > 2. Al finalizar cada subsección, validar los endpoints y flujos según `GUIA_PRUEBAS_MANUALES.md`, marcar las casillas completadas `[X]` en este archivo y **registrar la auditoría correspondiente en `docs/audit/`** detallando qué se hizo, qué se arregló sobre la marcha y si hubo diferencias con el plan original.
 > 3. Al concluir cada etapa formal, verificar la superación de su compuerta de calidad (Gate).
@@ -16,11 +16,11 @@
 | Sprint | Etapa | Descripción | Responsables por Etapa | Estado | Gate Superado | Auditoría |
 |---|---|---|---|---|:---:|:---:|
 | **Día 0** | **Etapa 0** | Planificación, Convenciones y Roles | Todo el Equipo | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-00) |
-| **Día 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, Gastón, Santiago | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261108-10) |
-| **Día 2** | **Etapa 2** | Core de Torneos, Admisiones y Contrato de Fixtures | Gastón, Santiago, Luis Miguel, Tomas | `[EN PROCESO]` | `[ ]` | `[ ]` |
+| **Día 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, Gastón, Santiago | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261109-GATE1) |
+| **Día 2** | **Etapa 2** | Core de Torneos, Admisiones, Fixtures y Swagger Base | Tomas, Gastón, Santiago, Luis Miguel | `[EN PROCESO]` | `[ ]` | `[ ]` |
 | **Día 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gastón, Tomas, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
 | **Día 3** | **Etapa 4** | Adaptadores Externos, Resiliencia y Scheduler | Luis Miguel, Santiago, Gastón, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
-| **Día 3** | **Etapa 5** | Despliegue Docker, Swagger y Postman E2E | Tomas, Gastón, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
+| **Día 3** | **Etapa 5** | Despliegue Docker, Auditoría OpenAPI y Postman E2E | Tomas, Gastón, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
 
 ---
 
@@ -52,18 +52,19 @@
 #### Subsección 1.3: Scaffolding Base y Configuración DataSource de `servicio-torneos`
 - [X] **1.3.1** Inicializar microservicio `servicio-torneos` (`com.fulvo:servicio-torneos`, Java 21, Spring Boot 4.0.8). `[Gastón]`
 - [X] **1.3.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_torneos`. `[Gastón]`
-- [X] **1.3.3** Importar dependencia `fulvo-common-lib` y estructurar paquetes base `com.fulvo.torneos.*`. `[Gastón]`
+- [X] **1.3.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.torneos.*`. `[Gastón]`
 - [X] **1.3.4** Verificar compilación limpia y arranque inicial en puerto `8081`. `[Gastón]`
 - *Criterio de Aceptación 1.3:* `mvn clean package -DskipTests` exitoso y conexión validada con el esquema lógico de torneos.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-13]`
 
 #### Subsección 1.4: Scaffolding Base y Configuración DataSource de `servicio-operaciones-partidos`
+- **Estado:** `[COMPLETADO]`. Librería común integrada; compilación, arranque en 8082 y conexión a PostgreSQL verificados.
 - [X] **1.4.1** Inicializar microservicio `servicio-operaciones-partidos` (`com.fulvo:servicio-operaciones-partidos`, Java 21, Spring Boot 4.0.8). `[Santiago]`
 - [X] **1.4.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_operaciones`. `[Santiago]`
 - [X] **1.4.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.operaciones.*`. `[Santiago]`
 - [X] **1.4.4** Verificar compilación limpia y arranque inicial en puerto `8082`. `[Santiago]`
 - *Criterio de Aceptación 1.4:* `mvn clean package -DskipTests` exitoso y conexión validada con el esquema lógico de operaciones.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-14]`
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/1.4-cierre-operaciones.md` al finalizar. `[COMPLETADO - AUDIT-20261109-14]`
 
 #### Subsección 1.5: Gateway Reactivo (`api-gateway`) con `RouteLocatorBuilder` y Seguridad OIDC
 - [X] **1.5.1** Inicializar proyecto Spring Boot `api-gateway` con `spring-cloud-starter-gateway-server-webflux` (`com.fulvo:api-gateway`, Java 21, Spring Boot 4.0.8 / Spring Cloud 2025.1.4). `[Tomas]`
@@ -85,7 +86,7 @@
 - **Responsables:** Gastón Emiliano Cambos Berrondo, Santiago Mariano Gonzalez, Luis Miguel Urviola Dueñas, Tomas Augusto Quiróz.
 
 #### Subsección 2.1: Modelado JPA y Lógica de Admisión de Torneos
-- [X] **2.1.1** Crear entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo` y `Jugador` (DNI String PK natural) y repositorios. `[Gastón]`
+- [X] **2.1.1** Crear entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo` y `Jugador` (ID autogenerado PK y DNI String validado por certamen) y repositorios. `[Gastón]`
 - [X] **2.1.2** `POST /v1/torneos` con validación de cupo estricto (10/20 Liga, 8/16 Llaves) (FN-01, RN-01). `[Gastón]`
 - [X] **2.1.3** `POST /v1/torneos/{id}/solicitudes-inscripcion` validando 15-22 jugadores, arquero, capitán y DNI único por certamen (FN-04, RN-02, RN-03). `[Gastón]`
 - [X] **2.1.4** `PATCH /v1/solicitudes-inscripcion/{id}/admision`: Aprobación administrativa, creación de `Equipo` en `ACTIVO`, promoción a `ROL_DELEGADO` y descuento de cupo o rechazo con motivo (FN-05, RN-04). `[Gastón]`
@@ -118,7 +119,14 @@
 - *Criterio de Aceptación 2.5:* El Gateway filtra las solicitudes y enruta correctamente al puerto 8081.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> 🔴 **COMPUERTA DE CALIDAD (GATE 2A):** Torneos y Operaciones interactúan fluidamente vía RestClient en la generación y recepción de fixtures.
+#### Subsección 2.6: Habilitación de OpenAPI 3.0, Swagger UI y Agregación Perimetral en API Gateway
+- [ ] **2.6.1** Integrar dependencia `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos` y `servicio-operaciones-partidos`, configurando OpenAPI base y esquema de seguridad Bearer JWT (`SecurityScheme`). `[Tomas]`
+- [ ] **2.6.2** Integrar dependencia `springdoc-openapi-starter-webflux-ui` en `api-gateway` y configurar agregación dinámica de Swagger UI (`springdoc.swagger-ui.urls`) apuntando a las definiciones de los microservicios (`/api/torneos/v3/api-docs` y `/api/partidos/v3/api-docs`). `[Tomas]`
+- [ ] **2.6.3** Exponer perimetralmente en Gateway el acceso público a Swagger UI (`/swagger-ui.html`, `/swagger-ui/**`, `/v3/api-docs/**`) y verificar navegación interactiva en `http://localhost:8080/swagger-ui.html` para probar dinámicamente los endpoints a medida que se implementan. `[Tomas]`
+- *Criterio de Aceptación 2.6:* Swagger UI unificado y accesible desde el puerto 8080 en `http://localhost:8080/swagger-ui.html`, permitiendo alternar y probar interactivamente los contratos vivos de `servicio-torneos` y `servicio-operaciones-partidos`.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+
+> ?? **COMPUERTA DE CALIDAD (GATE 2A):** Torneos y Operaciones interactúan fluidamente vía RestClient en la generación y recepción de fixtures.
 
 ---
 
@@ -164,7 +172,7 @@
 - *Criterio de Aceptación 3.6:* Artefacto común actualizado y consumible con excepciones arbitrales estandarizadas.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> 🔴 **COMPUERTA DE CALIDAD (GATE 2B):** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas en `docs/audit/`.
+> ?? **COMPUERTA DE CALIDAD (GATE 2B):** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas en `docs/audit/`.
 
 ---
 
@@ -211,7 +219,7 @@
 - *Criterio de Aceptación 4.6:* Rutas de adaptadores securizadas y operativas a través del Gateway.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> 🔴 **COMPUERTA DE CALIDAD (GATE 3):** Adaptadores y Scheduler integrados y certificados contra Mailpit y APIs públicas / WireMock, auditados en `docs/audit/`.
+> ?? **COMPUERTA DE CALIDAD (GATE 3):** Adaptadores y Scheduler integrados y certificados contra Mailpit y APIs públicas / WireMock, auditados en `docs/audit/`.
 
 ---
 
@@ -226,22 +234,20 @@
 - *Criterio de Aceptación 5.1:* Todo el backend levanta con un solo comando sin intervención manual.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.2: Documentación OpenAPI 3.0 de Torneos (`servicio-torneos`)
-- [ ] **5.2.1** Integrar `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos`. `[Gastón]`
-- [ ] **5.2.2** Anotar endpoints, parámetros, esquemas de admisión, planteles y respuestas de error RFC 7807. `[Gastón]`
-- *Criterio de Aceptación 5.2:* Endpoints del ciclo registral documentados exhaustivamente.
+#### Subsección 5.2: Enriquecimiento y Documentación OpenAPI 3.0 Detallada de Torneos (`servicio-torneos`)
+- [ ] **5.2.1** Anotar endpoints, parámetros, esquemas de admisión, planteles y respuestas de error RFC 7807 (`ProblemDetail`) en `servicio-torneos`. `[Gastón]`
+- *Criterio de Aceptación 5.2:* Endpoints del ciclo registral enriquecidos y documentados exhaustivamente.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.3: Documentación OpenAPI 3.0 de Operaciones (`servicio-operaciones-partidos`)
-- [ ] **5.3.1** Integrar `springdoc-openapi-starter-webmvc-ui` en `servicio-operaciones-partidos`. `[Santiago]`
-- [ ] **5.3.2** Anotar endpoints de partidos, asignaciones, actas, sedes y tabla de posiciones. `[Santiago]`
-- *Criterio de Aceptación 5.3:* Endpoints operativos y de arbitraje documentados con sus códigos de respuesta.
+#### Subsección 5.3: Enriquecimiento y Documentación OpenAPI 3.0 Detallada de Operaciones (`servicio-operaciones-partidos`)
+- [ ] **5.3.1** Anotar endpoints de partidos, asignaciones, actas, sedes, tabla de posiciones y respuestas de error RFC 7807 en `servicio-operaciones-partidos`. `[Santiago]`
+- *Criterio de Aceptación 5.3:* Endpoints operativos y de arbitraje enriquecidos con sus códigos de respuesta y esquemas.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.4: Agregación de Swagger UI en API Gateway y Esquemas de Seguridad JWT
-- [ ] **5.4.1** Exponer agregación centralizada de Swagger en `api-gateway` accesible en `http://localhost:8080/swagger-ui.html`. `[Tomas]`
-- [ ] **5.4.2** Configurar seguridad JWT Bearer en OpenAPI y descripciones de respuestas RFC 7807 (`ProblemDetail`). `[Tomas]`
-- *Criterio de Aceptación 5.4:* Swagger UI unificado accesible desde el puerto 8080.
+#### Subsección 5.4: Auditoría y Verificación de Swagger UI y Respuestas RFC 7807
+- [ ] **5.4.1** Auditar la agregación completa en `api-gateway` con todas las rutas y esquemas de todos los microservicios en `http://localhost:8080/swagger-ui.html`. `[Tomas]`
+- [ ] **5.4.2** Verificar funcionamiento del esquema JWT Bearer y formato estándar RFC 7807 (`ProblemDetail`) en toda la suite. `[Tomas]`
+- *Criterio de Aceptación 5.4:* Swagger UI unificado y verificado al 100% en el Gateway.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 5.5: Automatización de Suite Postman Integral y Entorno de Pruebas
@@ -258,4 +264,4 @@
 - *Criterio de Aceptación 5.6:* 100% de las pruebas en Postman (`pm.test()`) ejecutadas con resultado verde sin fallos.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> 🏆 **COMPUERTA DE APROBACIÓN FINAL (GATE 4):** Backend completamente verificado, documentado en Swagger, desplegado en Docker y certificado de punta a punta con Postman y Mailpit, con la bitácora de auditoría cerrada en `docs/audit/`.
+> ?? **COMPUERTA DE APROBACIÓN FINAL (GATE 4):** Backend completamente verificado, documentado en Swagger, desplegado en Docker y certificado de punta a punta con Postman y Mailpit, con la bitácora de auditoría cerrada en `docs/audit/`.

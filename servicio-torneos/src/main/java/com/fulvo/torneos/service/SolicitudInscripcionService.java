@@ -96,10 +96,11 @@ public class SolicitudInscripcionService {
             throw new ConflictoEstadoException("La solicitud ya ha sido resuelta previamente (estado actual: " + solicitud.getEstado() + ")");
         }
 
-        Torneo torneo = solicitud.getTorneo();
         Long equipoIdGenerado = null;
-
         if (dto.getEstado() == EstadoSolicitudInscripcion.ACEPTADA) {
+            // Bloqueo pesimista (SELECT ... FOR UPDATE) para serializar la admisión y evitar race condition de cupo
+            Torneo torneo = torneoRepository.findByIdWithLock(solicitud.getTorneo().getId())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Torneo no encontrado"));
             // Verificar cupo disponible del torneo
             long equiposActivos = equipoRepository.countByTorneoIdAndEstado(torneo.getId(), EstadoEquipo.ACTIVO);
             if (equiposActivos >= torneo.getCupoEquipos()) {
