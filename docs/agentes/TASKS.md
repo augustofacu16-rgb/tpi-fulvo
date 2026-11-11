@@ -86,12 +86,12 @@
 - **Responsables:** Gastón Emiliano Cambos Berrondo, Santiago Mariano Gonzalez, Luis Miguel Urviola Dueñas, Tomas Augusto Quiróz.
 
 #### Subsección 2.1: Modelado JPA y Lógica de Admisión de Torneos
-- [ ] **2.1.1** Crear entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo` y `Jugador` (DNI String PK natural) y repositorios. `[Gastón]`
-- [ ] **2.1.2** `POST /v1/torneos` con validación de cupo estricto (10/20 Liga, 8/16 Llaves) (FN-01, RN-01). `[Gastón]`
-- [ ] **2.1.3** `POST /v1/torneos/{id}/solicitudes-inscripcion` validando 15-22 jugadores, arquero, capitán y DNI único por certamen (FN-04, RN-02, RN-03). `[Gastón]`
-- [ ] **2.1.4** `PATCH /v1/solicitudes-inscripcion/{id}/admision`: Aprobación administrativa, creación de `Equipo` en `ACTIVO`, promoción a `ROL_DELEGADO` y descuento de cupo o rechazo con motivo (FN-05, RN-04). `[Gastón]`
+- [X] **2.1.1** Crear entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo` y `Jugador` (ID autogenerado PK y DNI String validado por certamen) y repositorios. `[Gastón]`
+- [X] **2.1.2** `POST /v1/torneos` con validación de cupo estricto (10/20 Liga, 8/16 Llaves) (FN-01, RN-01). `[Gastón]`
+- [X] **2.1.3** `POST /v1/torneos/{id}/solicitudes-inscripcion` validando 15-22 jugadores, arquero, capitán y DNI único por certamen (FN-04, RN-02, RN-03). `[Gastón]`
+- [X] **2.1.4** `PATCH /v1/solicitudes-inscripcion/{id}/admision`: Aprobación administrativa, creación de `Equipo` en `ACTIVO`, promoción a `ROL_DELEGADO` y descuento de cupo o rechazo con motivo (FN-05, RN-04). `[Gastón]`
 - *Criterio de Aceptación 2.1:* No se permite violar cupo ni reglas de buena fe; las solicitudes admitidas descuentan cupo y crean el equipo en estado activo.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261110-21]`
 
 #### Subsección 2.2: Generación Algorítmica Determinística de Fixtures
 - [ ] **2.2.1** `PATCH /v1/torneos/{id}/estado` cerrando inscripción únicamente al 100% de cupo (FN-06, RN-01). `[Gastón]`

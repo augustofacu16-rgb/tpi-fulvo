@@ -326,7 +326,8 @@ erDiagram
     }
 
     JUGADOR {
-        String dni PK
+        long id PK
+        String dni
         long equipo_id FK
         String nombre
         String apellido
