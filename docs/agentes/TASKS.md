@@ -120,11 +120,11 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/2.5-gateway-perimetral-torneos.md` al finalizar. `[COMPLETADO - AUDIT-20261111-25]`
 
 #### Subsección 2.6: Habilitación de OpenAPI 3.0, Swagger UI y Agregación Perimetral en API Gateway
-- [ ] **2.6.1** Integrar dependencia `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos` y `servicio-operaciones-partidos`, configurando OpenAPI base y esquema de seguridad Bearer JWT (`SecurityScheme`). `[Tomas]`
-- [ ] **2.6.2** Integrar dependencia `springdoc-openapi-starter-webflux-ui` en `api-gateway` y configurar agregación dinámica de Swagger UI (`springdoc.swagger-ui.urls`) apuntando a las definiciones de los microservicios (`/api/torneos/v3/api-docs` y `/api/partidos/v3/api-docs`). `[Tomas]`
-- [ ] **2.6.3** Exponer perimetralmente en Gateway el acceso público a Swagger UI (`/swagger-ui.html`, `/swagger-ui/**`, `/v3/api-docs/**`) y verificar navegación interactiva en `http://localhost:8080/swagger-ui.html` para probar dinámicamente los endpoints a medida que se implementan. `[Tomas]`
+- [X] **2.6.1** Integrar dependencia `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos` y `servicio-operaciones-partidos`, configurando OpenAPI base y esquema de seguridad Bearer JWT (`SecurityScheme`). `[Tomas]`
+- [X] **2.6.2** Integrar dependencia `springdoc-openapi-starter-webflux-ui` en `api-gateway` y configurar agregación dinámica de Swagger UI (`springdoc.swagger-ui.urls`) apuntando a las definiciones de los microservicios (`/api/torneos/v3/api-docs` y `/api/partidos/v3/api-docs`). `[Tomas]`
+- [X] **2.6.3** Exponer perimetralmente en Gateway el acceso público a Swagger UI (`/swagger-ui.html`, `/swagger-ui/**`, `/v3/api-docs/**`) y verificar navegación interactiva en `http://localhost:8080/swagger-ui.html` para probar dinámicamente los endpoints a medida que se implementan. `[Tomas]`
 - *Criterio de Aceptación 2.6:* Swagger UI unificado y accesible desde el puerto 8080 en `http://localhost:8080/swagger-ui.html`, permitiendo alternar y probar interactivamente los contratos vivos de `servicio-torneos` y `servicio-operaciones-partidos`.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261111-26]`
 
 > ?? **COMPUERTA DE CALIDAD (GATE 2A):** Torneos y Operaciones interactúan fluidamente vía RestClient en la generación y recepción de fixtures.
 

@@ -39,3 +39,14 @@ logging:
 servicios:
   notificaciones:
     url: ${NOTIFICACIONES_SERVICE_URL:http://localhost:8083}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+

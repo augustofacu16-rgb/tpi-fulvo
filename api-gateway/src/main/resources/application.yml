@@ -36,3 +36,21 @@ logging:
     com.fulvo: DEBUG
     org.springframework.cloud.gateway: INFO
     org.springframework.security: INFO
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    urls:
+      - name: 1. Torneos y Admisiones
+        url: /api/torneos/v3/api-docs
+      - name: 2. Operaciones y Partidos
+        url: /api/partidos/v3/api-docs
+    urls-primary-name: 1. Torneos y Admisiones
+    display-request-duration: true
+    operations-sorter: method
+    tags-sorter: alpha
+

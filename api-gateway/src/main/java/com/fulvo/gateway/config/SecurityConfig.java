@@ -34,8 +34,15 @@ public class SecurityConfig {
                 .accessDeniedHandler(gatewayAccessDeniedHandler)
             )
             .authorizeExchange(exchanges -> exchanges
-                // Endpoints de salud y diagnóstico públicos
-                .pathMatchers("/health-check", "/health-check/**", "/info").permitAll()
+                // Endpoints de salud, diagnóstico y Swagger UI / OpenAPI 3.0 (Subsección 2.6)
+                .pathMatchers(
+                    "/health-check", "/health-check/**", "/info",
+                    "/swagger-ui.html", "/swagger-ui/**",
+                    "/v3/api-docs", "/v3/api-docs/**",
+                    "/api/torneos/v3/api-docs", "/api/torneos/v3/api-docs/**",
+                    "/api/partidos/v3/api-docs", "/api/partidos/v3/api-docs/**",
+                    "/webjars/**"
+                ).permitAll()
 
                 // Reglas perimetrales de Torneos (Subsección 2.5, FN-01 a FN-06, RN-01 a RN-04)
                 // 1. Alta de certámenes (FN-01, RN-01): Exclusivo ROL_ORGANIZADOR
