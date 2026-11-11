@@ -31,6 +31,7 @@ public class SolicitudInscripcionService {
     private final TorneoRepository torneoRepository;
     private final EquipoRepository equipoRepository;
     private final JugadorRepository jugadorRepository;
+    private final TorneoNotificacionService torneoNotificacionService;
     private final ObjectMapper objectMapper;
 
     @Transactional
@@ -82,6 +83,14 @@ public class SolicitudInscripcionService {
         SolicitudInscripcion guardada = solicitudRepository.save(solicitud);
         log.info("Solicitud de inscripción guardada con ID {}", guardada.getId());
 
+        // FN-14 / Subsección 2.4: Despacho asíncrono de confirmación de postulación vía Mailpit
+        String emailPostulante = obtenerEmailDestinatario(fanaticoUsuarioId);
+        torneoNotificacionService.despacharConfirmacionPostulacion(
+                emailPostulante,
+                guardada.getNombreEquipo(),
+                torneo.getNombre()
+        );
+
         return mapToResponseDTO(guardada, null);
     }
 
@@ -96,12 +105,12 @@ public class SolicitudInscripcionService {
             throw new ConflictoEstadoException("La solicitud ya ha sido resuelta previamente (estado actual: " + solicitud.getEstado() + ")");
         }
 
+        Torneo torneo = torneoRepository.findByIdWithLock(solicitud.getTorneo().getId())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Torneo no encontrado"));
+
         Long equipoIdGenerado = null;
         if (dto.getEstado() == EstadoSolicitudInscripcion.ACEPTADA) {
-            // Bloqueo pesimista (SELECT ... FOR UPDATE) para serializar la admisión y evitar race condition de cupo
-            Torneo torneo = torneoRepository.findByIdWithLock(solicitud.getTorneo().getId())
-                    .orElseThrow(() -> new RecursoNoEncontradoException("Torneo no encontrado"));
-            // Verificar cupo disponible del torneo
+            // Verificar cupo disponible del torneo bajo bloqueo pesimista (SELECT ... FOR UPDATE)
             long equiposActivos = equipoRepository.countByTorneoIdAndEstado(torneo.getId(), EstadoEquipo.ACTIVO);
             if (equiposActivos >= torneo.getCupoEquipos()) {
                 throw new ConflictoEstadoException("No es posible admitir el equipo: el cupo de " + torneo.getCupoEquipos() + " equipos ya está completo");
@@ -152,7 +161,26 @@ public class SolicitudInscripcionService {
         }
 
         SolicitudInscripcion actualizada = solicitudRepository.save(solicitud);
+
+        // RN-12 / Subsección 2.4: Despacho asíncrono de resolución (aprobación o rechazo con motivo) vía Mailpit
+        String emailDelegado = obtenerEmailDestinatario(actualizada.getFanaticoUsuarioId());
+        boolean aprobada = actualizada.getEstado() == EstadoSolicitudInscripcion.ACEPTADA;
+        torneoNotificacionService.despacharResolucionAdmision(
+                emailDelegado,
+                actualizada.getNombreEquipo(),
+                torneo.getNombre(),
+                aprobada,
+                actualizada.getMotivoRechazo()
+        );
+
         return mapToResponseDTO(actualizada, equipoIdGenerado);
+    }
+
+    private String obtenerEmailDestinatario(String usuarioId) {
+        if (usuarioId != null && usuarioId.contains("@")) {
+            return usuarioId;
+        }
+        return "fanatico1@fulvo.com";
     }
 
     private void validarPlantelBuenaFe(Long torneoId, List<JugadorInscripcionDTO> jugadores) {
