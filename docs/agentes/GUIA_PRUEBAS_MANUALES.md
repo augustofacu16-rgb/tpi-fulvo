@@ -1,52 +1,52 @@
-# GuÌa Maestra de Pruebas Manuales por SubsecciÛn y Tarea - TPI Fulvo'
+# Gu√≠a Maestra de Pruebas Manuales por Subsecci√≥n y Tarea - TPI Fulvo'
 
-> **PropÛsito:** Esta guÌa proporciona el protocolo tÈcnico detallado para que cada integrante (**Tomas, GastÛn, Santiago y Luis Miguel**) pueda probar de forma manual, quir˙rgica y visual el cÛdigo resultante de cada subsecciÛn desarrollada, antes de darla por finalizada en `TASKS.md` y registrar su entrada en `docs/audit/`.
+> **Prop√≥sito:** Esta gu√≠a proporciona el protocolo t√©cnico detallado para que cada integrante (**Tomas, Gast√≥n, Santiago y Luis Miguel**) pueda probar de forma manual, quir√∫rgica y visual el c√≥digo resultante de cada subsecci√≥n desarrollada, antes de darla por finalizada en `TASKS.md` y registrar su entrada en `docs/audit/`.
 > 
 > **Modalidades de Prueba Soportadas:**
-> 1. **OpciÛn A (Postman GUI):** Peticiones configuradas con pestaÒas *Params*, *Authorization*, *Headers* y *Body*, ideales para inspecciÛn visual de estados y respuestas.
-> 2. **OpciÛn B (Navegador Web y Swagger UI):** Acceso directo por URL para endpoints `GET` y consola interactiva de Swagger UI (`http://localhost:8080/swagger-ui.html`) con botÛn `Authorize` y `Try it out` para peticiones `POST`, `PATCH` y `DELETE`.
-> 3. **OpciÛn C (Consola / curl):** Comandos r·pidos para terminal PowerShell o Bash.
+> 1. **Opci√≥n A (Postman GUI):** Peticiones configuradas con pesta√±as *Params*, *Authorization*, *Headers* y *Body*, ideales para inspecci√≥n visual de estados y respuestas.
+> 2. **Opci√≥n B (Navegador Web y Swagger UI):** Acceso directo por URL para endpoints `GET` y consola interactiva de Swagger UI (`http://localhost:8080/swagger-ui.html`) con bot√≥n `Authorize` y `Try it out` para peticiones `POST`, `PATCH` y `DELETE`.
+> 3. **Opci√≥n C (Consola / curl):** Comandos r√°pidos para terminal PowerShell o Bash.
 
 ---
 
-## 0. Par·metros Globales y ConfiguraciÛn de Postman & Navegador
+## 0. Par√°metros Globales y Configuraci√≥n de Postman & Navegador
 
 ### 0.1 Mapeo de Puertos y Accesos Web
 
-| Servicio / Contenedor | Puerto Host | Acceso Directo por Navegador Web | DescripciÛn |
+| Servicio / Contenedor | Puerto Host | Acceso Directo por Navegador Web | Descripci√≥n |
 |---|:---:|---|---|
 | **API Gateway** | `8080` | [http://localhost:8080/health-check](http://localhost:8080/health-check) | Punto de entrada perimetral seguro. |
 | **Swagger UI Unificado** | `8080` | [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) | Consola interactiva para probar todos los endpoints desde la web. |
-| **Keycloak OIDC** | `8090` | [http://localhost:8090/realms/fulvo-realm](http://localhost:8090/realms/fulvo-realm) | Servidor de identidad y emisiÛn de JWT. |
+| **Keycloak OIDC** | `8090` | [http://localhost:8090/realms/fulvo-realm](http://localhost:8090/realms/fulvo-realm) | Servidor de identidad y emisi√≥n de JWT. |
 | **Mailpit (Web UI)** | `8025` | [http://localhost:8025](http://localhost:8025) | Bandeja visual para ver los correos transaccionales enviados. |
-| **WireMock Admin** | `8086` | [http://localhost:8086/__admin/mappings](http://localhost:8086/__admin/mappings) | Mappings de simulaciÛn satelital y clim·tica. |
-| **PostgreSQL 16** | `${DB_PORT_HOST:-5432}` | `localhost:${DB_PORT_HOST:-5432}` (vÌa DBeaver/pgAdmin) | Base de datos (`fulvo_db`). Din·mico vÌa `.env` si 5432 est· ocupado. |
+| **WireMock Admin** | `8086` | [http://localhost:8086/__admin/mappings](http://localhost:8086/__admin/mappings) | Mappings de simulaci√≥n satelital y clim√°tica. |
+| **PostgreSQL 16** | `${DB_PORT_HOST:-5432}` | `localhost:${DB_PORT_HOST:-5432}` (v√≠a DBeaver/pgAdmin) | Base de datos (`fulvo_db`). Din√°mico v√≠a `.env` si 5432 est√° ocupado. |
 
 ---
 
-### 0.2 ConfiguraciÛn del Entorno en Postman (Postman Environment)
+### 0.2 Configuraci√≥n del Entorno en Postman (Postman Environment)
 
 Crear un entorno en Postman llamado **`Fulvo Local Dev`** con las siguientes variables:
 
-| Variable | Initial Value | Current Value | DescripciÛn |
+| Variable | Initial Value | Current Value | Descripci√≥n |
 |---|---|---|---|
 | `gateway_url` | `http://localhost:8080` | `http://localhost:8080` | URL base del API Gateway. |
 | `keycloak_url` | `http://localhost:8090` | `http://localhost:8090` | URL base de Keycloak. |
-| `token_organizador` | *(vacÌo)* | *(se llena con login)* | Token JWT con rol `ROL_ORGANIZADOR` (`admin1`). |
-| `token_delegado` | *(vacÌo)* | *(se llena con login)* | Token JWT con rol `ROL_DELEGADO` (`delegado1`). |
-| `token_arbitro` | *(vacÌo)* | *(se llena con login)* | Token JWT con rol `ROL_ARBITRO` (`arbitro1`). |
-| `token_fanatico` | *(vacÌo)* | *(se llena con login)* | Token JWT con rol `ROL_FANATICO` (`fanatico1`). |
+| `token_organizador` | *(vac√≠o)* | *(se llena con login)* | Token JWT con rol `ROL_ORGANIZADOR` (`admin1`). |
+| `token_delegado` | *(vac√≠o)* | *(se llena con login)* | Token JWT con rol `ROL_DELEGADO` (`delegado1`). |
+| `token_arbitro` | *(vac√≠o)* | *(se llena con login)* | Token JWT con rol `ROL_ARBITRO` (`arbitro1`). |
+| `token_fanatico` | *(vac√≠o)* | *(se llena con login)* | Token JWT con rol `ROL_FANATICO` (`fanatico1`). |
 
-#### PeticiÛn en Postman para Auto-Login (PestaÒa "Tests")
+#### Petici√≥n en Postman para Auto-Login (Pesta√±a "Tests")
 Para obtener los tokens en Postman sin copiar y pegar manualmente:
-* **MÈtodo:** `POST`
+* **M√©todo:** `POST`
 * **URL:** `{{keycloak_url}}/realms/fulvo-realm/protocol/openid-connect/token`
 * **Body (`x-www-form-urlencoded`):**
   * `client_id`: `fulvo-backend`
   * `grant_type`: `password`
   * `username`: `admin1` *(o delegado1, arbitro1, fanatico1)*
   * `password`: `admin123`
-* **PestaÒa Tests (Script JavaScript):**
+* **Pesta√±a Tests (Script JavaScript):**
   ```javascript
   var res = pm.response.json();
   pm.environment.set("token_organizador", res.access_token);
@@ -77,20 +77,20 @@ $TOKEN_FANATICO = Get-FulvoToken "fanatico1"
 
 ---
 
-### 0.4 GestiÛn de Conflicto de Puerto 5432 (PostgreSQL Local Preinstalado)
+### 0.4 Gesti√≥n de Conflicto de Puerto 5432 (PostgreSQL Local Preinstalado)
 
-#### DiagnÛstico del Conflicto
-Si alg˙n integrante del equipo ya tiene instalado PostgreSQL de manera nativa en su sistema operativo, el puerto `5432` estar· bloqueado. Al ejecutar `docker compose up`, Docker arrojar· el error:
+#### Diagn√≥stico del Conflicto
+Si alg√∫n integrante del equipo ya tiene instalado PostgreSQL de manera nativa en su sistema operativo, el puerto `5432` estar√° bloqueado. Al ejecutar `docker compose up`, Docker arrojar√° el error:
 > `Error response from daemon: Ports are not available: exposing port TCP 0.0.0.0:5432 -> 0.0.0.0:0: listen tcp 0.0.0.0:5432: bind: address already in use`
 
-Para comprobar si el puerto 5432 est· ocupado antes de levantar Docker, ejecutar en PowerShell:
+Para comprobar si el puerto 5432 est√° ocupado antes de levantar Docker, ejecutar en PowerShell:
 ```powershell
 Test-NetConnection -ComputerName localhost -Port 5432
 ```
 Si `TcpTestSucceeded: True`, el puerto ya tiene un servicio escuchando.
 
-#### SoluciÛn Din·mica por Desarrollador (Sin Modificar CÛdigo ni Romper a los CompaÒeros)
-1. En la raÌz del proyecto (`tpi-fulvo/`), crear un archivo **`.env`** (ignorado en `.gitignore`) copiando el archivo de ejemplo `.env.example`:
+#### Soluci√≥n Din√°mica por Desarrollador (Sin Modificar C√≥digo ni Romper a los Compa√±eros)
+1. En la ra√≠z del proyecto (`tpi-fulvo/`), crear un archivo **`.env`** (ignorado en `.gitignore`) copiando el archivo de ejemplo `.env.example`:
    ```bash
    cp .env.example .env
    ```
@@ -102,20 +102,20 @@ Si `TcpTestSucceeded: True`, el puerto ya tiene un servicio escuchando.
    ```bash
    docker compose up -d
    ```
-   Docker mapear· `5433:5432`. El contenedor de PostgreSQL seguir· escuchando en su puerto interno `5432`, pero en la m·quina del desarrollador se acceder· a travÈs del puerto `5433`.
+   Docker mapear√° `5433:5432`. El contenedor de PostgreSQL seguir√° escuchando en su puerto interno `5432`, pero en la m√°quina del desarrollador se acceder√° a trav√©s del puerto `5433`.
 
-#### øPor quÈ esto NO rompe nada en el sistema?
-* **Dentro de la Red Docker (`bda-net`):** Los microservicios (`servicio-torneos`, `servicio-operaciones-partidos`) se comunican con PostgreSQL usando el hostname del contenedor y el puerto interno fijo: `jdbc:postgresql://postgres-db:5432/fulvo_db`. El mapeo del host no afecta en absoluto esta comunicaciÛn.
-* **Desde Clientes Externos (DBeaver / pgAdmin / psql):** El desarrollador se conectar· a `localhost:5433` en lugar de `5432`.
-* **Si se ejecuta un microservicio localmente en el IDE (fuera de Docker):** Los microservicios est·n parametrizados en `application.yml` para leer:
+#### ¬øPor qu√© esto NO rompe nada en el sistema?
+* **Dentro de la Red Docker (`bda-net`):** Los microservicios (`servicio-torneos`, `servicio-operaciones-partidos`) se comunican con PostgreSQL usando el hostname del contenedor y el puerto interno fijo: `jdbc:postgresql://postgres-db:5432/fulvo_db`. El mapeo del host no afecta en absoluto esta comunicaci√≥n.
+* **Desde Clientes Externos (DBeaver / pgAdmin / psql):** El desarrollador se conectar√° a `localhost:5433` en lugar de `5432`.
+* **Si se ejecuta un microservicio localmente en el IDE (fuera de Docker):** Los microservicios est√°n parametrizados en `application.yml` para leer:
   ```yaml
   spring:
     datasource:
       url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/fulvo_db?currentSchema=...
   ```
-  El desarrollador solo debe agregar la variable de entorno `DB_PORT=5433` o el par·metro JVM `-DDB_PORT=5433` en su Run Configuration de IntelliJ / VSCode / Eclipse.
+  El desarrollador solo debe agregar la variable de entorno `DB_PORT=5433` o el par√°metro JVM `-DDB_PORT=5433` en su Run Configuration de IntelliJ / VSCode / Eclipse.
 
-#### SoluciÛn Alternativa (Detener el Servicio Local de Windows)
+#### Soluci√≥n Alternativa (Detener el Servicio Local de Windows)
 Si el desarrollador prefiere no cambiar de puerto y liberar el 5432, puede detener temporalmente su servicio nativo de Windows:
 ```powershell
 # En PowerShell como Administrador:
@@ -124,157 +124,157 @@ Stop-Service -Name postgresql*
 
 ---
 
-# ETAPA 1 (DÌa 1 / Sprint 1): Infraestructura Base, Common Lib, Scaffolding y Gateway
+# ETAPA 1 (D√≠a 1 / Sprint 1): Infraestructura Base, Common Lib, Scaffolding y Gateway
 
 ---
 
-### SubsecciÛn 1.1: Servicios de Soporte Contenerizados [Tomas & Luis Miguel]
+### Subsecci√≥n 1.1: Servicios de Soporte Contenerizados [Tomas & Luis Miguel]
 
-#### PrecondiciÛn
+#### Precondici√≥n
 Estar ubicado en `tpi-fulvo/` con Docker Desktop iniciado.
 
 #### Prueba 1.1.1: Levantamiento de Contenedores
-* **OpciÛn C (Consola):**
+* **Opci√≥n C (Consola):**
   ```bash
   docker compose up -d
   docker compose ps
   ```
-* **OpciÛn B (Navegador):**
-  * Abrir Docker Desktop y verificar que el contenedor compuesto `tpi-fulvo` estÈ en verde con los 4 servicios activos (`postgres-db`, `keycloak-server`, `mailpit`, `wiremock`).
+* **Opci√≥n B (Navegador):**
+  * Abrir Docker Desktop y verificar que el contenedor compuesto `tpi-fulvo` est√© en verde con los 4 servicios activos (`postgres-db`, `keycloak-server`, `mailpit`, `wiremock`).
 
-#### Prueba 1.1.2: VerificaciÛn de Esquemas de Base de Datos
-* **OpciÛn B (Navegador / DBeaver / pgAdmin):**
-  * Conectarse a `localhost:5432` con usuario `postgres`, contraseÒa `postgres`, base `fulvo_db`.
-  * Expandir el ·rbol de esquemas: Comprobar visualmente que existan `esquema_torneos` y `esquema_operaciones`.
-* **OpciÛn C (Consola):**
+#### Prueba 1.1.2: Verificaci√≥n de Esquemas de Base de Datos
+* **Opci√≥n B (Navegador / DBeaver / pgAdmin):**
+  * Conectarse a `localhost:5432` con usuario `postgres`, contrase√±a `postgres`, base `fulvo_db`.
+  * Expandir el √°rbol de esquemas: Comprobar visualmente que existan `esquema_torneos` y `esquema_operaciones`.
+* **Opci√≥n C (Consola):**
   ```bash
   docker compose exec -it postgres-db psql -U postgres -d fulvo_db -c "\dn"
   ```
 
-#### Prueba 1.1.3: EmisiÛn de Token en Keycloak
-* **OpciÛn A (Postman):**
-  * **MÈtodo y URL:** `POST {{keycloak_url}}/realms/fulvo-realm/protocol/openid-connect/token`
+#### Prueba 1.1.3: Emisi√≥n de Token en Keycloak
+* **Opci√≥n A (Postman):**
+  * **M√©todo y URL:** `POST {{keycloak_url}}/realms/fulvo-realm/protocol/openid-connect/token`
   * **Body (`x-www-form-urlencoded`):**
     * `client_id`: `fulvo-backend`
     * `grant_type`: `password`
     * `username`: `admin1`
     * `password`: `admin123`
   * **Status Esperado:** `200 OK`.
-  * **InspecciÛn Visual:** Copiar el `access_token` resultante, pegarlo en [jwt.io](https://jwt.io) y verificar que en el payload aparezca `"roles": ["ROL_ORGANIZADOR"]`.
-* **OpciÛn B (Navegador):**
+  * **Inspecci√≥n Visual:** Copiar el `access_token` resultante, pegarlo en [jwt.io](https://jwt.io) y verificar que en el payload aparezca `"roles": ["ROL_ORGANIZADOR"]`.
+* **Opci√≥n B (Navegador):**
   * Abrir: [http://localhost:8090/realms/fulvo-realm/.well-known/openid-configuration](http://localhost:8090/realms/fulvo-realm/.well-known/openid-configuration)
   * Comprobar que retorne el documento JSON de autodescubrimiento OIDC.
-* **OpciÛn C (Consola):**
+* **Opci√≥n C (Consola):**
   ```bash
   curl -s -X POST http://localhost:8090/realms/fulvo-realm/protocol/openid-connect/token \
     -d "grant_type=password&client_id=fulvo-backend&username=admin1&password=admin123"
   ```
 
 #### Prueba 1.1.4: Accesibilidad de Mailpit y WireMock
-* **OpciÛn B (Navegador):**
+* **Opci√≥n B (Navegador):**
   * Abrir Mailpit: [http://localhost:8025](http://localhost:8025) $\to$ Visualizar la interfaz limpia de la bandeja de correos.
   * Abrir WireMock Mappings: [http://localhost:8086/__admin/mappings](http://localhost:8086/__admin/mappings) $\to$ Visualizar el JSON con los stubs configurados.
 
 ---
 
-### SubsecciÛn 1.2: LibrerÌa Compartida `fulvo-common-lib` [Luis Miguel]
+### Subsecci√≥n 1.2: Librer√≠a Compartida `fulvo-common-lib` [Luis Miguel]
 
-#### Prueba 1.2.1: CompilaciÛn e InstalaciÛn Local en `.m2`
-* **OpciÛn C (Consola):**
+#### Prueba 1.2.1: Compilaci√≥n e Instalaci√≥n Local en `.m2`
+* **Opci√≥n C (Consola):**
   ```bash
   cd tpi-fulvo/fulvo-common-lib
   mvn clean install -DskipTests
   ```
-* **OpciÛn B (Navegador / Explorador de Archivos):**
+* **Opci√≥n B (Navegador / Explorador de Archivos):**
   * Abrir el explorador de Windows en: `%USERPROFILE%\.m2\repository\com\fulvo\fulvo-common-lib\1.0.0-SNAPSHOT`
   * Verificar visualmente la presencia de `fulvo-common-lib-1.0.0-SNAPSHOT.jar` y su correspondiente `.pom`.
 
 ---
 
-### SubsecciÛn 1.3: Scaffolding Base de `servicio-torneos` [GastÛn]
+### Subsecci√≥n 1.3: Scaffolding Base de `servicio-torneos` [Gast√≥n]
 
-#### Prueba 1.3.1: CompilaciÛn y ConexiÛn al Esquema de Torneos
-* **OpciÛn C (Consola):**
+#### Prueba 1.3.1: Compilaci√≥n y Conexi√≥n al Esquema de Torneos
+* **Opci√≥n C (Consola):**
   ```bash
   cd tpi-fulvo/servicio-torneos
   mvn clean package -DskipTests
   mvn spring-boot:run
   ```
-* **OpciÛn B (Navegador):**
+* **Opci√≥n B (Navegador):**
   * Abrir [http://localhost:8081/health-check](http://localhost:8081/health-check) (si se ejecuta en dev local).
   * Verificar en pantalla: `{"status":"UP"}`.
 
 ---
 
-### SubsecciÛn 1.4: Scaffolding Base de `servicio-operaciones-partidos` [Santiago]
+### Subsecci√≥n 1.4: Scaffolding Base de `servicio-operaciones-partidos` [Santiago]
 
-#### Prueba 1.4.1: CompilaciÛn y ConexiÛn al Esquema de Operaciones
-* **OpciÛn C (Consola):**
+#### Prueba 1.4.1: Compilaci√≥n y Conexi√≥n al Esquema de Operaciones
+* **Opci√≥n C (Consola):**
   ```bash
   cd tpi-fulvo/servicio-operaciones-partidos
   mvn clean package -DskipTests
   mvn spring-boot:run
   ```
-* **OpciÛn B (Navegador):**
+* **Opci√≥n B (Navegador):**
   * Abrir [http://localhost:8082/health-check](http://localhost:8082/health-check).
   * Verificar en pantalla: `{"status":"UP"}`.
 
 ---
 
-### SubsecciÛn 1.5: Gateway Reactivo (`api-gateway`) y Seguridad OIDC [Tomas]
+### Subsecci√≥n 1.5: Gateway Reactivo (`api-gateway`) y Seguridad OIDC [Tomas]
 
-#### PrecondiciÛn
+#### Precondici√≥n
 `api-gateway` levantado en el puerto `8080`.
 
 #### Prueba 1.5.1: Health Check de Gateway
-* **OpciÛn B (Navegador):**
+* **Opci√≥n B (Navegador):**
   * Abrir directamente en Chrome/Edge: [http://localhost:8080/health-check](http://localhost:8080/health-check)
   * **Resultado Visual:** `{"status":"UP"}` con HTTP 200.
-* **OpciÛn A (Postman):**
+* **Opci√≥n A (Postman):**
   * `GET {{gateway_url}}/health-check` $\to$ Status `200 OK`.
 
-#### Prueba 1.5.2: Bloqueo de Acceso AnÛnimo (EN-01)
-* **OpciÛn A (Postman):**
-  * **MÈtodo y URL:** `GET {{gateway_url}}/v1/torneos`
+#### Prueba 1.5.2: Bloqueo de Acceso An√≥nimo (EN-01)
+* **Opci√≥n A (Postman):**
+  * **M√©todo y URL:** `GET {{gateway_url}}/v1/torneos`
   * **Authorization:** `No Auth`
   * **Status Esperado:** `401 Unauthorized`.
-* **OpciÛn B (Navegador):**
+* **Opci√≥n B (Navegador):**
   * Abrir en el navegador [http://localhost:8080/v1/torneos](http://localhost:8080/v1/torneos).
   * **Resultado Visual:** Pantalla blanca de error HTTP 401 Unauthorized o ventana emergente solicitando credenciales.
 
 #### Prueba 1.5.3: Bloqueo por Rol Insuficiente (EN-02)
-* **OpciÛn A (Postman):**
-  * **MÈtodo y URL:** `POST {{gateway_url}}/v1/torneos`
+* **Opci√≥n A (Postman):**
+  * **M√©todo y URL:** `POST {{gateway_url}}/v1/torneos`
   * **Authorization:** `Bearer Token` $\to$ `{{token_fanatico}}`
   * **Headers:** `Content-Type: application/json`
   * **Body (raw JSON):** `{"nombre": "Torneo Ilegal"}`
   * **Status Esperado:** `403 Forbidden`.
-* **OpciÛn B (Swagger UI en Navegador):**
+* **Opci√≥n B (Swagger UI en Navegador):**
   * Abrir [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html).
-  * Hacer clic en `Authorize`, pegar el token de fan·tico.
+  * Hacer clic en `Authorize`, pegar el token de fan√°tico.
   * Ir al endpoint `POST /v1/torneos`, pulsar `Try it out`, pegar el body y pulsar `Execute`.
-  * **Resultado Visual:** CÛdigo de respuesta `403 Forbidden` en la consola interactiva.
+  * **Resultado Visual:** C√≥digo de respuesta `403 Forbidden` en la consola interactiva.
 
 ---
 
-## ?? RecapitulaciÛn y Prueba Integral de la ETAPA 1 (E2E de Etapa)
+## ?? Recapitulaci√≥n y Prueba Integral de la ETAPA 1 (E2E de Etapa)
 
-### 1. øQuÈ debe quedar funcionando al finalizar la Etapa 1?
+### 1. ¬øQu√© debe quedar funcionando al finalizar la Etapa 1?
 1. **Contenedores de Soporte e Infraestructura Base:**
-   * `postgres-db`: PostgreSQL 16 activo, saludable y con los esquemas lÛgicos `esquema_torneos` y `esquema_operaciones` creados limpiamente mediante `initdb/init-schemas.sql`.
-   * `keycloak-server`: Keycloak 26.5.0 en puerto host `8090` con el Realm `fulvo-realm` importado, cliente p˙blico `fulvo-backend`, los 4 roles del sistema (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) y 4 usuarios de prueba (`admin1`, `delegado1`, `arbitro1`, `fanatico1` con clave `admin123`).
+   * `postgres-db`: PostgreSQL 16 activo, saludable y con los esquemas l√≥gicos `esquema_torneos` y `esquema_operaciones` creados limpiamente mediante `initdb/init-schemas.sql`.
+   * `keycloak-server`: Keycloak 26.5.0 en puerto host `8090` con el Realm `fulvo-realm` importado, cliente p√∫blico `fulvo-backend`, los 4 roles del sistema (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) y 4 usuarios de prueba (`admin1`, `delegado1`, `arbitro1`, `fanatico1` con clave `admin123`).
    * `mailpit`: Servidor SMTP en puerto `1025` y consola Web interactiva accesible en puerto `8025`.
-   * `wiremock`: Servidor de emulaciÛn en puerto `8086` listo para responder contratos mock de geocodificaciÛn y clima.
-2. **LibrerÌa Compartida (`fulvo-common-lib`):**
-   * Artefacto `com.fulvo:fulvo-common-lib:1.0.0-SNAPSHOT` instalado fÌsicamente en el repositorio local Maven (`~/.m2`).
-   * Contratos DTOs (`CrucePartidoDTO`, `NotificacionEmailDTO`, etc.), excepciones comunes y manejador RFC 7807 (`ProblemDetail`) disponibles para todos los mÛdulos.
+   * `wiremock`: Servidor de emulaci√≥n en puerto `8086` listo para responder contratos mock de geocodificaci√≥n y clima.
+2. **Librer√≠a Compartida (`fulvo-common-lib`):**
+   * Artefacto `com.fulvo:fulvo-common-lib:1.0.0-SNAPSHOT` instalado f√≠sicamente en el repositorio local Maven (`~/.m2`).
+   * Contratos DTOs (`CrucePartidoDTO`, `NotificacionEmailDTO`, etc.), excepciones comunes y manejador RFC 7807 (`ProblemDetail`) disponibles para todos los m√≥dulos.
 3. **Scaffoldings de Negocio:**
    * `servicio-torneos`: Proyecto Spring Boot 4.0.8 compilando limpiamente (`mvn clean package -DskipTests`) y conectado a `esquema_torneos`.
    * `servicio-operaciones-partidos`: Proyecto Spring Boot 4.0.8 compilando limpiamente y conectado a `esquema_operaciones`.
-4. **PerÌmetro de Seguridad en Gateway (`api-gateway`):**
+4. **Per√≠metro de Seguridad en Gateway (`api-gateway`):**
    * Spring Cloud Gateway en puerto `8080` con seguridad reactiva OIDC validando tokens JWT de Keycloak y mapeando autoridades a `ROL_*`.
    * Endpoint de Actuator `/health-check` en estado `UP`.
-   * Bloqueo inmediato de accesos anÛnimos con `401 Unauthorized`.
+   * Bloqueo inmediato de accesos an√≥nimos con `401 Unauthorized`.
    * Bloqueo de peticiones con rol no autorizado con `403 Forbidden`.
 
 ---
@@ -285,28 +285,28 @@ Ejecutar la siguiente secuencia ordenada para comprobar la totalidad de la Etapa
 
 1. **Paso 1 (Infraestructura Docker):**
    * En terminal, ejecutar `docker compose up -d`.
-   * Verificar con `docker compose ps` que los contenedores `postgres-db`, `keycloak-server`, `mailpit` y `wiremock` estÈn en estado `Up` o `healthy`.
-2. **Paso 2 (VerificaciÛn de Base de Datos):**
+   * Verificar con `docker compose ps` que los contenedores `postgres-db`, `keycloak-server`, `mailpit` y `wiremock` est√©n en estado `Up` o `healthy`.
+2. **Paso 2 (Verificaci√≥n de Base de Datos):**
    * Abrir DBeaver / pgAdmin o ejecutar por consola: `docker compose exec -it postgres-db psql -U postgres -d fulvo_db -c "\dn"`.
    * Comprobar que aparezcan listados los esquemas `esquema_torneos` y `esquema_operaciones`.
 3. **Paso 3 (Servicios Web en el Navegador):**
    * Abrir [http://localhost:8090/realms/fulvo-realm/.well-known/openid-configuration](http://localhost:8090/realms/fulvo-realm/.well-known/openid-configuration) $\to$ Verificar el documento JSON OIDC.
    * Abrir [http://localhost:8025](http://localhost:8025) $\to$ Visualizar la interfaz web de Mailpit limpia y activa.
    * Abrir [http://localhost:8086/__admin/mappings](http://localhost:8086/__admin/mappings) $\to$ Comprobar respuesta JSON de WireMock.
-4. **Paso 4 (LibrerÌa Com˙n en `.m2`):**
-   * En la carpeta de la librerÌa, ejecutar `mvn clean install -DskipTests`.
+4. **Paso 4 (Librer√≠a Com√∫n en `.m2`):**
+   * En la carpeta de la librer√≠a, ejecutar `mvn clean install -DskipTests`.
    * Constatar el mensaje `BUILD SUCCESS` y la presencia del archivo JAR en el `.m2` local.
 5. **Paso 5 (Arranque de Microservicios y Gateway):**
    * Iniciar `servicio-torneos`, `servicio-operaciones-partidos` y `api-gateway`.
-   * Comprobar que no existan errores de conexiÛn a PostgreSQL ni fallos de beans en los logs.
+   * Comprobar que no existan errores de conexi√≥n a PostgreSQL ni fallos de beans en los logs.
 6. **Paso 6 (Health Check del Gateway en Postman o Navegador):**
    * Enviar `GET http://localhost:8080/health-check`.
    * Constatar status `200 OK` con cuerpo `{"status":"UP"}`.
-7. **Paso 7 (ObtenciÛn de Tokens JWT en Postman):**
-   * Enviar peticiÛn de login `POST http://localhost:8090/realms/fulvo-realm/protocol/openid-connect/token` para `admin1` (`ROL_ORGANIZADOR`) y `fanatico1` (`ROL_FANATICO`).
+7. **Paso 7 (Obtenci√≥n de Tokens JWT en Postman):**
+   * Enviar petici√≥n de login `POST http://localhost:8090/realms/fulvo-realm/protocol/openid-connect/token` para `admin1` (`ROL_ORGANIZADOR`) y `fanatico1` (`ROL_FANATICO`).
    * Constatar status `200 OK` y copiar los respectivos tokens en las variables de entorno de Postman (`token_organizador` y `token_fanatico`).
-8. **Paso 8 (Prueba de Bloqueo AnÛnimo - 401 Unauthorized):**
-   * Enviar `GET http://localhost:8080/v1/torneos` **sin** cabecera de autenticaciÛn.
+8. **Paso 8 (Prueba de Bloqueo An√≥nimo - 401 Unauthorized):**
+   * Enviar `GET http://localhost:8080/v1/torneos` **sin** cabecera de autenticaci√≥n.
    * Constatar status `401 Unauthorized`.
 9. **Paso 9 (Prueba de Bloqueo por Rol Insuficiente - 403 Forbidden):**
    * Enviar `POST http://localhost:8080/v1/torneos` adjuntando `Authorization: Bearer {{token_fanatico}}` y body `{"nombre":"Torneo Ilegal"}`.
@@ -316,30 +316,30 @@ Ejecutar la siguiente secuencia ordenada para comprobar la totalidad de la Etapa
 
 ### 3. Resultados Esperados en la Totalidad de Pruebas de la Etapa 1
 
-| # | Componente / Endpoint | MÈtodo | Auth / Token | Status Esperado | Resultado Observable / Cuerpo de Respuesta |
+| # | Componente / Endpoint | M√©todo | Auth / Token | Status Esperado | Resultado Observable / Cuerpo de Respuesta |
 |:---:|---|:---:|:---:|:---:|---|
-| **1** | `postgres-db` (`\dn`) | CLI / SQL | Credenciales DB | `ConexiÛn OK` | Esquemas `esquema_torneos` y `esquema_operaciones` creados. |
-| **2** | Keycloak OIDC Well-Known | `GET` | P˙blico | `200 OK` | JSON con `issuer: ".../realms/fulvo-realm"`. |
+| **1** | `postgres-db` (`\dn`) | CLI / SQL | Credenciales DB | `Conexi√≥n OK` | Esquemas `esquema_torneos` y `esquema_operaciones` creados. |
+| **2** | Keycloak OIDC Well-Known | `GET` | P√∫blico | `200 OK` | JSON con `issuer: ".../realms/fulvo-realm"`. |
 | **3** | Mailpit Web UI (`:8025`) | `GET` | Navegador Web | `200 OK` | Interfaz web de Mailpit renderizada sin errores. |
 | **4** | WireMock Admin (`:8086`) | `GET` | Navegador Web | `200 OK` | JSON con stubs cargados `{"mappings":[...],"meta":{...}}`. |
 | **5** | `fulvo-common-lib` (`mvn install`) | CLI | Local | `BUILD SUCCESS` | JAR instalado en `~/.m2/repository/com/fulvo/fulvo-common-lib/`. |
-| **6** | `{{gateway_url}}/health-check` | `GET` | P˙blico | `200 OK` | `{"status":"UP"}`. Gateway reactivo en lÌnea. |
+| **6** | `{{gateway_url}}/health-check` | `GET` | P√∫blico | `200 OK` | `{"status":"UP"}`. Gateway reactivo en l√≠nea. |
 | **7** | Keycloak Token (`/token`) | `POST` | `admin1` / `admin123` | `200 OK` | JSON con `access_token` conteniendo `"roles": ["ROL_ORGANIZADOR"]`. |
 | **8** | Keycloak Token (`/token`) | `POST` | `fanatico1` / `admin123` | `200 OK` | JSON con `access_token` conteniendo `"roles": ["ROL_FANATICO"]`. |
-| **9** | `{{gateway_url}}/v1/torneos` | `GET` | *(Sin Token)* | `401 Unauthorized` | PeticiÛn bloqueada en el perÌmetro del Gateway. |
-| **10** | `{{gateway_url}}/v1/torneos` | `POST` | `Bearer {{token_fanatico}}` | `403 Forbidden` | PeticiÛn rechazada: fan·tico no tiene permiso de creaciÛn de torneos. |
+| **9** | `{{gateway_url}}/v1/torneos` | `GET` | *(Sin Token)* | `401 Unauthorized` | Petici√≥n bloqueada en el per√≠metro del Gateway. |
+| **10** | `{{gateway_url}}/v1/torneos` | `POST` | `Bearer {{token_fanatico}}` | `403 Forbidden` | Petici√≥n rechazada: fan√°tico no tiene permiso de creaci√≥n de torneos. |
 
 ---
 
-# ETAPA 2 (DÌa 2 / Sprint 2 - Parte A): Core de Torneos, Admisiones y Fixtures
+# ETAPA 2 (D√≠a 2 / Sprint 2 - Parte A): Core de Torneos, Admisiones y Fixtures
 
 ---
 
-### SubsecciÛn 2.1: Modelado JPA y LÛgica de AdmisiÛn de Torneos [GastÛn]
+### Subsecci√≥n 2.1: Modelado JPA y L√≥gica de Admisi√≥n de Torneos [Gast√≥n]
 
 #### Prueba 2.1.1: Alta Exitosa de Torneo (EP-01)
-* **OpciÛn A (Postman):**
-  * **MÈtodo y URL:** `POST {{gateway_url}}/v1/torneos`
+* **Opci√≥n A (Postman):**
+  * **M√©todo y URL:** `POST {{gateway_url}}/v1/torneos`
   * **Authorization:** `Bearer Token` $\to$ `{{token_organizador}}`
   * **Headers:** `Content-Type: application/json`
   * **Body (raw JSON):**
@@ -352,21 +352,21 @@ Ejecutar la siguiente secuencia ordenada para comprobar la totalidad de la Etapa
     }
     ```
   * **Status Esperado:** `201 Created`.
-  * **InspecciÛn Visual:** Cabecera `Location` con la URI del recurso creado y JSON con `id: 1`, `estado: "INSCRIPCION_ABIERTA"`.
-* **OpciÛn B (Swagger UI en Navegador):**
-  * Abrir [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) $\to$ Seleccionar definiciÛn `servicio-torneos`.
+  * **Inspecci√≥n Visual:** Cabecera `Location` con la URI del recurso creado y JSON con `id: 1`, `estado: "INSCRIPCION_ABIERTA"`.
+* **Opci√≥n B (Swagger UI en Navegador):**
+  * Abrir [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) $\to$ Seleccionar definici√≥n `servicio-torneos`.
   * `Authorize` con `{{token_organizador}}`.
   * Ejecutar `POST /v1/torneos` con el JSON anterior $\to$ Visualizar respuesta `201`.
 
-#### Prueba 2.1.2: Rechazo por Cupo Inv·lido (EN-03)
-* **OpciÛn A (Postman):**
+#### Prueba 2.1.2: Rechazo por Cupo Inv√°lido (EN-03)
+* **Opci√≥n A (Postman):**
   * Mismo request cambiando `"cupoEquipos": 12`.
   * **Status Esperado:** `400 Bad Request`.
-  * **InspecciÛn Visual:** Objeto RFC 7807 (`ProblemDetail`) con `"title": "Regla de Negocio Violada"` y `"detail": "El cupo de equipos para Liga debe ser exactamente 10 o 20"`.
+  * **Inspecci√≥n Visual:** Objeto RFC 7807 (`ProblemDetail`) con `"title": "Regla de Negocio Violada"` y `"detail": "El cupo de equipos para Liga debe ser exactamente 10 o 20"`.
 
-#### Prueba 2.1.3: PostulaciÛn de Equipo con Lista de Buena Fe (EP-02)
-* **OpciÛn A (Postman):**
-  * **MÈtodo y URL:** `POST {{gateway_url}}/v1/torneos/1/solicitudes-inscripcion`
+#### Prueba 2.1.3: Postulaci√≥n de Equipo con Lista de Buena Fe (EP-02)
+* **Opci√≥n A (Postman):**
+  * **M√©todo y URL:** `POST {{gateway_url}}/v1/torneos/1/solicitudes-inscripcion`
   * **Authorization:** `Bearer Token` $\to$ `{{token_fanatico}}`
   * **Headers:** `Content-Type: application/json`
   * **Body (raw JSON):**
@@ -394,45 +394,45 @@ Ejecutar la siguiente secuencia ordenada para comprobar la totalidad de la Etapa
     ```
   * **Status Esperado:** `202 Accepted`.
 
-#### Prueba 2.1.4: Rechazo por Doble InscripciÛn en Mismo Torneo (EN-05)
-* **OpciÛn A (Postman):**
+#### Prueba 2.1.4: Rechazo por Doble Inscripci√≥n en Mismo Torneo (EN-05)
+* **Opci√≥n A (Postman):**
   * Volver a enviar la solicitud anterior con el mismo `{{token_fanatico}}`.
   * **Status Esperado:** `409 Conflict`.
-  * **InspecciÛn Visual:** Mensaje indicando que el fan·tico ya cuenta con una solicitud activa en el certamen (RN-03).
+  * **Inspecci√≥n Visual:** Mensaje indicando que el fan√°tico ya cuenta con una solicitud activa en el certamen (RN-03).
 
-#### Prueba 2.1.5: AprobaciÛn de Solicitud de AdmisiÛn
-* **OpciÛn A (Postman):**
-  * **MÈtodo y URL:** `PATCH {{gateway_url}}/v1/solicitudes-inscripcion/1/admision`
+#### Prueba 2.1.5: Aprobaci√≥n de Solicitud de Admisi√≥n
+* **Opci√≥n A (Postman):**
+  * **M√©todo y URL:** `PATCH {{gateway_url}}/v1/solicitudes-inscripcion/1/admision`
   * **Authorization:** `Bearer Token` $\to$ `{{token_organizador}}`
   * **Headers:** `Content-Type: application/json`
   * **Body (raw JSON):** `{"estado": "ACEPTADA"}`
   * **Status Esperado:** `200 OK`.
-  * **InspecciÛn Visual:** `estado: "ACEPTADA"`, `equipoId` generado y cupo disponible del torneo reducido.
+  * **Inspecci√≥n Visual:** `estado: "ACEPTADA"`, `equipoId` generado y cupo disponible del torneo reducido.
 
 ---
 
-### SubsecciÛn 2.2: GeneraciÛn AlgorÌtmica DeterminÌstica de Fixtures [GastÛn]
+### Subsecci√≥n 2.2: Generaci√≥n Algor√≠tmica Determin√≠stica de Fixtures [Gast√≥n]
 
 #### Prueba 2.2.1: Bloqueo de Cierre con Cupo Incompleto (RN-01)
-* **OpciÛn A (Postman):**
-  * **MÈtodo y URL:** `PATCH {{gateway_url}}/v1/torneos/1/estado`
+* **Opci√≥n A (Postman):**
+  * **M√©todo y URL:** `PATCH {{gateway_url}}/v1/torneos/1/estado`
   * **Authorization:** `Bearer Token` $\to$ `{{token_organizador}}`
   * **Body (raw JSON):** `{"estado": "INSCRIPCION_CERRADA"}`
   * **Status Esperado:** `409 Conflict`.
 
-#### Prueba 2.2.2: GeneraciÛn de Fixture y Cierre al 100%
-* **OpciÛn A (Postman):**
+#### Prueba 2.2.2: Generaci√≥n de Fixture y Cierre al 100%
+* **Opci√≥n A (Postman):**
   * Inscribir y admitir los 9 equipos restantes.
   * Enviar: `POST {{gateway_url}}/v1/torneos/1/fixtures` con `{{token_organizador}}`.
   * **Status Esperado:** `200 OK`.
-  * **InspecciÛn Visual:** Lista completa de cruces (`partidos`) en formato Round Robin y estado del torneo en `INICIADO`.
+  * **Inspecci√≥n Visual:** Lista completa de cruces (`partidos`) en formato Round Robin y estado del torneo en `INICIADO`.
 
 ---
 
-### SubsecciÛn 2.3: Contrato y RecepciÛn de Cruces en Operaciones [Santiago]
+### Subsecci√≥n 2.3: Contrato y Recepci√≥n de Cruces en Operaciones [Santiago]
 
-#### Prueba 2.3.1: VerificaciÛn de Partidos en PostgreSQL
-* **OpciÛn B (Navegador / DBeaver / pgAdmin):**
+#### Prueba 2.3.1: Verificaci√≥n de Partidos en PostgreSQL
+* **Opci√≥n B (Navegador / DBeaver / pgAdmin):**
   * Ejecutar en el editor SQL:
     ```sql
     SELECT id, torneo_id, equipo_local_id, equipo_visitante_id, estado 
@@ -443,37 +443,96 @@ Ejecutar la siguiente secuencia ordenada para comprobar la totalidad de la Etapa
 
 ---
 
-### SubsecciÛn 2.4: Notificaciones de AdmisiÛn en Mailpit [Luis Miguel]
+### Subsecci√≥n 2.4: Notificaciones de Admisi√≥n en Mailpit [Luis Miguel]
 
-#### Prueba 2.4.1: InspecciÛn de Correos en el Navegador
-* **OpciÛn B (Navegador):**
+#### Prueba 2.4.1: Inspecci√≥n de Correos en el Navegador
+* **Opci√≥n B (Navegador):**
   * Abrir: [http://localhost:8025](http://localhost:8025)
   * **Resultado Visual:**
-    * Correo recibido con asunto *"PostulaciÛn Recibida - Torneo Apertura 2026"*.
-    * Correo recibido con asunto *"AdmisiÛn Aprobada - Bienvenido a Fulvo'"*.
+    * Correo recibido con asunto *"Postulaci√≥n Recibida - Torneo Apertura 2026"*.
+    * Correo recibido con asunto *"Admisi√≥n Aprobada - Bienvenido a Fulvo'"*.
     * Hacer clic en los correos y leer el cuerpo HTML renderizado.
 
 ---
 
-## ?? RecapitulaciÛn y Prueba Integral de la ETAPA 2 (E2E de Etapa)
+### Subsecci√≥n 2.5: Enrutamiento Perimetral y Reglas de Seguridad para Torneos en API Gateway [Tomas]
 
-### 1. øQuÈ debe quedar funcionando al finalizar la Etapa 2?
+#### Prueba 2.5.1: Enrutamiento y Verificaci√≥n de Roles en Creaci√≥n de Torneo (RN-01 / Control RBAC)
+* **Opci√≥n A (Postman):**
+  * **Intento An√≥nimo:**
+    * **M√©todo y URL:** `POST {{gateway_url}}/v1/torneos`
+    * **Authorization:** `No Auth`
+    * **Status Esperado:** `401 Unauthorized`.
+  * **Intento con Rol Fan√°tico:**
+    * **Authorization:** `Bearer Token` $\to$ `{{token_fanatico}}`
+    * **Status Esperado:** `403 Forbidden`.
+  * **Intento con Rol Organizador:**
+    * **Authorization:** `Bearer Token` $\to$ `{{token_organizador}}`
+    * **Body (raw JSON):** `{"nombre": "Torneo Apertura 2026", "formato": "LIGA", "cupoEquipos": 10}`
+    * **Status Esperado:** `201 Created`.
+* **Opci√≥n B (Swagger UI en Navegador):**
+  * Abrir: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) $\to$ Seleccionar definici√≥n `servicio-torneos`.
+  * Autenticarse primero con `{{token_fanatico}}` y ejecutar `POST /v1/torneos` $\to$ verificar `403 Forbidden`.
+  * Re-autenticarse con `{{token_organizador}}` y ejecutar `POST /v1/torneos` $\to$ verificar `201 Created`.
+
+---
+
+### Subsecci√≥n 2.6: Habilitaci√≥n de OpenAPI 3.0, Swagger UI y Agregaci√≥n Perimetral en API Gateway [Tomas]
+
+#### Precondici√≥n
+Tener levantados en local o Docker: `api-gateway` (puerto `8080`), `servicio-torneos` (puerto `8081`) y `servicio-operaciones-partidos` (puerto `8082`).
+
+#### Prueba 2.6.1: Acceso Directo a OpenAPI Docs de Downstream Microservices
+* **Opci√≥n B (Navegador):**
+  1. Abrir en el navegador: [http://localhost:8081/v3/api-docs](http://localhost:8081/v3/api-docs) (`servicio-torneos`).
+  2. Abrir en el navegador: [http://localhost:8082/v3/api-docs](http://localhost:8082/v3/api-docs) (`servicio-operaciones-partidos`).
+  * **Resultado Visual:** Se descarga o visualiza el JSON de la especificaci√≥n OpenAPI 3.0 de cada microservicio, conteniendo la lista de paths (`/v1/torneos`, `/v1/solicitudes-inscripcion`, `/v1/partidos/lote`, etc.), esquemas DTO y definiciones de seguridad Bearer JWT.
+
+#### Prueba 2.6.2: Enrutamiento Perimetral de OpenAPI Docs en API Gateway (Sin Token)
+* **Opci√≥n B (Navegador):**
+  1. Abrir: [http://localhost:8080/api/torneos/v3/api-docs](http://localhost:8080/api/torneos/v3/api-docs)
+  2. Abrir: [http://localhost:8080/api/partidos/v3/api-docs](http://localhost:8080/api/partidos/v3/api-docs)
+  * **Resultado Visual:** Ambos endpoints responden con HTTP 200 y el JSON de OpenAPI correspondiente a trav√©s del puerto 8080, validando que el Gateway permite el bypass de autenticaci√≥n para las rutas p√∫blicas de documentaci√≥n (`/v3/api-docs/**`).
+
+#### Prueba 2.6.3: Navegaci√≥n y Prueba Interactiva en Swagger UI Centralizado
+* **Opci√≥n B (Navegador):**
+  1. Abrir en el navegador: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+  2. **Verificaci√≥n de Agregaci√≥n:** En el selector desplegable superior derecho (*"Select a definition"*), constatar la presencia y alternancia entre:
+     * `servicio-torneos` (`/api/torneos/v3/api-docs`)
+     * `servicio-operaciones-partidos` (`/api/partidos/v3/api-docs`)
+  3. **Verificaci√≥n de Seguridad Bearer JWT:**
+     * Hacer clic en el bot√≥n verde **Authorize** (con √≠cono de candado).
+     * Pegar un token JWT v√°lido de Keycloak (ej. de `admin1` u `organizador`) y pulsar **Authorize**.
+     * Comprobar que los candados de los endpoints protegidos cambian a estado cerrado.
+  4. **Prueba Interactiva Din√°mica:**
+     * Seleccionar `servicio-torneos`, expandir `POST /v1/torneos`, pulsar **Try it out**, ingresar el body y presionar **Execute**.
+     * Verificar la respuesta interactiva en vivo con status `201 Created` y el payload de respuesta renderizado.
+     * Cambiar en el desplegable a `servicio-operaciones-partidos` y verificar que el endpoint `POST /v1/partidos/lote` se visualiza con su esquema `List<CrucePartidoDTO>` autogenerado din√°micamente desde el c√≥digo de Spring.
+
+---
+
+## ?? Recapitulaci√≥n y Prueba Integral de la ETAPA 2 (E2E de Etapa)
+
+### 1. ¬øQu√© debe quedar funcionando al finalizar la Etapa 2?
 1. **Ciclo Registral y Dominio en `servicio-torneos` (`esquema_torneos`):**
-   * CreaciÛn formal de torneos validando cupos estrictos (10 o 20 para Liga; 8 o 16 para Llaves, RN-01). Bloqueo de cupos inv·lidos con `400 Bad Request`.
-   * GestiÛn de solicitudes de postulaciÛn enviadas por usuarios con `ROL_FANATICO`: validaciÛn estricta de lista de buena fe (15 a 22 futbolistas, arquero obligatorio, capit·n ˙nico y DNI irrepetible en el certamen, RN-02 y RN-03).
-   * AdmisiÛn y evaluaciÛn por el Organizador (`ROL_ORGANIZADOR`): aceptaciÛn crea la entidad `Equipo` en estado `ACTIVO`, promueve al solicitante a `ROL_DELEGADO`, descuenta cupo y rechazo registra motivo (RN-04).
+   * Creaci√≥n formal de torneos validando cupos estrictos (10 o 20 para Liga; 8 o 16 para Llaves, RN-01). Bloqueo de cupos inv√°lidos con `400 Bad Request`.
+   * Gesti√≥n de solicitudes de postulaci√≥n enviadas por usuarios con `ROL_FANATICO`: validaci√≥n estricta de lista de buena fe (15 a 22 futbolistas, arquero obligatorio, capit√°n √∫nico y DNI irrepetible en el certamen, RN-02 y RN-03).
+   * Admisi√≥n y evaluaci√≥n por el Organizador (`ROL_ORGANIZADOR`): aceptaci√≥n crea la entidad `Equipo` en estado `ACTIVO`, promueve al solicitante a `ROL_DELEGADO`, descuenta cupo y rechazo registra motivo (RN-04).
    * Cierre estricto de inscripciones al 100% de cupo (bloqueo con `409 Conflict` si faltan equipos, RN-01).
-2. **GeneraciÛn AlgorÌtmica y Despacho Inter-Servicio:**
-   * Motor determinÌstico de fixtures: algoritmo Round Robin para Liga y ·rbol de emparejamiento con fases avanzadas en `null` para Llaves.
-   * TransiciÛn del torneo a estado `INICIADO`.
-   * Cliente `RestClient` en `servicio-torneos` despachando sincrÛnicamente el lote de cruces (`List<CrucePartidoDTO>`) hacia `servicio-operaciones-partidos`.
-3. **RecepciÛn y Persistencia Desacoplada en `servicio-operaciones-partidos` (`esquema_operaciones`):**
+2. **Generaci√≥n Algor√≠tmica y Despacho Inter-Servicio:**
+   * Motor determin√≠stico de fixtures: algoritmo Round Robin para Liga y √°rbol de emparejamiento con fases avanzadas en `null` para Llaves.
+   * Transici√≥n del torneo a estado `INICIADO`.
+   * Cliente `RestClient` en `servicio-torneos` despachando sincr√≥nicamente el lote de cruces (`List<CrucePartidoDTO>`) hacia `servicio-operaciones-partidos`.
+3. **Recepci√≥n y Persistencia Desacoplada en `servicio-operaciones-partidos` (`esquema_operaciones`):**
    * Endpoint `POST /v1/partidos/lote` persistiendo transaccionalmente los partidos recibidos en estado `PROGRAMADO`.
-   * Aislamiento total: vÌnculos por claves lÛgicas (`torneo_id`, `equipo_local_id`, `equipo_visitante_id`) sin foreign keys fÌsicas cruzadas.
+   * Aislamiento total: v√≠nculos por claves l√≥gicas (`torneo_id`, `equipo_local_id`, `equipo_visitante_id`) sin foreign keys f√≠sicas cruzadas.
 4. **Notificaciones Transaccionales:**
-   * Despacho asÌncrono de emails ante postulaciÛn (confirmaciÛn al fan·tico) y resoluciÛn de admisiÛn (alegrÌa o rechazo fundamentado al delegado) auditables en Mailpit (:8025) (RN-12).
-5. **PerÌmetro en API Gateway:**
+   * Despacho as√≠ncrono de emails ante postulaci√≥n (confirmaci√≥n al fan√°tico) y resoluci√≥n de admisi√≥n (alegr√≠a o rechazo fundamentado al delegado) auditables en Mailpit (:8025) (RN-12).
+5. **Per√≠metro en API Gateway:**
    * Enrutamiento de `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**` con control reactivo de acceso por roles.
+6. **Cat√°logo Interactivo OpenAPI 3.0 y Swagger UI Centralizado en API Gateway [Tomas]:**
+   * Swagger UI unificado y accesible desde `http://localhost:8080/swagger-ui.html` agregando las especificaciones vivas de `servicio-torneos` (`/api/torneos/v3/api-docs`) y `servicio-operaciones-partidos` (`/api/partidos/v3/api-docs`).
+   * Soporte interactivo para autenticaci√≥n Bearer JWT mediante el bot√≥n **Authorize**, permitiendo que cualquier desarrollador o auditor pruebe visualmente los nuevos endpoints a medida que se implementan din√°micamente en el c√≥digo Spring Boot.
 
 ---
 
@@ -481,37 +540,37 @@ Ejecutar la siguiente secuencia ordenada para comprobar la totalidad de la Etapa
 
 Ejecutar la siguiente secuencia de punta a punta en Postman GUI o Swagger UI:
 
-1. **Paso 1 (Token de Organizador y Fan·tico):**
-   * Realizar login en Keycloak como `admin1` y como `fanatico1` para obtener tokens v·lidos.
-2. **Paso 2 (Prueba de CreaciÛn de Torneo con Cupo Inv·lido - EN-03 / RN-01):**
-   * Enviar `POST {{gateway_url}}/v1/torneos` con `{{token_organizador}}` definiendo `cupoEquipos: 12` (inv·lido para Liga).
+1. **Paso 1 (Token de Organizador y Fan√°tico):**
+   * Realizar login en Keycloak como `admin1` y como `fanatico1` para obtener tokens v√°lidos.
+2. **Paso 2 (Prueba de Creaci√≥n de Torneo con Cupo Inv√°lido - EN-03 / RN-01):**
+   * Enviar `POST {{gateway_url}}/v1/torneos` con `{{token_organizador}}` definiendo `cupoEquipos: 12` (inv√°lido para Liga).
    * Constatar respuesta `400 Bad Request` (RFC 7807 `ProblemDetail`).
-3. **Paso 3 (CreaciÛn Exitosa de Torneo - EP-01):**
+3. **Paso 3 (Creaci√≥n Exitosa de Torneo - EP-01):**
    * Enviar `POST {{gateway_url}}/v1/torneos` con `{{token_organizador}}` creando *"Torneo Apertura 2026"* (formato `LIGA`, `cupoEquipos: 10`).
    * Constatar status `201 Created` y almacenar el `torneo_id` generado.
-4. **Paso 4 (Prueba de PostulaciÛn con Plantel Inv·lido - EN-04 / RN-02):**
+4. **Paso 4 (Prueba de Postulaci√≥n con Plantel Inv√°lido - EN-04 / RN-02):**
    * Enviar `POST {{gateway_url}}/v1/torneos/{{torneo_id}}/solicitudes-inscripcion` con `{{token_fanatico}}` enviando solo 12 jugadores o sin arquero.
    * Constatar status `400 Bad Request` detallando el incumplimiento de la lista de buena fe.
-5. **Paso 5 (PostulaciÛn Exitosa de Equipo - EP-03 / RN-02):**
-   * Enviar `POST {{gateway_url}}/v1/torneos/{{torneo_id}}/solicitudes-inscripcion` con `{{token_fanatico}}` enviando 16 jugadores tipificados (1 arquero, 1 capit·n y DNIs ˙nicos).
+5. **Paso 5 (Postulaci√≥n Exitosa de Equipo - EP-03 / RN-02):**
+   * Enviar `POST {{gateway_url}}/v1/torneos/{{torneo_id}}/solicitudes-inscripcion` con `{{token_fanatico}}` enviando 16 jugadores tipificados (1 arquero, 1 capit√°n y DNIs √∫nicos).
    * Constatar status `202 Accepted` y guardar el `solicitud_id`.
-6. **Paso 6 (Prueba de Doble PostulaciÛn - EN-06 / RN-03):**
-   * Reintentar enviar otra postulaciÛn para el mismo torneo con el mismo `{{token_fanatico}}`.
-   * Constatar status `409 Conflict` (solo una solicitud activa por fan·tico).
-7. **Paso 7 (AdmisiÛn de Solicitud y PromociÛn - EP-04 / RN-04):**
+6. **Paso 6 (Prueba de Doble Postulaci√≥n - EN-06 / RN-03):**
+   * Reintentar enviar otra postulaci√≥n para el mismo torneo con el mismo `{{token_fanatico}}`.
+   * Constatar status `409 Conflict` (solo una solicitud activa por fan√°tico).
+7. **Paso 7 (Admisi√≥n de Solicitud y Promoci√≥n - EP-04 / RN-04):**
    * Enviar `PATCH {{gateway_url}}/v1/solicitudes-inscripcion/{{solicitud_id}}/admision` con `{{token_organizador}}` (`estado: "ACEPTADA"`).
    * Constatar status `200 OK`. Verificar que se haya creado el `Equipo` en estado `ACTIVO` y cupo descontado.
-8. **Paso 8 (InspecciÛn de Notificaciones en Mailpit):**
+8. **Paso 8 (Inspecci√≥n de Notificaciones en Mailpit):**
    * Abrir en navegador [http://localhost:8025](http://localhost:8025).
-   * Verificar la recepciÛn de los correos autom·ticos: confirmaciÛn de postulaciÛn y notificaciÛn de admisiÛn aprobada.
+   * Verificar la recepci√≥n de los correos autom√°ticos: confirmaci√≥n de postulaci√≥n y notificaci√≥n de admisi√≥n aprobada.
 9. **Paso 9 (Prueba de Cierre Prematuro de Torneo - EN-03 / RN-01):**
    * Enviar `PATCH {{gateway_url}}/v1/torneos/{{torneo_id}}/estado` con `{{token_organizador}}` (`estado: "CERRADO_INSCRIPCION"`).
-   * Constatar status `409 Conflict` porque el cupo no alcanzÛ el 100%.
-10. **Paso 10 (Completar Cupo, Cierre y GeneraciÛn de Fixture - EP-05 / FN-06):**
+   * Constatar status `409 Conflict` porque el cupo no alcanz√≥ el 100%.
+10. **Paso 10 (Completar Cupo, Cierre y Generaci√≥n de Fixture - EP-05 / FN-06):**
     * Postular y admitir los equipos restantes hasta alcanzar los 10 requeridos.
-    * Cerrar inscripciÛn: `PATCH {{gateway_url}}/v1/torneos/{{torneo_id}}/estado` a `CERRADO_INSCRIPCION` (status `200 OK`).
+    * Cerrar inscripci√≥n: `PATCH {{gateway_url}}/v1/torneos/{{torneo_id}}/estado` a `CERRADO_INSCRIPCION` (status `200 OK`).
     * Disparar fixture: `POST {{gateway_url}}/v1/torneos/{{torneo_id}}/fixtures` (status `201 Created`). El torneo pasa a `INICIADO`.
-11. **Paso 11 (Comprobar RecepciÛn de Cruces en Operaciones):**
+11. **Paso 11 (Comprobar Recepci√≥n de Cruces en Operaciones):**
     * Enviar `GET {{gateway_url}}/v1/torneos/{{torneo_id}}/partidos` con `{{token_fanatico}}`.
     * Constatar status `200 OK` y verificar la lista completa de partidos persistidos en `esquema_operaciones` en estado `PROGRAMADO`.
 
@@ -519,41 +578,43 @@ Ejecutar la siguiente secuencia de punta a punta en Postman GUI o Swagger UI:
 
 ### 3. Resultados Esperados en la Totalidad de Pruebas de la Etapa 2
 
-| # | Endpoint / OperaciÛn | MÈtodo | Rol / Token | Status Esperado | Resultado Observable / Cuerpo de Respuesta |
+| # | Endpoint / Operaci√≥n | M√©todo | Rol / Token | Status Esperado | Resultado Observable / Cuerpo de Respuesta |
 |:---:|---|:---:|:---:|:---:|---|
-| **1** | `/v1/torneos` (cupo inv·lido) | `POST` | `ROL_ORGANIZADOR` | `400 Bad Request` | `ProblemDetail`: "Cupo de equipos no permitido para formato LIGA". |
-| **2** | `/v1/torneos` (alta v·lida) | `POST` | `ROL_ORGANIZADOR` | `201 Created` | JSON de Torneo en estado `ABIERTO_INSCRIPCION` con su ID asignado. |
+| **1** | `/v1/torneos` (cupo inv√°lido) | `POST` | `ROL_ORGANIZADOR` | `400 Bad Request` | `ProblemDetail`: "Cupo de equipos no permitido para formato LIGA". |
+| **2** | `/v1/torneos` (alta v√°lida) | `POST` | `ROL_ORGANIZADOR` | `201 Created` | JSON de Torneo en estado `ABIERTO_INSCRIPCION` con su ID asignado. |
 | **3** | `/v1/torneos/{id}/solicitudes-inscripcion` (plantel corto) | `POST` | `ROL_FANATICO` | `400 Bad Request` | `ProblemDetail`: "La lista de buena fe debe contener entre 15 y 22 jugadores". |
-| **4** | `/v1/torneos/{id}/solicitudes-inscripcion` (v·lida) | `POST` | `ROL_FANATICO` | `202 Accepted` | Solicitud registrada en estado `PENDIENTE`. |
+| **4** | `/v1/torneos/{id}/solicitudes-inscripcion` (v√°lida) | `POST` | `ROL_FANATICO` | `202 Accepted` | Solicitud registrada en estado `PENDIENTE`. |
 | **5** | `/v1/torneos/{id}/solicitudes-inscripcion` (duplicada) | `POST` | `ROL_FANATICO` | `409 Conflict` | `ProblemDetail`: "El usuario ya posee una solicitud registrada para este certamen". |
-| **6** | `/v1/solicitudes-inscripcion/{id}/admision` | `PATCH` | `ROL_ORGANIZADOR` | `200 OK` | Solicitud `ACEPTADA`, creaciÛn de `Equipo` en `ACTIVO` y descuento de cupo. |
-| **7** | Mailpit (`http://localhost:8025`) | Web UI | Navegador Web | `200 OK` | Correos de confirmaciÛn y bienvenida recibidos y legibles en HTML. |
-| **8** | `/v1/torneos/{id}/estado` (cierre con cupo incompleto) | `PATCH` | `ROL_ORGANIZADOR` | `409 Conflict` | `ProblemDetail`: "No se puede cerrar la inscripciÛn sin alcanzar el 100% del cupo". |
+| **6** | `/v1/solicitudes-inscripcion/{id}/admision` | `PATCH` | `ROL_ORGANIZADOR` | `200 OK` | Solicitud `ACEPTADA`, creaci√≥n de `Equipo` en `ACTIVO` y descuento de cupo. |
+| **7** | Mailpit (`http://localhost:8025`) | Web UI | Navegador Web | `200 OK` | Correos de confirmaci√≥n y bienvenida recibidos y legibles en HTML. |
+| **8** | `/v1/torneos/{id}/estado` (cierre con cupo incompleto) | `PATCH` | `ROL_ORGANIZADOR` | `409 Conflict` | `ProblemDetail`: "No se puede cerrar la inscripci√≥n sin alcanzar el 100% del cupo". |
 | **9** | `/v1/torneos/{id}/estado` (cierre al 100%) | `PATCH` | `ROL_ORGANIZADOR` | `200 OK` | Torneo pasa exitosamente a estado `CERRADO_INSCRIPCION`. |
 | **10** | `/v1/torneos/{id}/fixtures` | `POST` | `ROL_ORGANIZADOR` | `201 Created` | Torneo transiciona a `INICIADO` y cruces despachados a Operaciones. |
 | **11** | `/v1/torneos/{id}/partidos` | `GET` | `ROL_FANATICO` | `200 OK` | Listado completo de partidos creados en estado `PROGRAMADO` en Operaciones. |
+| **12** | `/api/torneos/v3/api-docs` y `/api/partidos/v3/api-docs` | `GET` | P√∫blico / Sin Auth | `200 OK` | JSON OpenAPI 3.0 din√°mico expuesto a trav√©s de Gateway sin bloqueo 401. |
+| **13** | Swagger UI (`http://localhost:8080/swagger-ui.html`) | Web UI | Navegador Web | `200 OK` | Consola Swagger UI interactiva con selector desplegable de microservicios y soporte Bearer JWT. |
 
 ---
 
-# ETAPA 3 (DÌa 2 / Sprint 2 - Parte B): Core de Operaciones, Arbitraje y Posiciones
+# ETAPA 3 (D√≠a 2 / Sprint 2 - Parte B): Core de Operaciones, Arbitraje y Posiciones
 
 ---
 
-### SubsecciÛn 3.1: Sedes, ¡rbitros y AsignaciÛn Anti-SuperposiciÛn [Santiago]
+### Subsecci√≥n 3.1: Sedes, √Årbitros y Asignaci√≥n Anti-Superposici√≥n [Santiago]
 
-#### Prueba 3.1.1: Alta de Sede y ¡rbitro
-* **OpciÛn A (Postman):**
+#### Prueba 3.1.1: Alta de Sede y √Årbitro
+* **Opci√≥n A (Postman):**
   * **1. Alta Sede:** `POST {{gateway_url}}/v1/sedes` con `{{token_organizador}}`:
     ```json
     {
       "nombre": "Estadio Mario Alberto Kempes",
-      "direccion": "Av. C·rcano s/n, CÛrdoba",
+      "direccion": "Av. C√°rcano s/n, C√≥rdoba",
       "latitudManual": -31.3697,
       "longitudManual": -64.2469
     }
     ```
     Status: `201 Created` $\to$ ID generado = 1.
-  * **2. Alta ¡rbitro:** `POST {{gateway_url}}/v1/arbitros` con `{{token_organizador}}`:
+  * **2. Alta √Årbitro:** `POST {{gateway_url}}/v1/arbitros` con `{{token_organizador}}`:
     ```json
     {
       "dni": "20333444",
@@ -563,8 +624,8 @@ Ejecutar la siguiente secuencia de punta a punta en Postman GUI o Swagger UI:
     ```
     Status: `201 Created`.
 
-#### Prueba 3.1.2: AsignaciÛn Exitosa de Partido (EP-04)
-* **OpciÛn A (Postman):**
+#### Prueba 3.1.2: Asignaci√≥n Exitosa de Partido (EP-04)
+* **Opci√≥n A (Postman):**
   * `POST {{gateway_url}}/v1/partidos/1/asignaciones` con `{{token_organizador}}`:
     ```json
     {
@@ -576,27 +637,27 @@ Ejecutar la siguiente secuencia de punta a punta en Postman GUI o Swagger UI:
   * **Status Esperado:** `200 OK`.
 
 #### Prueba 3.1.3: Conflicto Horario $\pm 2\text{ horas}$ (EN-07)
-* **OpciÛn A (Postman):**
-  * Asignar partido 2 en la misma sede y con el mismo ·rbitro a las `17:30:00`:
+* **Opci√≥n A (Postman):**
+  * Asignar partido 2 en la misma sede y con el mismo √°rbitro a las `17:30:00`:
     `POST {{gateway_url}}/v1/partidos/2/asignaciones`
   * **Status Esperado:** `409 Conflict`.
-  * **InspecciÛn Visual:** ProblemDetail indicando conflicto por ventana horaria de 2 horas (RN-05).
+  * **Inspecci√≥n Visual:** ProblemDetail indicando conflicto por ventana horaria de 2 horas (RN-05).
 
 ---
 
-### SubsecciÛn 3.2: Circuito Arbitral, Actas y Penales [Santiago]
+### Subsecci√≥n 3.2: Circuito Arbitral, Actas y Penales [Santiago]
 
 #### Prueba 3.2.1: Inicio Oficial de Partido a `EN_CURSO`
-* **OpciÛn A (Postman):**
+* **Opci√≥n A (Postman):**
   * `PATCH {{gateway_url}}/v1/partidos/1/estado` con `{{token_arbitro}}`:
     ```json
     {"estado": "EN_CURSO"}
     ```
   * **Status Esperado:** `200 OK`.
-* *Prueba Negativa (EN-08):* Si se envÌa con un token de otro ·rbitro distinto de `20333444`, debe retornar **`403 Forbidden`**.
+* *Prueba Negativa (EN-08):* Si se env√≠a con un token de otro √°rbitro distinto de `20333444`, debe retornar **`403 Forbidden`**.
 
-#### Prueba 3.2.2: Carga de Acta Oficial y FinalizaciÛn (EP-05)
-* **OpciÛn A (Postman):**
+#### Prueba 3.2.2: Carga de Acta Oficial y Finalizaci√≥n (EP-05)
+* **Opci√≥n A (Postman):**
   * `POST {{gateway_url}}/v1/partidos/1/actas` con `{{token_arbitro}}`:
     ```json
     {
@@ -618,28 +679,28 @@ Ejecutar la siguiente secuencia de punta a punta en Postman GUI o Swagger UI:
 
 ---
 
-### SubsecciÛn 3.3: Tabla de Posiciones y Goleadores [Santiago]
+### Subsecci√≥n 3.3: Tabla de Posiciones y Goleadores [Santiago]
 
 #### Prueba 3.3.1: Consulta de Tabla de Posiciones en el Navegador
-* **OpciÛn B (Navegador):**
+* **Opci√≥n B (Navegador):**
   * Abrir en Chrome/Edge: [http://localhost:8080/v1/torneos/1/posiciones](http://localhost:8080/v1/torneos/1/posiciones)
-  * *(Si el Gateway exige token para consultas p˙blicas, usar Postman o Swagger UI).*
-* **OpciÛn A (Postman):**
+  * *(Si el Gateway exige token para consultas p√∫blicas, usar Postman o Swagger UI).*
+* **Opci√≥n A (Postman):**
   * `GET {{gateway_url}}/v1/torneos/1/posiciones` con `{{token_fanatico}}`
   * **Status Esperado:** `200 OK`.
-  * **InspecciÛn Visual:** El equipo ganador figura primero con `puntos: 3`, `pj: 1`, `pg: 1`, `gf: 2`, `gc: 1`, `dg: 1`.
+  * **Inspecci√≥n Visual:** El equipo ganador figura primero con `puntos: 3`, `pj: 1`, `pg: 1`, `gf: 2`, `gc: 1`, `dg: 1`.
 
 #### Prueba 3.3.2: Consulta de Tabla de Goleadores
-* **OpciÛn A (Postman):**
+* **Opci√≥n A (Postman):**
   * `GET {{gateway_url}}/v1/torneos/1/goleadores` con `{{token_fanatico}}`
   * **Status Esperado:** `200 OK` listando a los dorsales 10, 9 y 11 con 1 gol cada uno.
 
 ---
 
-### SubsecciÛn 3.4: Reemplazos y SincronizaciÛn de Planteles [GastÛn]
+### Subsecci√≥n 3.4: Reemplazos y Sincronizaci√≥n de Planteles [Gast√≥n]
 
 #### Prueba 3.4.1: Reemplazo Exitoso de Jugador
-* **OpciÛn A (Postman):**
+* **Opci√≥n A (Postman):**
   * `POST {{gateway_url}}/v1/equipos/1/reemplazos-jugadores` con `{{token_delegado}}`:
     ```json
     {
@@ -661,22 +722,22 @@ Ejecutar la siguiente secuencia de punta a punta en Postman GUI o Swagger UI:
 
 ---
 
-## ?? RecapitulaciÛn y Prueba Integral de la ETAPA 3 (E2E de Etapa)
+## ?? Recapitulaci√≥n y Prueba Integral de la ETAPA 3 (E2E de Etapa)
 
-### 1. øQuÈ debe quedar funcionando al finalizar la Etapa 3?
-1. **LogÌstica de Sedes, ¡rbitros y Asignaciones (`servicio-operaciones-partidos`):**
-   * PadrÛn de sedes (`Sede`) con geocodificaciÛn lat/long y padrÛn de colegiados arbitrales (`Arbitro`) con DNI como PK natural y vinculaciÛn a Keycloak.
-   * AsignaciÛn logÌstica (`POST /v1/partidos/{id}/asignaciones`): ValidaciÛn inflexible de la regla anti-superposiciÛn horaria de $\pm 2$ horas (RN-05) tanto para la sede como para el ·rbitro.
-2. **Circuito Arbitral y M·quina de Estados:**
-   * TransiciÛn a `EN_CURSO`: VerificaciÛn estricta de identidad arbitral (`jwt.dni == partido.arbitro_dni`, RN-08). Bloqueo de ·rbitros no asignados con `403 Forbidden`.
+### 1. ¬øQu√© debe quedar funcionando al finalizar la Etapa 3?
+1. **Log√≠stica de Sedes, √Årbitros y Asignaciones (`servicio-operaciones-partidos`):**
+   * Padr√≥n de sedes (`Sede`) con geocodificaci√≥n lat/long y padr√≥n de colegiados arbitrales (`Arbitro`) con DNI como PK natural y vinculaci√≥n a Keycloak.
+   * Asignaci√≥n log√≠stica (`POST /v1/partidos/{id}/asignaciones`): Validaci√≥n inflexible de la regla anti-superposici√≥n horaria de $\pm 2$ horas (RN-05) tanto para la sede como para el √°rbitro.
+2. **Circuito Arbitral y M√°quina de Estados:**
+   * Transici√≥n a `EN_CURSO`: Verificaci√≥n estricta de identidad arbitral (`jwt.dni == partido.arbitro_dni`, RN-08). Bloqueo de √°rbitros no asignados con `403 Forbidden`.
    * Carga de acta oficial por dorsal (`POST /v1/partidos/{id}/actas`): Registro de goles, amonestaciones y expulsiones.
-   * DefiniciÛn en Llaves por penales (RN-10): En caso de empate en los 90', exigencia obligatoria de tanda de penales sin empate (`penalesLocal != penalesVisitante`), asignando el ganador y promoviÈndolo a la siguiente fase de llaves.
-   * CancelaciÛn por disturbios (RN-09): TransiciÛn a `CANCELADO`, asignaciÛn de 0 puntos en tabla y descalificaciÛn de ambos equipos en llaves.
-3. **CÛmputo AtÛmico de EstadÌsticas y Posiciones:**
-   * Al asentar el acta (`FINALIZADO`), rec·lculo transaccional inmediato de la tabla de posiciones (PJ, PG, PE, PP, GF, GC, DG y Puntos).
+   * Definici√≥n en Llaves por penales (RN-10): En caso de empate en los 90', exigencia obligatoria de tanda de penales sin empate (`penalesLocal != penalesVisitante`), asignando el ganador y promovi√©ndolo a la siguiente fase de llaves.
+   * Cancelaci√≥n por disturbios (RN-09): Transici√≥n a `CANCELADO`, asignaci√≥n de 0 puntos en tabla y descalificaci√≥n de ambos equipos en llaves.
+3. **C√≥mputo At√≥mico de Estad√≠sticas y Posiciones:**
+   * Al asentar el acta (`FINALIZADO`), rec√°lculo transaccional inmediato de la tabla de posiciones (PJ, PG, PE, PP, GF, GC, DG y Puntos).
    * Endpoint de consulta de posiciones (`GET /v1/torneos/{id}/posiciones`) y ranking de goleadores (`GET /v1/torneos/{id}/goleadores`).
 4. **Ciclo de Reemplazos de Planteles (`servicio-torneos`):**
-   * Endpoint `POST /v1/equipos/{id}/reemplazos-jugadores` para el `ROL_DELEGADO`: hasta 5 sustituciones acumuladas y prohibiciÛn taxativa de sustituir futbolistas con `suspendido == true` (RN-11).
+   * Endpoint `POST /v1/equipos/{id}/reemplazos-jugadores` para el `ROL_DELEGADO`: hasta 5 sustituciones acumuladas y prohibici√≥n taxativa de sustituir futbolistas con `suspendido == true` (RN-11).
 5. **Seguridad en Gateway:**
    * Enrutamiento y control perimetral exigiendo `ROL_ARBITRO` para actas y transiciones, `ROL_ORGANIZADOR` para asignaciones, y `ROL_DELEGADO` para reemplazos.
 
@@ -688,75 +749,75 @@ Ejecutar la siguiente secuencia de punta a punta:
 
 1. **Paso 1 (Tokens Requeridos):**
    * Disponer en Postman de los tokens: `token_organizador` (`admin1`), `token_arbitro` (`arbitro1`), `token_delegado` (`delegado1`) y `token_fanatico` (`fanatico1`).
-2. **Paso 2 (Alta de Sede y ¡rbitro):**
+2. **Paso 2 (Alta de Sede y √Årbitro):**
    * Crear Sede: `POST {{gateway_url}}/v1/sedes` con `{{token_organizador}}` (guardar `sede_id: 1`).
-   * Crear ¡rbitro: `POST {{gateway_url}}/v1/arbitros` con `{{token_organizador}}` (`dni: "20333444"`, asociando a `arbitro1`).
-3. **Paso 3 (AsignaciÛn Horaria V·lida):**
+   * Crear √Årbitro: `POST {{gateway_url}}/v1/arbitros` con `{{token_organizador}}` (`dni: "20333444"`, asociando a `arbitro1`).
+3. **Paso 3 (Asignaci√≥n Horaria V√°lida):**
    * Enviar `POST {{gateway_url}}/v1/partidos/1/asignaciones` con `{{token_organizador}}` para las 16:00 hs.
-   * Constatar status `200 OK`. Partido asignado con sede 1 y ·rbitro 20333444.
+   * Constatar status `200 OK`. Partido asignado con sede 1 y √°rbitro 20333444.
 4. **Paso 4 (Prueba de Conflicto Horario $\pm 2$h - EN-07 / RN-05):**
-   * Intentar asignar el Partido 2 a la misma sede o al mismo ·rbitro para las 17:00 hs (dentro de la ventana de superposiciÛn de 2 horas).
+   * Intentar asignar el Partido 2 a la misma sede o al mismo √°rbitro para las 17:00 hs (dentro de la ventana de superposici√≥n de 2 horas).
    * Constatar status `409 Conflict` (ProblemDetail detallando el conflicto horario).
 5. **Paso 5 (Prueba de Exclusividad Arbitral - EN-10 / RN-08):**
-   * Intentar iniciar el Partido 1 (`PATCH {{gateway_url}}/v1/partidos/1/estado` a `EN_CURSO`) con un token de ·rbitro que **no** sea el asignado.
+   * Intentar iniciar el Partido 1 (`PATCH {{gateway_url}}/v1/partidos/1/estado` a `EN_CURSO`) con un token de √°rbitro que **no** sea el asignado.
    * Constatar status `403 Forbidden`.
-6. **Paso 6 (Inicio Oficial del Partido por el ¡rbitro Designado):**
+6. **Paso 6 (Inicio Oficial del Partido por el √Årbitro Designado):**
    * Enviar `PATCH {{gateway_url}}/v1/partidos/1/estado` a `EN_CURSO` con `{{token_arbitro}}` asignado.
    * Constatar status `200 OK`.
 7. **Paso 7 (Carga de Acta Oficial por Dorsal - EP-05 / FN-09):**
    * Enviar `POST {{gateway_url}}/v1/partidos/1/actas` con `{{token_arbitro}}`: 2 goles para equipo local, 1 para visitante, tarjetas por dorsal.
-   * Constatar status `200 OK`. El partido pasa a `FINALIZADO` y dispara el cÛmputo de la tabla.
+   * Constatar status `200 OK`. El partido pasa a `FINALIZADO` y dispara el c√≥mputo de la tabla.
 8. **Paso 8 (Consulta de Tabla de Posiciones y Goleadores - EP-08 / FN-12):**
    * Enviar `GET {{gateway_url}}/v1/torneos/1/posiciones` con `{{token_fanatico}}`.
    * Constatar status `200 OK`: El equipo local suma 3 puntos (PG=1, GF=2, GC=1, DG=+1); el visitante suma 0 puntos.
    * Enviar `GET {{gateway_url}}/v1/torneos/1/goleadores` con `{{token_fanatico}}` y comprobar el ranking de artilleros por dorsal.
 9. **Paso 9 (Prueba de Penales en Llaves - EP-07 / RN-10):**
    * En un partido de llaves empatado 1-1, enviar acta omitiendo penales $\to$ constatar rechazo `400 Bad Request`.
-   * Enviar acta con `penalesLocal: 5` y `penalesVisitante: 4` $\to$ constatar status `200 OK` y promociÛn autom·tica del ganador al siguiente cruce.
+   * Enviar acta con `penalesLocal: 5` y `penalesVisitante: 4` $\to$ constatar status `200 OK` y promoci√≥n autom√°tica del ganador al siguiente cruce.
 10. **Paso 10 (Reemplazo Exitoso de Jugador por Delegado - EP-09 / FN-11):**
     * Enviar `POST {{gateway_url}}/v1/equipos/1/reemplazos-jugadores` con `{{token_delegado}}` sustituyendo a un futbolista activo.
     * Constatar status `200 OK` y contador de cambios incrementado a 1.
 11. **Paso 11 (Prueba de Bloqueo de Reemplazo a Jugador Suspendido - EN-12 / RN-11):**
-    * Intentar sustituir a un jugador que recibiÛ tarjeta roja directa (`suspendido == true`) en el acta previa.
+    * Intentar sustituir a un jugador que recibi√≥ tarjeta roja directa (`suspendido == true`) en el acta previa.
     * Constatar rechazo con `400 Bad Request`.
 
 ---
 
 ### 3. Resultados Esperados en la Totalidad de Pruebas de la Etapa 3
 
-| # | Endpoint / OperaciÛn | MÈtodo | Rol / Token | Status Esperado | Resultado Observable / Cuerpo de Respuesta |
+| # | Endpoint / Operaci√≥n | M√©todo | Rol / Token | Status Esperado | Resultado Observable / Cuerpo de Respuesta |
 |:---:|---|:---:|:---:|:---:|---|
 | **1** | `/v1/sedes` | `POST` | `ROL_ORGANIZADOR` | `201 Created` | Sede deportiva registrada con ID y coordenadas. |
-| **2** | `/v1/arbitros` | `POST` | `ROL_ORGANIZADOR` | `201 Created` | ¡rbitro empadronado con DNI como clave primaria. |
-| **3** | `/v1/partidos/{id}/asignaciones` (v·lida) | `POST` | `ROL_ORGANIZADOR` | `200 OK` | Partido actualizado con fecha/hora, sede y ·rbitro asignados. |
-| **4** | `/v1/partidos/{id}/asignaciones` (superposiciÛn) | `POST` | `ROL_ORGANIZADOR` | `409 Conflict` | `ProblemDetail`: "Conflicto horario: sede o ·rbitro asignados en ventana ±2h". |
-| **5** | `/v1/partidos/{id}/estado` (·rbitro no asignado) | `PATCH` | `ROL_ARBITRO` *(ajeno)* | `403 Forbidden` | Denegado: el DNI del JWT no coincide con el ·rbitro asignado al partido. |
+| **2** | `/v1/arbitros` | `POST` | `ROL_ORGANIZADOR` | `201 Created` | √Årbitro empadronado con DNI como clave primaria. |
+| **3** | `/v1/partidos/{id}/asignaciones` (v√°lida) | `POST` | `ROL_ORGANIZADOR` | `200 OK` | Partido actualizado con fecha/hora, sede y √°rbitro asignados. |
+| **4** | `/v1/partidos/{id}/asignaciones` (superposici√≥n) | `POST` | `ROL_ORGANIZADOR` | `409 Conflict` | `ProblemDetail`: "Conflicto horario: sede o √°rbitro asignados en ventana ¬±2h". |
+| **5** | `/v1/partidos/{id}/estado` (√°rbitro no asignado) | `PATCH` | `ROL_ARBITRO` *(ajeno)* | `403 Forbidden` | Denegado: el DNI del JWT no coincide con el √°rbitro asignado al partido. |
 | **6** | `/v1/partidos/{id}/estado` (a `EN_CURSO`) | `PATCH` | `ROL_ARBITRO` *(titular)* | `200 OK` | Partido en estado `EN_CURSO`. |
 | **7** | `/v1/partidos/{id}/actas` (cierre regular) | `POST` | `ROL_ARBITRO` *(titular)* | `200 OK` | Partido en `FINALIZADO` con marcador 2-1 y tarjetas asentadas. |
-| **8** | `/v1/partidos/{id}/actas` (empate en llaves sin penales) | `POST` | `ROL_ARBITRO` *(titular)* | `400 Bad Request` | `ProblemDetail`: "El empate en fase de eliminaciÛn directa exige definiciÛn por penales". |
-| **9** | `/v1/torneos/{id}/posiciones` | `GET` | `ROL_FANATICO` | `200 OK` | Tabla con puntos, partidos jugados, diferencia de goles calculados atÛmicamente. |
-| **10** | `/v1/equipos/{id}/reemplazos-jugadores` (v·lido) | `POST` | `ROL_DELEGADO` | `200 OK` | Baja del titular saliente, alta del ingresante y contador de cambios en 1. |
+| **8** | `/v1/partidos/{id}/actas` (empate en llaves sin penales) | `POST` | `ROL_ARBITRO` *(titular)* | `400 Bad Request` | `ProblemDetail`: "El empate en fase de eliminaci√≥n directa exige definici√≥n por penales". |
+| **9** | `/v1/torneos/{id}/posiciones` | `GET` | `ROL_FANATICO` | `200 OK` | Tabla con puntos, partidos jugados, diferencia de goles calculados at√≥micamente. |
+| **10** | `/v1/equipos/{id}/reemplazos-jugadores` (v√°lido) | `POST` | `ROL_DELEGADO` | `200 OK` | Baja del titular saliente, alta del ingresante y contador de cambios en 1. |
 | **11** | `/v1/equipos/{id}/reemplazos-jugadores` (suspendido) | `POST` | `ROL_DELEGADO` | `400 Bad Request` | `ProblemDetail`: "No se permite sustituir a un futbolista sancionado disciplinariamente". |
 
 ---
 
-# ETAPA 4 (DÌa 3 / Sprint 3 - Parte A): Adaptadores Externos, Resiliencia y Scheduler
+# ETAPA 4 (D√≠a 3 / Sprint 3 - Parte A): Adaptadores Externos, Resiliencia y Scheduler
 
 ---
 
-### SubsecciÛn 4.1: Adaptador de GeocodificaciÛn y Fallback [Luis Miguel]
+### Subsecci√≥n 4.1: Adaptador de Geocodificaci√≥n y Fallback [Luis Miguel]
 
-#### Prueba 4.1.1: ResoluciÛn Normal de Coordenadas
-* **OpciÛn A (Postman):**
+#### Prueba 4.1.1: Resoluci√≥n Normal de Coordenadas
+* **Opci√≥n A (Postman):**
   * `POST {{gateway_url}}/v1/geocodificaciones/direcciones` con `{{token_organizador}}`:
     ```json
-    {"direccion": "Av. C·rcano s/n, CÛrdoba, Argentina"}
+    {"direccion": "Av. C√°rcano s/n, C√≥rdoba, Argentina"}
     ```
-  * **Status Esperado:** `200 OK` con `latitud` y `longitud` numÈricas.
+  * **Status Esperado:** `200 OK` con `latitud` y `longitud` num√©ricas.
 
 #### Prueba 4.1.2: Fallback Manual ante Corte Satelital (RN-06)
-* Detener el mock en WireMock o pasar una direcciÛn desconocida enviando coordenadas de respaldo:
-* **OpciÛn A (Postman):**
+* Detener el mock en WireMock o pasar una direcci√≥n desconocida enviando coordenadas de respaldo:
+* **Opci√≥n A (Postman):**
   ```json
   {
     "direccion": "Calle Inexistente 9999",
@@ -765,31 +826,31 @@ Ejecutar la siguiente secuencia de punta a punta:
   }
   ```
   * **Status Esperado:** `201 Created` adoptando las coordenadas manuales de respaldo.
-* *Prueba Negativa:* Enviar la misma peticiÛn sin lat/long manuales $\to$ **`422 Unprocessable Entity`**.
+* *Prueba Negativa:* Enviar la misma petici√≥n sin lat/long manuales $\to$ **`422 Unprocessable Entity`**.
 
 ---
 
-### SubsecciÛn 4.2 & 4.3: Clima y Notificaciones Mailpit [Luis Miguel]
+### Subsecci√≥n 4.2 & 4.3: Clima y Notificaciones Mailpit [Luis Miguel]
 
-#### Prueba 4.2.1: Consulta Clim·tica
-* **OpciÛn A (Postman):**
+#### Prueba 4.2.1: Consulta Clim√°tica
+* **Opci√≥n A (Postman):**
   * `GET {{gateway_url}}/v1/clima/pronosticos?latitud=-31.3697&longitud=-64.2469&fechaHora=2026-05-10T16:00:00` con `{{token_organizador}}`.
   * **Status Esperado:** `200 OK` con `condicionAdversa: true/false`.
 
 ---
 
-### SubsecciÛn 4.4, 4.5 & 4.6: Scheduler Clim·tico Preventivo y ReprogramaciÛn [Santiago, GastÛn, Tomas]
+### Subsecci√≥n 4.4, 4.5 & 4.6: Scheduler Clim√°tico Preventivo y Reprogramaci√≥n [Santiago, Gast√≥n, Tomas]
 
 #### Prueba 4.4.1: Disparo Forzado del Scheduler Preventivo (EP-07 / RN-07)
-* **OpciÛn A (Postman):**
+* **Opci√≥n A (Postman):**
   * `POST {{gateway_url}}/v1/partidos/scheduler-clima/ejecutar` con `{{token_organizador}}`.
   * **Status Esperado:** `200 OK`.
-* **OpciÛn B (Navegador en Mailpit):**
+* **Opci√≥n B (Navegador en Mailpit):**
   * Abrir [http://localhost:8025](http://localhost:8025).
-  * **Resultado Visual:** Ver el correo de alerta: *"Alerta MeteorolÛgica: Partido Suspendido por Tormenta"*.
+  * **Resultado Visual:** Ver el correo de alerta: *"Alerta Meteorol√≥gica: Partido Suspendido por Tormenta"*.
 
-#### Prueba 4.4.2: ReprogramaciÛn de Partido
-* **OpciÛn A (Postman):**
+#### Prueba 4.4.2: Reprogramaci√≥n de Partido
+* **Opci√≥n A (Postman):**
   * `POST {{gateway_url}}/v1/partidos/1/reprogramaciones` con `{{token_organizador}}`:
     ```json
     {
@@ -801,20 +862,20 @@ Ejecutar la siguiente secuencia de punta a punta:
 
 ---
 
-## ?? RecapitulaciÛn y Prueba Integral de la ETAPA 4 (E2E de Etapa)
+## ?? Recapitulaci√≥n y Prueba Integral de la ETAPA 4 (E2E de Etapa)
 
-### 1. øQuÈ debe quedar funcionando al finalizar la Etapa 4?
+### 1. ¬øQu√© debe quedar funcionando al finalizar la Etapa 4?
 1. **Microservicios Adaptadores Aislados con Resiliencia:**
-   * `servicio-geocodificacion` (:8084): integraciÛn satelital con OpenStreetMap (Nominatim), protecciÛn ante caÌdas con Circuit Breaker (`Resilience4j`) y fallback manual obligatorio a latitud/longitud ingresadas en la peticiÛn si el servicio externo falla (RN-06). Si falla y no se proveyeron coordenadas manuales, responde `422 Unprocessable Entity`.
-   * `servicio-clima` (:8085): integraciÛn con Open-Meteo, algoritmo de evaluaciÛn clim·tica determinando condiciÛn severa si precipitaciones acumuladas $> 40\text{ mm}$ o cÛdigos de tormenta (RN-07).
+   * `servicio-geocodificacion` (:8084): integraci√≥n satelital con OpenStreetMap (Nominatim), protecci√≥n ante ca√≠das con Circuit Breaker (`Resilience4j`) y fallback manual obligatorio a latitud/longitud ingresadas en la petici√≥n si el servicio externo falla (RN-06). Si falla y no se proveyeron coordenadas manuales, responde `422 Unprocessable Entity`.
+   * `servicio-clima` (:8085): integraci√≥n con Open-Meteo, algoritmo de evaluaci√≥n clim√°tica determinando condici√≥n severa si precipitaciones acumuladas $> 40\text{ mm}$ o c√≥digos de tormenta (RN-07).
    * `servicio-notificaciones` (:8083): microservicio desacoplado con JavaMail y captura silenciosa de excepciones SMTP para no abortar transacciones de negocio.
-2. **AutomatizaciÛn Preventiva (Scheduler a 24 Horas):**
-   * Componente `@Scheduled` en `servicio-operaciones-partidos`: eval˙a autom·ticamente cada partido con fecha fijada a 24 horas vista.
-   * Si `servicio-clima` reporta condiciones severas, el partido pasa autom·ticamente a `SUSPENDIDO` en la base de datos sin intervenciÛn humana y se despacha un email de alerta meteorolÛgica al delegado en Mailpit (RN-07, RN-12).
-3. **Flujo de ReprogramaciÛn y Consistencia de Torneo:**
-   * Endpoint de reprogramaciÛn `POST /v1/partidos/{id}/reprogramaciones` para reasignar fecha/sede y pasar el partido a `REPROGRAMADO`.
-   * SincronizaciÛn y consistencia en el calendario de `servicio-torneos`.
-4. **PerÌmetro en API Gateway:**
+2. **Automatizaci√≥n Preventiva (Scheduler a 24 Horas):**
+   * Componente `@Scheduled` en `servicio-operaciones-partidos`: eval√∫a autom√°ticamente cada partido con fecha fijada a 24 horas vista.
+   * Si `servicio-clima` reporta condiciones severas, el partido pasa autom√°ticamente a `SUSPENDIDO` en la base de datos sin intervenci√≥n humana y se despacha un email de alerta meteorol√≥gica al delegado en Mailpit (RN-07, RN-12).
+3. **Flujo de Reprogramaci√≥n y Consistencia de Torneo:**
+   * Endpoint de reprogramaci√≥n `POST /v1/partidos/{id}/reprogramaciones` para reasignar fecha/sede y pasar el partido a `REPROGRAMADO`.
+   * Sincronizaci√≥n y consistencia en el calendario de `servicio-torneos`.
+4. **Per√≠metro en API Gateway:**
    * Enrutamiento seguro de las rutas adaptadoras (`/v1/geocodificaciones/**`, `/v1/clima/**`, `/v1/notificaciones/**`) restringidas contra accesos no autorizados.
 
 ---
@@ -823,96 +884,103 @@ Ejecutar la siguiente secuencia de punta a punta:
 
 Ejecutar la siguiente secuencia de punta a punta:
 
-1. **Paso 1 (ResoluciÛn Normal de GeocodificaciÛn Satelital):**
-   * Enviar `POST {{gateway_url}}/v1/geocodificaciones/direcciones` con `{{token_organizador}}` (`direccion: "Av. C·rcano s/n, CÛrdoba, Argentina"`).
+1. **Paso 1 (Resoluci√≥n Normal de Geocodificaci√≥n Satelital):**
+   * Enviar `POST {{gateway_url}}/v1/geocodificaciones/direcciones` con `{{token_organizador}}` (`direccion: "Av. C√°rcano s/n, C√≥rdoba, Argentina"`).
    * Constatar status `200 OK` con `latitud` y `longitud` obtenidas de la API oficial o de WireMock.
 2. **Paso 2 (Prueba de Fallback Manual ante Fallo Satelital - EN-08 / RN-06):**
-   * Enviar `POST {{gateway_url}}/v1/geocodificaciones/direcciones` con una direcciÛn no existente o simulando caÌda externa, incluyendo coordenadas de respaldo manuales.
+   * Enviar `POST {{gateway_url}}/v1/geocodificaciones/direcciones` con una direcci√≥n no existente o simulando ca√≠da externa, incluyendo coordenadas de respaldo manuales.
    * Constatar status `201 Created` utilizando las coordenadas manuales de contingencia.
-3. **Paso 3 (Prueba de Rechazo por OmisiÛn de Coordenadas Manuales - RN-06):**
-   * Reintentar la misma peticiÛn fallida sin proveer latitud/longitud manuales.
+3. **Paso 3 (Prueba de Rechazo por Omisi√≥n de Coordenadas Manuales - RN-06):**
+   * Reintentar la misma petici√≥n fallida sin proveer latitud/longitud manuales.
    * Constatar respuesta `422 Unprocessable Entity` (RFC 7807 `ProblemDetail`).
-4. **Paso 4 (Consulta Clim·tica Directa):**
+4. **Paso 4 (Consulta Clim√°tica Directa):**
    * Enviar `GET {{gateway_url}}/v1/clima/pronosticos?latitud=-31.3697&longitud=-64.2469&fechaHora=2026-05-10T16:00:00` con `{{token_organizador}}`.
-   * Constatar status `200 OK` retornando el pronÛstico y el flag `condicionAdversa`.
-5. **Paso 5 (Disparo y VerificaciÛn de NotificaciÛn Transaccional):**
-   * Enviar email de prueba a travÈs de `POST {{gateway_url}}/v1/notificaciones/emails`.
-   * Abrir en el navegador Mailpit (`http://localhost:8025`) y verificar la recepciÛn inmediata del correo.
-6. **Paso 6 (EjecuciÛn Forzada del Scheduler Preventivo Clim·tico - EN-09 / RN-07):**
+   * Constatar status `200 OK` retornando el pron√≥stico y el flag `condicionAdversa`.
+5. **Paso 5 (Disparo y Verificaci√≥n de Notificaci√≥n Transaccional):**
+   * Enviar email de prueba a trav√©s de `POST {{gateway_url}}/v1/notificaciones/emails`.
+   * Abrir en el navegador Mailpit (`http://localhost:8025`) y verificar la recepci√≥n inmediata del correo.
+6. **Paso 6 (Ejecuci√≥n Forzada del Scheduler Preventivo Clim√°tico - EN-09 / RN-07):**
    * Configurar un partido con fecha de disputa dentro de las 24 horas y sede con coordenadas de prueba.
    * Disparar el chequeo preventivo: `POST {{gateway_url}}/v1/partidos/scheduler-clima/ejecutar` con `{{token_organizador}}`.
    * Constatar status `200 OK`.
-7. **Paso 7 (ComprobaciÛn de SuspensiÛn Autom·tica en BD y Alerta en Mailpit):**
-   * Consultar el estado del partido: `GET {{gateway_url}}/v1/partidos/1` $\to$ Verificar que cambiÛ autom·ticamente a `SUSPENDIDO`.
-   * Abrir Mailpit en navegador: Verificar el arribo del correo *"Alerta MeteorolÛgica: Partido Suspendido por Tormenta"*.
-8. **Paso 8 (ReprogramaciÛn LogÌstica del Partido):**
-   * Enviar `POST {{gateway_url}}/v1/partidos/1/reprogramaciones` con `{{token_organizador}}` reasignando fecha y sede v·lida.
-   * Constatar status `200 OK` y verificar que el partido transicionÛ al estado `REPROGRAMADO`.
+7. **Paso 7 (Comprobaci√≥n de Suspensi√≥n Autom√°tica en BD y Alerta en Mailpit):**
+   * Consultar el estado del partido: `GET {{gateway_url}}/v1/partidos/1` $\to$ Verificar que cambi√≥ autom√°ticamente a `SUSPENDIDO`.
+   * Abrir Mailpit en navegador: Verificar el arribo del correo *"Alerta Meteorol√≥gica: Partido Suspendido por Tormenta"*.
+8. **Paso 8 (Reprogramaci√≥n Log√≠stica del Partido):**
+   * Enviar `POST {{gateway_url}}/v1/partidos/1/reprogramaciones` con `{{token_organizador}}` reasignando fecha y sede v√°lida.
+   * Constatar status `200 OK` y verificar que el partido transicion√≥ al estado `REPROGRAMADO`.
 
 ---
 
 ### 3. Resultados Esperados en la Totalidad de Pruebas de la Etapa 4
 
-| # | Endpoint / Componente | MÈtodo | Rol / Token | Status Esperado | Resultado Observable / Cuerpo de Respuesta |
+| # | Endpoint / Componente | M√©todo | Rol / Token | Status Esperado | Resultado Observable / Cuerpo de Respuesta |
 |:---:|---|:---:|:---:|:---:|---|
 | **1** | `/v1/geocodificaciones/direcciones` (normal) | `POST` | `ROL_ORGANIZADOR` | `200 OK` | Coordenadas oficiales obtenidas: `latitud: -31.369...`, `longitud: -64.246...`. |
-| **2** | `/v1/geocodificaciones/direcciones` (fallback) | `POST` | `ROL_ORGANIZADOR` | `201 Created` | AdopciÛn de coordenadas manuales de contingencia ante fallo satelital. |
-| **3** | `/v1/geocodificaciones/direcciones` (sin fallback) | `POST` | `ROL_ORGANIZADOR` | `422 Unprocessable Entity` | `ProblemDetail`: "DirecciÛn no resuelta y coordenadas manuales omitidas". |
-| **4** | `/v1/clima/pronosticos` | `GET` | `ROL_ORGANIZADOR` | `200 OK` | JSON con pronÛstico meteorolÛgico y evaluaciÛn de severidad. |
-| **5** | `/v1/notificaciones/emails` | `POST` | `ROL_ORGANIZADOR` | `202 Accepted` | Email despachado asÌncronamente vÌa SMTP a Mailpit (:1025). |
+| **2** | `/v1/geocodificaciones/direcciones` (fallback) | `POST` | `ROL_ORGANIZADOR` | `201 Created` | Adopci√≥n de coordenadas manuales de contingencia ante fallo satelital. |
+| **3** | `/v1/geocodificaciones/direcciones` (sin fallback) | `POST` | `ROL_ORGANIZADOR` | `422 Unprocessable Entity` | `ProblemDetail`: "Direcci√≥n no resuelta y coordenadas manuales omitidas". |
+| **4** | `/v1/clima/pronosticos` | `GET` | `ROL_ORGANIZADOR` | `200 OK` | JSON con pron√≥stico meteorol√≥gico y evaluaci√≥n de severidad. |
+| **5** | `/v1/notificaciones/emails` | `POST` | `ROL_ORGANIZADOR` | `202 Accepted` | Email despachado as√≠ncronamente v√≠a SMTP a Mailpit (:1025). |
 | **6** | Mailpit Web UI (`:8025`) | Web UI | Navegador Web | `200 OK` | Correo transaccional renderizado y visible en la bandeja de entrada. |
 | **7** | `/v1/partidos/scheduler-clima/ejecutar` | `POST` | `ROL_ORGANIZADOR` | `200 OK` | Scheduler ejecutado; detecta tormenta severa a 24 horas vista. |
-| **8** | Base de Datos (`partido.estado`) | SQL / GET | ConexiÛn DB / API | `SUSPENDIDO` | Partido transiciona autom·ticamente a estado `SUSPENDIDO` (RN-07). |
-| **9** | Mailpit (Alerta de SuspensiÛn) | Web UI | Navegador Web | `200 OK` | Correo de alerta de suspensiÛn recibido en la casilla del delegado. |
+| **8** | Base de Datos (`partido.estado`) | SQL / GET | Conexi√≥n DB / API | `SUSPENDIDO` | Partido transiciona autom√°ticamente a estado `SUSPENDIDO` (RN-07). |
+| **9** | Mailpit (Alerta de Suspensi√≥n) | Web UI | Navegador Web | `200 OK` | Correo de alerta de suspensi√≥n recibido en la casilla del delegado. |
 | **10** | `/v1/partidos/{id}/reprogramaciones` | `POST` | `ROL_ORGANIZADOR` | `200 OK` | Partido actualizado con nueva fecha/sede y estado `REPROGRAMADO`. |
 
 ---
 
-# ETAPA 5 (DÌa 3 / Sprint 3 - Parte B): Despliegue Docker, Swagger y Postman E2E
+# ETAPA 5 (D√≠a 3 / Sprint 3 - Parte B): Despliegue Docker, Swagger y Postman E2E
 
 ---
 
-### SubsecciÛn 5.1: Despliegue y Aislamiento Perimetral Docker [Tomas]
+### Subsecci√≥n 5.1: Despliegue y Aislamiento Perimetral Docker [Tomas]
 
-#### Prueba 5.1.1: VerificaciÛn de Aislamiento en el Navegador
-* **OpciÛn B (Navegador):**
+#### Prueba 5.1.1: Verificaci√≥n de Aislamiento en el Navegador
+* **Opci√≥n B (Navegador):**
   * Intentar abrir directamente: [http://localhost:8081/health-check](http://localhost:8081/health-check) (puerto interno del microservicio Torneos).
-  * **Resultado Visual:** ConexiÛn rechazada (*"No se puede conectar"*).
-  * Abrir a travÈs del Gateway: [http://localhost:8080/health-check](http://localhost:8080/health-check).
+  * **Resultado Visual:** Conexi√≥n rechazada (*"No se puede conectar"*).
+  * Abrir a trav√©s del Gateway: [http://localhost:8080/health-check](http://localhost:8080/health-check).
   * **Resultado Visual:** `{"status":"UP"}`.
 
 ---
 
-### SubsecciÛn 5.2, 5.3 & 5.4: Swagger UI Agregado en el Navegador [GastÛn, Santiago, Tomas]
+### Subsecci√≥n 5.2, 5.3 & 5.4: Enriquecimiento, Auditor√≠a y Verificaci√≥n Final de OpenAPI y Swagger UI [Gast√≥n, Santiago, Tomas]
 
-#### Prueba 5.4.1: NavegaciÛn y Prueba Interactiva en Swagger UI
-* **OpciÛn B (Navegador):**
+> **Nota de Trazabilidad Arquitect√≥nica:** La infraestructura base de OpenAPI, los contratos din√°micos de SpringDoc y la agregaci√≥n unificada en Gateway fueron integrados y puestos operativos en la **Subsecci√≥n 2.6 (Tomas)**. En esta Etapa 5 se audita y verifica el **enriquecimiento exhaustivo de metadatos**, descripciones formales (`@Operation`, `@ApiResponse`), esquemas RFC 7807 (`ProblemDetail`) y la incorporaci√≥n de los microservicios adaptadores (`servicio-notificaciones`, `servicio-geocodificacion`, `servicio-clima`).
+
+#### Prueba 5.2.1 & 5.3.1: Verificaci√≥n de Documentaci√≥n OpenAPI Enriquecida
+* **Opci√≥n B (Navegador):**
   1. Abrir: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-  2. En el desplegable superior derecho ("Select a definition"), alternar entre:
+  2. Seleccionar `servicio-torneos` y `servicio-operaciones-partidos`.
+  3. Constatar que cada endpoint documenta detalladamente sus par√°metros, payloads de ejemplo, c√≥digos HTTP (200, 201, 202, 400, 401, 403, 409) y esquemas de error conformes a RFC 7807 (`ProblemDetail`).
+
+#### Prueba 5.4.1: Auditor√≠a Integral y Navegaci√≥n E2E en Swagger UI Unificado
+* **Opci√≥n B (Navegador):**
+  1. Abrir: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+  2. En el desplegable superior derecho (*"Select a definition"*), alternar entre el cat√°logo completo de microservicios:
      * `servicio-torneos`
      * `servicio-operaciones-partidos`
      * `servicios-adaptadores`
-  3. Clic en el botÛn verde **Authorize**: Pegar el token `Bearer` de Keycloak.
-  4. Expandir cualquier endpoint (ej. `GET /v1/torneos/1/posiciones`), clic en **Try it out** y luego en **Execute**.
-  5. **Resultado Visual:** Ver el JSON de respuesta renderizado en la p·gina con status `200`.
+  3. Clic en el bot√≥n verde **Authorize**: Pegar el token `Bearer` de Keycloak con distintos roles y comprobar la ejecuci√≥n interactiva de endpoints (`Try it out` $\to$ `Execute`).
+  4. **Resultado Visual:** Ver el JSON de respuesta renderizado en la p√°gina con los status esperados y esquemas completos sin errores de serializaci√≥n.
 
 ---
 
-### SubsecciÛn 5.5 & 5.6: EjecuciÛn Automatizada en Postman / Newman [Todo el Equipo]
+### Subsecci√≥n 5.5 & 5.6: Ejecuci√≥n Automatizada en Postman / Newman [Todo el Equipo]
 
-#### Prueba 5.6.1: EjecuciÛn Manual en Postman (Collection Runner)
-* **OpciÛn A (Postman):**
+#### Prueba 5.6.1: Ejecuci√≥n Manual en Postman (Collection Runner)
+* **Opci√≥n A (Postman):**
   1. Abrir Postman Desktop.
-  2. En el panel izquierdo, seleccionar la colecciÛn `Fulvo_Backend_Collection`.
+  2. En el panel izquierdo, seleccionar la colecci√≥n `Fulvo_Backend_Collection`.
   3. Seleccionar el entorno `Fulvo Local Dev`.
-  4. Clic en el botÛn **Run** (Collection Runner).
+  4. Clic en el bot√≥n **Run** (Collection Runner).
   5. Clic en **Run Fulvo Backend Collection**.
   6. **Resultado Visual:**
-     * Ver la ejecuciÛn secuencial de los 21 escenarios oficiales (`EP-01..09` y `EN-01..12`).
+     * Ver la ejecuci√≥n secuencial de los 21 escenarios oficiales (`EP-01..09` y `EN-01..12`).
      * Barra de progreso al **100% Passed (Verde)** sin aserciones fallidas.
 
-#### Prueba 5.6.2: EjecuciÛn Headless con Newman (Para IntegraciÛn Continua)
-* **OpciÛn C (Consola):**
+#### Prueba 5.6.2: Ejecuci√≥n Headless con Newman (Para Integraci√≥n Continua)
+* **Opci√≥n C (Consola):**
   ```bash
   newman run postman/Fulvo_Backend_Collection.postman_collection.json \
     -e postman/Fulvo_Local_Environment.postman_environment.json \
@@ -922,51 +990,51 @@ Ejecutar la siguiente secuencia de punta a punta:
 
 ---
 
-## ?? RecapitulaciÛn y Prueba Integral de la ETAPA 5 (E2E del Backend Completo)
+## ?? Recapitulaci√≥n y Prueba Integral de la ETAPA 5 (E2E del Backend Completo)
 
-### 1. øQuÈ debe quedar funcionando al finalizar la Etapa 5?
-1. **OrquestaciÛn y Despliegue Unificado con Docker Compose:**
+### 1. ¬øQu√© debe quedar funcionando al finalizar la Etapa 5?
+1. **Orquestaci√≥n y Despliegue Unificado con Docker Compose:**
    * La totalidad del ecosistema (6 microservicios Spring Boot, base de datos PostgreSQL, Keycloak OIDC, servidor SMTP Mailpit y WireMock) orquestados mediante `docker compose up -d --build`.
    * **Aislamiento Perimetral Estricto:** Los microservicios de negocio (`servicio-torneos`, `servicio-operaciones-partidos`, `servicio-notificaciones`, `servicio-geocodificacion`, `servicio-clima`) operan 100% aislados dentro de la red interna `bda-net`, sin exponer puertos directos al host.
-   * ⁄nicamente la puerta de enlace `api-gateway` expone el puerto `8080`, Keycloak `8090`, Mailpit `8025` y WireMock `8086`.
-2. **DocumentaciÛn Swagger UI Agregada y Centralizada:**
+   * √önicamente la puerta de enlace `api-gateway` expone el puerto `8080`, Keycloak `8090`, Mailpit `8025` y WireMock `8086`.
+2. **Documentaci√≥n Swagger UI Agregada y Centralizada:**
    * Swagger UI unificado y accesible desde el navegador en `http://localhost:8080/swagger-ui.html`.
-   * Desplegable funcional para alternar la visualizaciÛn y prueba de las especificaciones OpenAPI 3.0 de todos los microservicios.
-   * BotÛn **Authorize** con soporte para autenticaciÛn Bearer JWT.
-3. **CertificaciÛn E2E de la C·tedra (Suite Postman Integral):**
-   * ColecciÛn oficial `Fulvo_Backend_Collection.postman_collection.json` y entorno `Fulvo_Local_Environment.postman_environment.json` parametrizados y automatizados.
-   * EjecuciÛn exitosa de los **21 escenarios oficiales de la c·tedra** (9 Positivos `EP-01..EP-09` y 12 Negativos `EN-01..EN-12`) con **100% Passed**.
+   * Desplegable funcional para alternar la visualizaci√≥n y prueba de las especificaciones OpenAPI 3.0 de todos los microservicios.
+   * Bot√≥n **Authorize** con soporte para autenticaci√≥n Bearer JWT.
+3. **Certificaci√≥n E2E de la C√°tedra (Suite Postman Integral):**
+   * Colecci√≥n oficial `Fulvo_Backend_Collection.postman_collection.json` y entorno `Fulvo_Local_Environment.postman_environment.json` parametrizados y automatizados.
+   * Ejecuci√≥n exitosa de los **21 escenarios oficiales de la c√°tedra** (9 Positivos `EP-01..EP-09` y 12 Negativos `EN-01..EN-12`) con **100% Passed**.
 
 ---
 
-### 2. Paso a Paso Consolidado para Probar Todo el Sistema de Punta a Punta (CertificaciÛn Final E2E)
+### 2. Paso a Paso Consolidado para Probar Todo el Sistema de Punta a Punta (Certificaci√≥n Final E2E)
 
-Ejecutar la siguiente secuencia de validaciÛn integral:
+Ejecutar la siguiente secuencia de validaci√≥n integral:
 
 1. **Paso 1 (Despliegue Limpio de la Plataforma):**
-   * En la raÌz del proyecto, ejecutar:
+   * En la ra√≠z del proyecto, ejecutar:
      ```bash
      docker compose down -v
      docker compose up -d --build
      ```
    * Aguardar a que todos los contenedores alcancen estado `healthy` o `Up` (`docker compose ps`).
-2. **Paso 2 (VerificaciÛn de Aislamiento Perimetral):**
+2. **Paso 2 (Verificaci√≥n de Aislamiento Perimetral):**
    * En el navegador, intentar acceder a:
-     * [http://localhost:8081/health-check](http://localhost:8081/health-check) (Torneos directo) $\to$ **ConexiÛn rechazada** (puerto aislado).
-     * [http://localhost:8082/health-check](http://localhost:8082/health-check) (Operaciones directo) $\to$ **ConexiÛn rechazada** (puerto aislado).
-     * [http://localhost:8080/health-check](http://localhost:8080/health-check) (A travÈs del Gateway) $\to$ **200 OK** `{"status":"UP"}`.
-3. **Paso 3 (InspecciÛn Interactiva en Swagger UI):**
+     * [http://localhost:8081/health-check](http://localhost:8081/health-check) (Torneos directo) $\to$ **Conexi√≥n rechazada** (puerto aislado).
+     * [http://localhost:8082/health-check](http://localhost:8082/health-check) (Operaciones directo) $\to$ **Conexi√≥n rechazada** (puerto aislado).
+     * [http://localhost:8080/health-check](http://localhost:8080/health-check) (A trav√©s del Gateway) $\to$ **200 OK** `{"status":"UP"}`.
+3. **Paso 3 (Inspecci√≥n Interactiva en Swagger UI):**
    * Abrir [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html).
-   * Seleccionar la definiciÛn de `servicio-torneos`, hacer clic en **Authorize** y colocar el token de organizador.
-   * Ejecutar interactivamente `GET /v1/torneos` y verificar la respuesta JSON 200 OK directamente en la p·gina web.
-4. **Paso 4 (VerificaciÛn de Bandeja Mailpit):**
-   * Abrir [http://localhost:8025](http://localhost:8025) y confirmar que la consola web est· activa y lista para recibir correos transaccionales.
-5. **Paso 5 (EjecuciÛn Integral de la Suite en Postman GUI):**
-   * Abrir Postman Desktop e importar la colecciÛn `Fulvo_Backend_Collection` y el entorno `Fulvo Local Dev`.
-   * Abrir el **Collection Runner**, seleccionar la colecciÛn completa y pulsar **Run Fulvo Backend Collection**.
-   * Observar el paso secuencial de todas las carpetas (AutenticaciÛn $\to$ ConfiguraciÛn $\to$ Inscripciones $\to$ Fixture $\to$ Contingencias $\to$ Operaciones $\to$ Reemplazos $\to$ Escenarios Negativos).
+   * Seleccionar la definici√≥n de `servicio-torneos`, hacer clic en **Authorize** y colocar el token de organizador.
+   * Ejecutar interactivamente `GET /v1/torneos` y verificar la respuesta JSON 200 OK directamente en la p√°gina web.
+4. **Paso 4 (Verificaci√≥n de Bandeja Mailpit):**
+   * Abrir [http://localhost:8025](http://localhost:8025) y confirmar que la consola web est√° activa y lista para recibir correos transaccionales.
+5. **Paso 5 (Ejecuci√≥n Integral de la Suite en Postman GUI):**
+   * Abrir Postman Desktop e importar la colecci√≥n `Fulvo_Backend_Collection` y el entorno `Fulvo Local Dev`.
+   * Abrir el **Collection Runner**, seleccionar la colecci√≥n completa y pulsar **Run Fulvo Backend Collection**.
+   * Observar el paso secuencial de todas las carpetas (Autenticaci√≥n $\to$ Configuraci√≥n $\to$ Inscripciones $\to$ Fixture $\to$ Contingencias $\to$ Operaciones $\to$ Reemplazos $\to$ Escenarios Negativos).
    * **Comprobar la barra de progreso 100% verde (0 fallos).**
-6. **Paso 6 (EjecuciÛn Headless vÌa Newman por Consola):**
+6. **Paso 6 (Ejecuci√≥n Headless v√≠a Newman por Consola):**
    * Ejecutar en terminal:
      ```bash
      newman run postman/Fulvo_Backend_Collection.postman_collection.json \
@@ -979,27 +1047,27 @@ Ejecutar la siguiente secuencia de validaciÛn integral:
 
 ### 3. Matriz de Resultados Esperados en la Totalidad de Pruebas (21 Escenarios Oficiales)
 
-| CÛdigo | Tipo | Nombre del Escenario Oficial | Disparador / Endpoint | CÛdigo HTTP | Resultado Observable / AserciÛn Clave |
+| C√≥digo | Tipo | Nombre del Escenario Oficial | Disparador / Endpoint | C√≥digo HTTP | Resultado Observable / Aserci√≥n Clave |
 |:---:|:---:|---|---|:---:|---|
-| **EP-01** | Positivo | AutenticaciÛn y EmisiÛn de JWT | `POST /token` (Keycloak) | `200 OK` | Tokens v·lidos obtenidos con claims `ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`. |
-| **EP-02** | Positivo | Alta de Sede con GeocodificaciÛn | `POST /v1/sedes` | `201 Created` | Estadio geocodificado con latitud y longitud oficiales. |
-| **EP-03** | Positivo | PostulaciÛn con Plantel V·lido | `POST /v1/torneos/{id}/solicitudes-inscripcion` | `202 Accepted` | Solicitud en `PENDIENTE` y email de confirmaciÛn visible en Mailpit. |
-| **EP-04** | Positivo | AdmisiÛn y PromociÛn a Delegado | `PATCH /v1/solicitudes-inscripcion/{id}/admision` | `200 OK` | `Equipo` en `ACTIVO`, solicitante promovido a `ROL_DELEGADO` y email en Mailpit. |
-| **EP-05** | Positivo | Cierre de Cupo y GeneraciÛn de Fixture | `POST /v1/torneos/{id}/fixtures` | `201 Created` | Torneo pasa a `INICIADO` y partidos persistidos en `PROGRAMADO` en Operaciones. |
-| **EP-06** | Positivo | AsignaciÛn LogÌstica de Encuentro | `POST /v1/partidos/{id}/asignaciones` | `200 OK` | Sede y ·rbitro asignados sin conflicto en ventana de 2 horas. |
+| **EP-01** | Positivo | Autenticaci√≥n y Emisi√≥n de JWT | `POST /token` (Keycloak) | `200 OK` | Tokens v√°lidos obtenidos con claims `ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`. |
+| **EP-02** | Positivo | Alta de Sede con Geocodificaci√≥n | `POST /v1/sedes` | `201 Created` | Estadio geocodificado con latitud y longitud oficiales. |
+| **EP-03** | Positivo | Postulaci√≥n con Plantel V√°lido | `POST /v1/torneos/{id}/solicitudes-inscripcion` | `202 Accepted` | Solicitud en `PENDIENTE` y email de confirmaci√≥n visible en Mailpit. |
+| **EP-04** | Positivo | Admisi√≥n y Promoci√≥n a Delegado | `PATCH /v1/solicitudes-inscripcion/{id}/admision` | `200 OK` | `Equipo` en `ACTIVO`, solicitante promovido a `ROL_DELEGADO` y email en Mailpit. |
+| **EP-05** | Positivo | Cierre de Cupo y Generaci√≥n de Fixture | `POST /v1/torneos/{id}/fixtures` | `201 Created` | Torneo pasa a `INICIADO` y partidos persistidos en `PROGRAMADO` en Operaciones. |
+| **EP-06** | Positivo | Asignaci√≥n Log√≠stica de Encuentro | `POST /v1/partidos/{id}/asignaciones` | `200 OK` | Sede y √°rbitro asignados sin conflicto en ventana de 2 horas. |
 | **EP-07** | Positivo | Disputa y Cierre con Penales | `POST /v1/partidos/{id}/actas` | `200 OK` | En empate en llaves, penales desempatan, pasa a `FINALIZADO` y promueve ganador. |
-| **EP-08** | Positivo | CÛmputo Autom·tico de Posiciones | `GET /v1/torneos/{id}/posiciones` | `200 OK` | Tabla de posiciones refleja atÛmicamente PJ, PG, PE, PP, GF, GC, DG y Puntos. |
-| **EP-09** | Positivo | Reemplazo Reglamentario en Competencia | `POST /v1/equipos/{id}/reemplazos-jugadores` | `200 OK` | SustituciÛn exitosa de jugador activo y contador de cambios incrementado. |
-| **EN-01** | Negativo | Bloqueo Perimetral por Falta de Token | `GET /v1/torneos` *(Sin auth)* | `401 Unauthorized` | PeticiÛn rechazada de inmediato en el API Gateway. |
-| **EN-02** | Negativo | Bloqueo Perimetral por Rol Insuficiente | `POST /v1/torneos` *(Token Fan·tico)* | `403 Forbidden` | PeticiÛn rechazada en el Gateway: fan·tico no puede crear cert·menes. |
+| **EP-08** | Positivo | C√≥mputo Autom√°tico de Posiciones | `GET /v1/torneos/{id}/posiciones` | `200 OK` | Tabla de posiciones refleja at√≥micamente PJ, PG, PE, PP, GF, GC, DG y Puntos. |
+| **EP-09** | Positivo | Reemplazo Reglamentario en Competencia | `POST /v1/equipos/{id}/reemplazos-jugadores` | `200 OK` | Sustituci√≥n exitosa de jugador activo y contador de cambios incrementado. |
+| **EN-01** | Negativo | Bloqueo Perimetral por Falta de Token | `GET /v1/torneos` *(Sin auth)* | `401 Unauthorized` | Petici√≥n rechazada de inmediato en el API Gateway. |
+| **EN-02** | Negativo | Bloqueo Perimetral por Rol Insuficiente | `POST /v1/torneos` *(Token Fan√°tico)* | `403 Forbidden` | Petici√≥n rechazada en el Gateway: fan√°tico no puede crear cert√°menes. |
 | **EN-03** | Negativo | Cierre Prematuro de Cupo Incompleto | `PATCH /v1/torneos/{id}/estado` | `409 Conflict` | `ProblemDetail`: Prohibido cerrar inscripciones con cupo menor al 100% (RN-01). |
-| **EN-04** | Negativo | Plantel Incompleto o Sin Arquero | `POST /v1/torneos/{id}/solicitudes-inscripcion` | `400 Bad Request` | `ProblemDetail`: ViolaciÛn a lista de buena fe (RN-02). |
+| **EN-04** | Negativo | Plantel Incompleto o Sin Arquero | `POST /v1/torneos/{id}/solicitudes-inscripcion` | `400 Bad Request` | `ProblemDetail`: Violaci√≥n a lista de buena fe (RN-02). |
 | **EN-05** | Negativo | DNI Duplicado en el Certamen | `POST /v1/torneos/{id}/solicitudes-inscripcion` | `400 Bad Request` | `ProblemDetail`: Futbolista ya inscripto en otro plantel del torneo (RN-02). |
-| **EN-06** | Negativo | Solicitud M˙ltiple por Mismo Fan·tico | `POST /v1/torneos/{id}/solicitudes-inscripcion` | `409 Conflict` | `ProblemDetail`: Fan·tico con postulaciÛn activa previa (RN-03). |
-| **EN-07** | Negativo | Conflicto Horario Anti-SuperposiciÛn | `POST /v1/partidos/{id}/asignaciones` | `409 Conflict` | `ProblemDetail`: Sede o ·rbitro ocupados en ventana de $\pm 2$ horas (RN-05). |
-| **EN-08** | Negativo | Fallback Manual de GeocodificaciÛn | `POST /v1/geocodificaciones/direcciones` | `201 / 422` | Adopta lat/lon manual si falla el satÈlite; rechaza con 422 si se omiten (RN-06). |
-| **EN-09** | Negativo | SuspensiÛn Preventiva Clim·tica a 24h | `POST /v1/partidos/scheduler-clima/ejecutar` | `200 OK` | Partido transiciona a `SUSPENDIDO` y alerta despachada a Mailpit (RN-07). |
-| **EN-10** | Negativo | Exclusividad Arbitral de Partido | `PATCH /v1/partidos/{id}/estado` *(¡rbitro ajeno)* | `403 Forbidden` | Denegado: el ·rbitro no est· asignado a ese partido (RN-08). |
-| **EN-11** | Negativo | CancelaciÛn por Disturbios e Incidentes | `PATCH /v1/partidos/{id}/estado` *(a CANCELADO)* | `200 OK` | Partido a `CANCELADO`: 0 puntos en tabla y descalificaciÛn en llaves (RN-09). |
+| **EN-06** | Negativo | Solicitud M√∫ltiple por Mismo Fan√°tico | `POST /v1/torneos/{id}/solicitudes-inscripcion` | `409 Conflict` | `ProblemDetail`: Fan√°tico con postulaci√≥n activa previa (RN-03). |
+| **EN-07** | Negativo | Conflicto Horario Anti-Superposici√≥n | `POST /v1/partidos/{id}/asignaciones` | `409 Conflict` | `ProblemDetail`: Sede o √°rbitro ocupados en ventana de $\pm 2$ horas (RN-05). |
+| **EN-08** | Negativo | Fallback Manual de Geocodificaci√≥n | `POST /v1/geocodificaciones/direcciones` | `201 / 422` | Adopta lat/lon manual si falla el sat√©lite; rechaza con 422 si se omiten (RN-06). |
+| **EN-09** | Negativo | Suspensi√≥n Preventiva Clim√°tica a 24h | `POST /v1/partidos/scheduler-clima/ejecutar` | `200 OK` | Partido transiciona a `SUSPENDIDO` y alerta despachada a Mailpit (RN-07). |
+| **EN-10** | Negativo | Exclusividad Arbitral de Partido | `PATCH /v1/partidos/{id}/estado` *(√Årbitro ajeno)* | `403 Forbidden` | Denegado: el √°rbitro no est√° asignado a ese partido (RN-08). |
+| **EN-11** | Negativo | Cancelaci√≥n por Disturbios e Incidentes | `PATCH /v1/partidos/{id}/estado` *(a CANCELADO)* | `200 OK` | Partido a `CANCELADO`: 0 puntos en tabla y descalificaci√≥n en llaves (RN-09). |
 | **EN-12** | Negativo | Reemplazo de Jugador Suspendido / Cupo 5 | `POST /v1/equipos/{id}/reemplazos-jugadores` | `400 Bad Request` | `ProblemDetail`: Prohibido sustituir suspendidos o superar 5 cambios (RN-11). |
 
