@@ -38,7 +38,7 @@ Cualquier código generado en este proyecto debe respetar los siguientes princip
 1. **Stack Tecnológico:**
    * Java 21 LTS.
    * Spring Boot 4.0.8 (fijado en rama `subseccion1.2`).
-   * Spring Cloud 2023.0.x (para el API Gateway).
+   * Spring Cloud 2025.1.x (fijado en `2025.1.4` para el API Gateway con Spring Boot 4.0.8).
    * PostgreSQL 16.
    * Keycloak 26.5.0 (OIDC / OAuth2 Resource Server).
 2. **Organización de Proyectos y Maven:**
@@ -54,7 +54,7 @@ Cualquier código generado en este proyecto debe respetar los siguientes princip
 4. **Inyección de Dependencias y Buenas Prácticas:**
    * **PROHIBIDO `@Autowired` en atributos directos.** Usar siempre inyección por constructor asistida por `@RequiredArgsConstructor` de Lombok con atributos `private final`.
 5. **Comunicación Inter-Servicio:**
-   * Usar exclusivamente `RestClient` fluido (Spring 6 / Boot 3). **PROHIBIDO el uso de `RestTemplate`**.
+   * Usar exclusivamente `RestClient` fluido (Spring Boot 4). **PROHIBIDO el uso de `RestTemplate`**.
    * Encapsular llamadas HTTP en clases cliente anotadas con `@Component` (ej. `OperacionesApiClient`, `GeocodificacionApiClient`).
    * Intercambiar exclusivamente DTOs mínimos de integración (ubicados en `fulvo-common-lib`), nunca entidades JPA.
 6. **Manejo de Errores y RFC 7807:**
@@ -106,7 +106,7 @@ Cualquier código generado en este proyecto debe respetar los siguientes princip
 ### 3.2 Formato Estructurado de la Consulta al Desarrollador:
 El agente no debe hacer preguntas vagas. Debe formular su consulta con rigor técnico siguiendo esta estructura:
 * **1. Duda Puntual y Contexto:** Explicar con precisión el archivo, entidad, endpoint o regla donde surge la duda.
-* **2. Opciones Viables con Pros y Contras:** Presentar 2 o 3 alternativas claras, fundamentadas en las buenas prácticas de Java 21 / Spring Boot 3 y los apuntes de Backend de Aplicaciones.
+* **2. Opciones Viables con Pros y Contras:** Presentar 2 o 3 alternativas claras, fundamentadas en las buenas prácticas de Java 21 / Spring Boot 4 y los apuntes de Backend de Aplicaciones.
 * **3. Recomendación del Agente:** Proponer cuál considera la mejor opción y la justificación técnica de por qué elegirla.
 * **4. Esperar Respuesta:** Detener la edición de código hasta que el desarrollador valide o corrija la dirección a seguir.
 * **5. Registro de Trazabilidad:** La decisión acordada con el desarrollador se registrará obligatoriamente en el archivo de auditoría correspondiente dentro de `docs/audit/` (en la sección *Qué se arregló sobre la marcha* o *Diferencias con el plan original*).

@@ -36,6 +36,10 @@ logging:
   pattern:
     level: "%5p [%X{correlationId}]"
 
+servicios:
+  notificaciones:
+    url: ${NOTIFICACIONES_SERVICE_URL:http://localhost:8083}
+
 springdoc:
   api-docs:
     path: /v3/api-docs

@@ -186,7 +186,7 @@ flowchart TD
 #### Subsección 2.1: Modelado JPA y Lógica de Admisión de Torneos (FN-01, FN-04, FN-05, RN-01 a RN-04)
 - **Responsable:** **Gastón Emiliano Cambos Berrondo**
 - **Partes a Desarrollar:**
-  - Entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo` y `Jugador` (utilizando DNI String como PK natural).
+  - Entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo` y `Jugador` (utilizando ID autogenerado como PK y DNI validado como natural por certamen).
   - Endpoint `POST /v1/torneos`: validación de cupo estricto (10/20 Liga, 8/16 Llaves). Cupo inválido $\to$ `400 Bad Request`.
   - Endpoint `POST /v1/torneos/{id}/solicitudes-inscripcion`:
     - Validación de solicitud única por usuario fanático en el certamen (RN-03 $\to$ `409 Conflict`).
