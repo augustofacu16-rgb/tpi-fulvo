@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.annotation.Bean;
 
 /**
- * Autoconfiguración de Spring Boot 3 para fulvo-common-lib.
+ * Autoconfiguración de Spring Boot 4 para fulvo-common-lib.
  * Permite que cualquier microservicio que agregue la dependencia registre de forma transparente
  * el manejador de excepciones RFC 7807 y el filtro de correlación MDC sin requerir configuración manual.
  */

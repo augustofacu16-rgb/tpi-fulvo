@@ -43,7 +43,7 @@
 - [X] **1.2.1** Inicializar proyecto Maven `fulvo-common-lib` (`com.fulvo:fulvo-common-lib:1.0.0-SNAPSHOT`, empaquetado `.jar`). `[Luis Miguel]`
 - [X] **1.2.2** Implementar DTOs inter-servicio en `com.fulvo.common.dto`: `CrucePartidoDTO`, `NotificacionEmailDTO`, `GeocodificacionDTO`, `ClimaPronosticoDTO`. `[Luis Miguel]`
 - [X] **1.2.3** Definir jerarquía de excepciones en `com.fulvo.common.exception`: `BusinessRuleException`, `RecursoNoEncontradoException`, `ConflictoEstadoException`. `[Luis Miguel]`
-- [X] **1.2.4** Implementar `@RestControllerAdvice` global retornando **RFC 7807 (`ProblemDetail`)** de Spring 6 (Apuntes 18 y 23). `[Luis Miguel]`
+- [X] **1.2.4** Implementar `@RestControllerAdvice` global retornando **RFC 7807 (`ProblemDetail`)** de Spring Boot 4 (Apuntes 18 y 23). `[Luis Miguel]`
 - [X] **1.2.5** Implementar `CorrelationIdFilter` (`OncePerRequestFilter`) propagando cabecera `X-Correlation-ID` al MDC de SLF4J (Apunte 23). `[Luis Miguel]`
 - [X] **1.2.6** Compilar e instalar librería en repositorio local: `mvn clean install -DskipTests`. `[Luis Miguel]`
 - *Criterio de Aceptación 1.2:* Artefacto disponible en `~/.m2` local listo para ser importado por los microservicios.
@@ -108,10 +108,10 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 2.4: Integración del Cliente RestClient y Notificaciones de Admisión
-- [ ] **2.4.1** Implementar cliente `RestClient` en `servicio-torneos` invocando asíncronamente a `servicio-notificaciones` (`POST /v1/notificaciones/emails`). `[Luis Miguel]`
-- [ ] **2.4.2** Despachar confirmación de postulación (FN-14) y resolución de admisión (aprobado/rechazado) vía Mailpit (RN-12). `[Luis Miguel]`
+- [X] **2.4.1** Implementar cliente `RestClient` en `servicio-torneos` invocando asíncronamente a `servicio-notificaciones` (`POST /v1/notificaciones/emails`). `[Luis Miguel]`
+- [X] **2.4.2** Despachar confirmación de postulación (FN-14) y resolución de admisión (aprobado/rechazado) vía Mailpit (RN-12). `[Luis Miguel]`
 - *Criterio de Aceptación 2.4:* Los correos de confirmación y resolución llegan a la bandeja web de Mailpit (`:8025`).
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261110-24]`
 
 #### Subsección 2.5: Enrutamiento Perimetral y Reglas de Seguridad para Torneos en API Gateway
 - [ ] **2.5.1** Configurar rutas en Gateway `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**` con validación reactiva de roles. `[Tomas]`

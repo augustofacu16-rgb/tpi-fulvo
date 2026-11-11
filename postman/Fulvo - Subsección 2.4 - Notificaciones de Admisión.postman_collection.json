@@ -1,0 +1,356 @@
+{
+	"info": {
+		"_postman_id": "e4f81c90-9b34-4bc6-8d4e-7bfae6912345",
+		"name": "Fulvo - Subsección 2.4 - Notificaciones de Admisión",
+		"description": "Pruebas funcionales de integración inter-servicio para la Subsección 2.4 (FN-14, RN-12): RestClient asíncrono desde servicio-torneos hacia servicio-notificaciones y entrega vía Mailpit.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01 - Torneos - Confirmación de postulación (FN-14)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Responde HTTP 202 Accepted\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});",
+							"",
+							"pm.test(\"Confirma despacho asíncrono al destinatario\", function () {",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.destinatario).to.eql(\"fanatico@fulvo.com\");",
+							"    pm.expect(data.nombreEquipo).to.eql(\"Deportivo Fulvo\");",
+							"});",
+							"",
+							"pm.test(\"Propaga cabecera X-Correlation-ID\", function () {",
+							"    pm.expect(pm.response.headers.get(\"X-Correlation-ID\"))",
+							"        .to.be.a(\"string\").and.not.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"emailDestinatario\": \"fanatico@fulvo.com\",\n  \"nombreEquipo\": \"Deportivo Fulvo\",\n  \"nombreTorneo\": \"Torneo Apertura 2026\"\n}"
+				},
+				"url": {
+					"raw": "{{torneos_url}}/v1/torneos/notificaciones/postulacion",
+					"host": [
+						"{{torneos_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos",
+						"notificaciones",
+						"postulacion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 - Torneos - Admisión aprobada (RN-12 / FN-05)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Responde HTTP 202 Accepted\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});",
+							"",
+							"pm.test(\"Confirma resolución APROBADA\", function () {",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.resolucion).to.eql(\"APROBADA\");",
+							"    pm.expect(data.destinatario).to.eql(\"delegado@fulvo.com\");",
+							"});",
+							"",
+							"pm.test(\"Propaga cabecera X-Correlation-ID\", function () {",
+							"    pm.expect(pm.response.headers.get(\"X-Correlation-ID\"))",
+							"        .to.be.a(\"string\").and.not.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"emailDestinatario\": \"delegado@fulvo.com\",\n  \"nombreEquipo\": \"Deportivo Fulvo\",\n  \"nombreTorneo\": \"Torneo Apertura 2026\",\n  \"aprobada\": true\n}"
+				},
+				"url": {
+					"raw": "{{torneos_url}}/v1/torneos/notificaciones/admision",
+					"host": [
+						"{{torneos_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos",
+						"notificaciones",
+						"admision"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 - Torneos - Admisión rechazada con motivo (RN-12 / FN-05)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Responde HTTP 202 Accepted\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});",
+							"",
+							"pm.test(\"Confirma resolución RECHAZADA\", function () {",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.resolucion).to.eql(\"RECHAZADA\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"emailDestinatario\": \"postulante@fulvo.com\",\n  \"nombreEquipo\": \"Equipo Rechazado\",\n  \"nombreTorneo\": \"Torneo Apertura 2026\",\n  \"aprobada\": false,\n  \"motivoRechazo\": \"Cupo máximo de equipos completado reglamentariamente\"\n}"
+				},
+				"url": {
+					"raw": "{{torneos_url}}/v1/torneos/notificaciones/admision",
+					"host": [
+						"{{torneos_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos",
+						"notificaciones",
+						"admision"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 - Torneos - Validación de payload inválido (RFC 7807 400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Responde HTTP 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Estructura RFC 7807 ProblemDetail válida\", function () {",
+							"    const err = pm.response.json();",
+							"    pm.expect(err.status).to.eql(400);",
+							"    pm.expect(err.correlationId).to.be.a(\"string\").and.not.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"emailDestinatario\": \"email-invalido\",\n  \"nombreEquipo\": \"\",\n  \"nombreTorneo\": \"Torneo Apertura 2026\"\n}"
+				},
+				"url": {
+					"raw": "{{torneos_url}}/v1/torneos/notificaciones/postulacion",
+					"host": [
+						"{{torneos_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos",
+						"notificaciones",
+						"postulacion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05 - Notificaciones - Despacho directo hacia microservicio (202 Accepted)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Responde HTTP 202 Accepted\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});",
+							"",
+							"pm.test(\"Confirma procesamiento del evento\", function () {",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.tipoEvento).to.eql(\"SOLICITUD_ENVIADA\");",
+							"    pm.expect(data.destinatario).to.eql(\"directo@fulvo.com\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"destinatario\": \"directo@fulvo.com\",\n  \"asunto\": \"Postulación Recibida - Torneo Clausura 2026\",\n  \"cuerpo\": \"<p>Notificación de prueba directa</p>\",\n  \"tipoEvento\": \"SOLICITUD_ENVIADA\"\n}"
+				},
+				"url": {
+					"raw": "{{notificaciones_url}}/v1/notificaciones/emails",
+					"host": [
+						"{{notificaciones_url}}"
+					],
+					"path": [
+						"v1",
+						"notificaciones",
+						"emails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06 - Notificaciones - Validación DTO incorrecto (RFC 7807 400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Responde HTTP 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"ProblemDetail contiene detalles del rechazo\", function () {",
+							"    const err = pm.response.json();",
+							"    pm.expect(err.status).to.eql(400);",
+							"    pm.expect(err.correlationId).to.be.a(\"string\").and.not.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"destinatario\": \"no-es-un-email\",\n  \"asunto\": \"\",\n  \"cuerpo\": \"\",\n  \"tipoEvento\": \"EVENTO_DESCONOCIDO\"\n}"
+				},
+				"url": {
+					"raw": "{{notificaciones_url}}/v1/notificaciones/emails",
+					"host": [
+						"{{notificaciones_url}}"
+					],
+					"path": [
+						"v1",
+						"notificaciones",
+						"emails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07 - Mailpit - Inspección de mensajes recibidos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Responde HTTP 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Mailpit registra mensajes en bandeja\", function () {",
+							"    const data = pm.response.json();",
+							"    pm.expect(data).to.have.property(\"messages\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{mailpit_url}}/api/v1/messages",
+					"host": [
+						"{{mailpit_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"messages"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "torneos_url",
+			"value": "http://localhost:8081"
+		},
+		{
+			"key": "notificaciones_url",
+			"value": "http://localhost:8083"
+		},
+		{
+			"key": "mailpit_url",
+			"value": "http://localhost:8025"
+		}
+	]
+}
