@@ -134,9 +134,14 @@
 - **Responsables:** Santiago Mariano Gonzalez, Gastón Emiliano Cambos Berrondo, Tomas Augusto Quiróz, Luis Miguel Urviola Dueñas.
 
 #### Subsección 3.1: Sedes, Árbitros y Asignación Anti-Superposición
-- [ ] **3.1.1** Crear entidades JPA en `esquema_operaciones`: `Sede`, `Arbitro`, `Partido`, `ActuacionJugador`, `TablaPosicion`. `[Santiago]`
+- **Estado:** `[EN PROCESO]`. Avance registrado en `docs/audit/3.1-avance-modelo-alta-arbitros.md`; no se certifica el cierre de la subsección ni su Gate.
+- [X] **3.1.1** Crear entidades JPA en `esquema_operaciones`: `Sede`, `Arbitro`, `Partido`, `ActuacionJugador`, `TablaPosicion`. `[Santiago]`
 - [ ] **3.1.2** Endpoints `POST /v1/sedes` y `POST /v1/arbitros`: Registro de predios y padrón arbitral. `[Santiago]`
+  - Alta de árbitros implementada; Santiago verificó HTTP 201, DNI duplicado con 409, datos inválidos con 400 y persistencia SQL sin alterar el registro original en las pruebas negativas.
+  - Sedes: entidad, repositorio y DTO de entrada preparados. Faltan servicio, controlador e integración con geocodificación.
+  - Decisión de alcance: el administrador crea el usuario en Keycloak y proporciona su identificador correcto; el alta de árbitro no consulta su existencia ni sus roles en Keycloak.
 - [ ] **3.1.3** `POST /v1/partidos/{id}/asignaciones` con validación estricta de ventana anti-superposición ($\pm 2$ horas) para sede y árbitro (FN-07, RN-05). `[Santiago]`
+- **Dependencia adelantada (acuerdo del equipo, 2026-11-12):** Implementar ahora geocodificación de la subsección 4.1 para completar el alta de sedes de 3.1. Es una reordenación puntual del trabajo acordada por el equipo; no declara completada 4.1 ni habilita el resto de la etapa 4. Pendiente definir el borde de exactamente dos horas en la regla de superposición.
 - *Criterio de Aceptación 3.1:* Intento de superposición horaria en sede o árbitro responde 409 Conflict (ProblemDetail).
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
@@ -182,6 +187,7 @@
 - **Responsables:** Luis Miguel Urviola Dueñas, Santiago Mariano Gonzalez, Gastón Emiliano Cambos Berrondo, Tomas Augusto Quiróz.
 
 #### Subsección 4.1: Adaptador de Geocodificación y Fallback (`servicio-geocodificacion`)
+- **Planificación actualizada (2026-11-12):** El equipo acordó adelantar esta dependencia para finalizar 3.1. La asignación original es de Luis Miguel; el acuerdo autoriza abordarla ahora dentro del trabajo coordinado de 3.1. Implementación y validación todavía pendientes; se mantienen los criterios RN-06 y las casillas sin completar.
 - [ ] **4.1.1** Scaffolding Spring Boot y consumo de API OpenStreetMap Nominatim / WireMock vía RestClient (Apunte 18). `[Luis Miguel]`
 - [ ] **4.1.2** Configurar Resilience4j Circuit Breaker y fallback manual ante corte de red o dirección inválida (FN-02, RN-06). `[Luis Miguel]`
 - *Criterio de Aceptación 4.1:* Si Nominatim/WireMock responde retorna lat/lon oficiales; si falla y vienen coordenadas manuales responde 201; si falla sin datos manuales responde 422.

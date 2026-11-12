@@ -13,6 +13,17 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class Partido {
+    public Partido(Long torneoId, String formatoTorneo, Integer fechaOFase,
+                   Long equipoLocalId, Long equipoVisitanteId, LocalDateTime fechaHora) {
+        this.torneoId = torneoId;
+        this.formatoTorneo = formatoTorneo;
+        this.fechaOFase = fechaOFase;
+        this.equipoLocalId = equipoLocalId;
+        this.equipoVisitanteId = equipoVisitanteId;
+        this.fechaHora = fechaHora;
+        this.estado = EstadoPartido.PROGRAMADO;
+    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +50,27 @@ public class Partido {
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
     private EstadoPartido estado;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sede_id")
+    private Sede sede;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "arbitro_dni")
+    private Arbitro arbitro;
+
+    @Column(name = "goles_local")
+    private Integer golesLocal;
+
+    @Column(name = "goles_visitante")
+    private Integer golesVisitante;
+
+    @Column(name = "penales_local")
+    private Integer penalesLocal;
+
+    @Column(name = "penales_visitante")
+    private Integer penalesVisitante;
+
+    @Column(name = "ganador_equipo_id")
+    private Long ganadorEquipoId;
 }

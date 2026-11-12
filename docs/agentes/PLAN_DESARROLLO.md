@@ -239,6 +239,7 @@ flowchart TD
 **Objetivo:** Gestionar sedes, árbitros, agenda horaria, máquina de estados de partidos, actas por dorsal, penales, tabla de posiciones, ciclo de reemplazos de planteles y seguridad arbitral en Gateway.
 
 #### Subsección 3.1: Sedes, Árbitros y Asignación Anti-Superposición (FN-02, FN-03, FN-07, RN-05)
+- **Actualización acordada por el equipo (2026-11-12):** Se adelanta la implementación del adaptador de geocodificación de 4.1 para completar el alta de sedes, conservando su contrato y reglas de fallback. El alta de árbitros asume que el administrador crea y vincula correctamente el usuario de Keycloak; no se consulta su existencia ni sus roles durante el alta. Avance y pruebas en `docs/audit/3.1-avance-modelo-alta-arbitros.md`. La subsección continúa en proceso.
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
   - Entidades JPA en `esquema_operaciones`: `Sede`, `Arbitro`, `Partido`, `ActuacionJugador` y `TablaPosicion`.
@@ -294,6 +295,7 @@ flowchart TD
 **Objetivo:** Microservicios adaptadores aislados consumiendo APIs externas con Resilience4j, soporte de WireMock, Scheduler preventivo a 24 horas y consistencia de certámenes ante contingencias climáticas.
 
 #### Subsección 4.1: Adaptador de Geocodificación y Fallback (`servicio-geocodificacion`) (FN-02, RN-06)
+- **Orden de ejecución actualizado (2026-11-12):** Por acuerdo del equipo, esta dependencia se implementará anticipadamente para permitir finalizar 3.1. No cambia sus criterios de aceptación ni supone el cierre de la etapa 3 o del resto de la etapa 4. La responsabilidad original de Luis Miguel se coordina con el trabajo actual de Santiago; el avance aquí registrado todavía no incluye implementación del adaptador.
 - **Responsable:** **Luis Miguel Urviola Dueñas**
 - **Partes a Desarrollar:**
   - Scaffolding del microservicio Spring Boot `servicio-geocodificacion`.

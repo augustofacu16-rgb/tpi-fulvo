@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "6ffa554a-bf9c-4bbe-9eba-afa8f8c0d133",
+		"name": "Fulvo - Subsección 3.1 - Sedes y árbitros",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "54325630",
+		"_collection_link": "https://sg2601710-wq-8358223.postman.co/workspace/Santiagolainen's-Workspace~187dfffd-46b2-402f-88f1-9342efb50566/collection/54325630-6ffa554a-bf9c-4bbe-9eba-afa8f8c0d133?action=share&source=collection_link&creator=54325630"
+	},
+	"item": [
+		{
+			"name": "01 - Registrar árbitro",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dni\": \"35123456\",\n  \"usuarioId\": \"{{arbitro_usuario_id}}\",\n  \"nombre\": \"Martín\",\n  \"apellido\": \"Pérez\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{operaciones_url}}/v1/arbitros",
+					"host": [
+						"{{operaciones_url}}"
+					],
+					"path": [
+						"v1",
+						"arbitros"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 - Rechazar DNI duplicado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Rechaza DNI duplicado con HTTP 409\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dni\": \"35123456\",\n  \"usuarioId\": \"1\",\n  \"nombre\": \"Martín\",\n  \"apellido\": \"Pérez\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{operaciones_url}}/v1/arbitros",
+					"host": [
+						"{{operaciones_url}}"
+					],
+					"path": [
+						"v1",
+						"arbitros"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 - Rechazar datos inválidos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Rechaza datos inválidos con HTTP 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dni\": \"35123457\",\n  \"usuarioId\": \"\",\n  \"nombre\": \"   \",\n  \"apellido\": \"Pérez\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{operaciones_url}}/v1/arbitros",
+					"host": [
+						"{{operaciones_url}}"
+					],
+					"path": [
+						"v1",
+						"arbitros"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "operaciones_url",
+			"value": ""
+		}
+	]
+}
