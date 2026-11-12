@@ -239,7 +239,7 @@ flowchart TD
 **Objetivo:** Gestionar sedes, árbitros, agenda horaria, máquina de estados de partidos, actas por dorsal, penales, tabla de posiciones, ciclo de reemplazos de planteles y seguridad arbitral en Gateway.
 
 #### Subsección 3.1: Sedes, Árbitros y Asignación Anti-Superposición (FN-02, FN-03, FN-07, RN-05)
-- **Actualización acordada por el equipo (2026-11-12):** Se adelanta la implementación del adaptador de geocodificación de 4.1 para completar el alta de sedes, conservando su contrato y reglas de fallback. El alta de árbitros asume que el administrador crea y vincula correctamente el usuario de Keycloak; no se consulta su existencia ni sus roles durante el alta. Avance y pruebas en `docs/audit/3.1-avance-modelo-alta-arbitros.md`. La subsección continúa en proceso.
+- **Estado actualizado (2026-11-12):** Subsección completada y documentada en `docs/audit/3.1-cierre-sedes-arbitros-asignaciones.md`. El adaptador de geocodificación de 4.1 se adelantó para completar el alta de sedes. El alta de árbitros asume que el administrador crea y vincula correctamente el usuario de Keycloak; no se consulta su existencia ni sus roles durante el alta.
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
   - Entidades JPA en `esquema_operaciones`: `Sede`, `Arbitro`, `Partido`, `ActuacionJugador` y `TablaPosicion`.
@@ -295,13 +295,13 @@ flowchart TD
 **Objetivo:** Microservicios adaptadores aislados consumiendo APIs externas con Resilience4j, soporte de WireMock, Scheduler preventivo a 24 horas y consistencia de certámenes ante contingencias climáticas.
 
 #### Subsección 4.1: Adaptador de Geocodificación y Fallback (`servicio-geocodificacion`) (FN-02, RN-06)
-- **Orden de ejecución actualizado (2026-11-12):** Por acuerdo del equipo, esta dependencia se implementará anticipadamente para permitir finalizar 3.1. No cambia sus criterios de aceptación ni supone el cierre de la etapa 3 o del resto de la etapa 4. La responsabilidad original de Luis Miguel se coordina con el trabajo actual de Santiago; el avance aquí registrado todavía no incluye implementación del adaptador.
+- **Estado actualizado (2026-11-12):** Implementada anticipadamente por acuerdo del equipo para permitir finalizar el alta de sedes de 3.1. La evidencia está en `docs/audit/4.1-adaptador-geocodificacion.md`; esto no supone el cierre de la etapa 4.
 - **Responsable:** **Luis Miguel Urviola Dueñas**
 - **Partes a Desarrollar:**
   - Scaffolding del microservicio Spring Boot `servicio-geocodificacion`.
   - Cliente `RestClient` hacia la API satelital OpenStreetMap (Nominatim) o WireMock (:8086).
   - Protección de tolerancia a fallos con Circuit Breaker (`Resilience4j`).
-  - **Lógica de Fallback Manual (RN-06):** Si el servicio externo falla y la petición incluye latitud/longitud manuales, retorna coordenadas con HTTP 201. Si no se proveyeron $\to$ `422 Unprocessable Entity`.
+  - **Lógica de Fallback Manual (RN-06):** Si el servicio externo falla y la petición incluye latitud/longitud manuales, retorna coordenadas con HTTP 201. Una dirección sin resultados retorna `422`; una indisponibilidad del proveedor retorna `503` en el adaptador y se traduce a `502` en operaciones.
 
 #### Subsección 4.2: Adaptador de Clima y Evaluación de Severidad (`servicio-clima`) (FN-08, RN-07)
 - **Responsable:** **Luis Miguel Urviola Dueñas**

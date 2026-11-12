@@ -42,3 +42,7 @@ springdoc:
     operations-sorter: method
     tags-sorter: alpha
 
+geocodificacion:
+  base-url: http://localhost:8084
+  connect-timeout-ms: 2000
+  read-timeout-ms: 7000

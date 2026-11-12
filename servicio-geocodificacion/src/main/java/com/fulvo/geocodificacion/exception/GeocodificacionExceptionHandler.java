@@ -23,13 +23,34 @@ public class GeocodificacionExceptionHandler {
             GeocodificacionNoDisponibleException exception,
             HttpServletRequest request) {
 
-        log.warn("No se pudo resolver la ubicación de la sede", exception);
+        log.warn("El servicio de geocodificación no está disponible", exception);
 
-        ProblemDetail problem = ProblemDetail.forStatus(422);
-        problem.setTitle("Geocodificación no disponible");
+        ProblemDetail problem = ProblemDetail.forStatus(503);
+        problem.setTitle("Servicio de geocodificación no disponible");
         problem.setDetail(exception.getMessage());
         problem.setType(URI.create(
                 "https://fulvo.com/errors/geocodificacion-no-disponible"));
+        problem.setInstance(URI.create(request.getRequestURI()));
+        problem.setProperty("timestamp", Instant.now().toString());
+
+        String correlationId = MDC.get("correlationId");
+        if (correlationId != null) {
+            problem.setProperty("correlationId", correlationId);
+        }
+
+        return ResponseEntity.status(503).body(problem);
+    }
+
+    @ExceptionHandler(DireccionNoEncontradaException.class)
+    public ResponseEntity<ProblemDetail> handleDireccionNoEncontrada(
+            DireccionNoEncontradaException exception,
+            HttpServletRequest request) {
+
+        ProblemDetail problem = ProblemDetail.forStatus(422);
+        problem.setTitle("Dirección no encontrada");
+        problem.setDetail(exception.getMessage());
+        problem.setType(URI.create(
+                "https://fulvo.com/errors/direccion-no-encontrada"));
         problem.setInstance(URI.create(request.getRequestURI()));
         problem.setProperty("timestamp", Instant.now().toString());
 

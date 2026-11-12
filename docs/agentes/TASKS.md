@@ -134,16 +134,16 @@
 - **Responsables:** Santiago Mariano Gonzalez, Gastón Emiliano Cambos Berrondo, Tomas Augusto Quiróz, Luis Miguel Urviola Dueñas.
 
 #### Subsección 3.1: Sedes, Árbitros y Asignación Anti-Superposición
-- **Estado:** `[EN PROCESO]`. Avance registrado en `docs/audit/3.1-avance-modelo-alta-arbitros.md`; no se certifica el cierre de la subsección ni su Gate.
+- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/3.1-cierre-sedes-arbitros-asignaciones.md`. El Gate 2B continúa pendiente porque incluye funcionalidades de otras subsecciones.
 - [X] **3.1.1** Crear entidades JPA en `esquema_operaciones`: `Sede`, `Arbitro`, `Partido`, `ActuacionJugador`, `TablaPosicion`. `[Santiago]`
-- [ ] **3.1.2** Endpoints `POST /v1/sedes` y `POST /v1/arbitros`: Registro de predios y padrón arbitral. `[Santiago]`
+- [X] **3.1.2** Endpoints `POST /v1/sedes` y `POST /v1/arbitros`: Registro de predios y padrón arbitral. `[Santiago]`
   - Alta de árbitros implementada; Santiago verificó HTTP 201, DNI duplicado con 409, datos inválidos con 400 y persistencia SQL sin alterar el registro original en las pruebas negativas.
-  - Sedes: entidad, repositorio y DTO de entrada preparados. Faltan servicio, controlador e integración con geocodificación.
+  - Sedes: entidad, repositorio, DTO, servicio, controlador e integración con geocodificación implementados y probados.
   - Decisión de alcance: el administrador crea el usuario en Keycloak y proporciona su identificador correcto; el alta de árbitro no consulta su existencia ni sus roles en Keycloak.
-- [ ] **3.1.3** `POST /v1/partidos/{id}/asignaciones` con validación estricta de ventana anti-superposición ($\pm 2$ horas) para sede y árbitro (FN-07, RN-05). `[Santiago]`
-- **Dependencia adelantada (acuerdo del equipo, 2026-11-12):** Implementar ahora geocodificación de la subsección 4.1 para completar el alta de sedes de 3.1. Es una reordenación puntual del trabajo acordada por el equipo; no declara completada 4.1 ni habilita el resto de la etapa 4. Pendiente definir el borde de exactamente dos horas en la regla de superposición.
+- [X] **3.1.3** `POST /v1/partidos/{id}/asignaciones` con validación estricta de ventana anti-superposición ($\pm 2$ horas) para sede y árbitro (FN-07, RN-05). `[Santiago]`
+- **Dependencia adelantada (acuerdo del equipo, 2026-11-12):** La geocodificación de 4.1 se implementó anticipadamente para completar el alta de sedes de 3.1. La regla adoptada permite una diferencia exactamente igual a dos horas; las diferencias menores se consideran conflicto.
 - *Criterio de Aceptación 3.1:* Intento de superposición horaria en sede o árbitro responde 409 Conflict (ProblemDetail).
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/3.1-cierre-sedes-arbitros-asignaciones.md`.
 
 #### Subsección 3.2: Circuito Arbitral, Actas Oficiales y Desempate en Llaves
 - [ ] **3.2.1** `PATCH /v1/partidos/{id}/estado` a `EN_CURSO` validando identidad del árbitro (`@AuthenticationPrincipal Jwt jwt` vs `partido.arbitro_dni`, FN-09, RN-08). `[Santiago]`
@@ -187,11 +187,11 @@
 - **Responsables:** Luis Miguel Urviola Dueñas, Santiago Mariano Gonzalez, Gastón Emiliano Cambos Berrondo, Tomas Augusto Quiróz.
 
 #### Subsección 4.1: Adaptador de Geocodificación y Fallback (`servicio-geocodificacion`)
-- **Planificación actualizada (2026-11-12):** El equipo acordó adelantar esta dependencia para finalizar 3.1. La asignación original es de Luis Miguel; el acuerdo autoriza abordarla ahora dentro del trabajo coordinado de 3.1. Implementación y validación todavía pendientes; se mantienen los criterios RN-06 y las casillas sin completar.
-- [ ] **4.1.1** Scaffolding Spring Boot y consumo de API OpenStreetMap Nominatim / WireMock vía RestClient (Apunte 18). `[Luis Miguel]`
-- [ ] **4.1.2** Configurar Resilience4j Circuit Breaker y fallback manual ante corte de red o dirección inválida (FN-02, RN-06). `[Luis Miguel]`
-- *Criterio de Aceptación 4.1:* Si Nominatim/WireMock responde retorna lat/lon oficiales; si falla y vienen coordenadas manuales responde 201; si falla sin datos manuales responde 422.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- **Estado actualizado (2026-11-12):** Implementada anticipadamente por acuerdo del equipo para completar el alta de sedes de 3.1. Evidencia en `docs/audit/4.1-adaptador-geocodificacion.md`.
+- [X] **4.1.1** Scaffolding Spring Boot y consumo de API OpenStreetMap Nominatim / WireMock vía RestClient (Apunte 18). `[Santiago, acuerdo de adelanto]`
+- [X] **4.1.2** Configurar Resilience4j Circuit Breaker y fallback manual ante corte de red o dirección inválida (FN-02, RN-06). `[Santiago, acuerdo de adelanto]`
+- *Criterio de Aceptación 4.1:* Nominatim/WireMock responde con lat/lon oficiales; dirección sin resultados responde 422; proveedor caído responde 503 en el adaptador y 502 en operaciones; con coordenadas manuales ante caída responde 201.
+- *Auditoría:* `docs/audit/4.1-adaptador-geocodificacion.md`.
 
 #### Subsección 4.2: Adaptador de Clima y Evaluación de Severidad (`servicio-clima`)
 - [ ] **4.2.1** Scaffolding Spring Boot y consumo de API Open-Meteo / WireMock para coordenadas dadas vía RestClient. `[Luis Miguel]`

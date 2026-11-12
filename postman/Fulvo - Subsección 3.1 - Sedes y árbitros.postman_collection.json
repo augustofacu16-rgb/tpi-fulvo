@@ -9,12 +9,35 @@
 	"item": [
 		{
 			"name": "01 - Registrar árbitro",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Crea el árbitro con HTTP 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Devuelve los datos del árbitro\", function () {",
+							"    const arbitro = pm.response.json();",
+							"",
+							"    pm.expect(arbitro.dni).to.eql(\"35123456\");",
+							"    pm.expect(arbitro.nombre).to.eql(\"Martín\");",
+							"    pm.expect(arbitro.apellido).to.eql(\"Pérez\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"dni\": \"35123456\",\n  \"usuarioId\": \"{{arbitro_usuario_id}}\",\n  \"nombre\": \"Martín\",\n  \"apellido\": \"Pérez\"\n}",
+					"raw": "{\n  \"dni\": \"35123456\",\n  \"usuarioId\": \"1\",\n  \"nombre\": \"Martín\",\n  \"apellido\": \"Pérez\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -113,6 +136,337 @@
 					"path": [
 						"v1",
 						"arbitros"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 - Registrar sede geocodificación automática",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Estadio Kempes\",\n  \"direccion\": \"Estadio Mario Alberto Kempes, Córdoba, Argentina\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/sedes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"sedes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05 - Registrar sede coordenadas manuales",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Cancha Auxiliar\",\n  \"direccion\": \"Av. Siempre Viva 742, Córdoba, Argentina\",\n  \"latitudManual\": -31.4201,\n  \"longitudManual\": -64.1888\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/sedes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"sedes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06 - Sede con coordenadas incompletas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Sede inválida\",\n  \"direccion\": \"Av. Colón 1000, Córdoba, Argentina\",\n  \"latitudManual\": -31.4201\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/sedes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"sedes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07 - Sede con coordenadas no encontradas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Sede sin ubicación\",\n  \"direccion\": \"Calle Inexistente 9999, Ciudad Desconocida, Argentina\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/sedes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"sedes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08 - Registrar sede con coordenadas manuales y servicio caido",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Sede con ubicación manual\",\n  \"direccion\": \"Av. Colón 1000, Córdoba, Argentina\",\n  \"latitudManual\": -31.4201,\n  \"longitudManual\": -64.123232\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/sedes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"sedes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09 - Asignación de partido válida",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"sedeId\": 1,\n  \"arbitroDni\": \"35123456\",\n  \"fechaHora\": \"2026-11-15T18:00:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/partidos/1/asignaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"partidos",
+						"1",
+						"asignaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10 - Árbitro inexistente",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"sedeId\": 1,\n  \"arbitroDni\": \"00000000\",\n  \"fechaHora\": \"2026-11-15T19:00:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/partidos/1/asignaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"partidos",
+						"1",
+						"asignaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11 - Sede inexistente",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"sedeId\": 99999,\n  \"arbitroDni\": \"35123456\",\n  \"fechaHora\": \"2026-11-15T19:00:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/partidos/1/asignaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"partidos",
+						"1",
+						"asignaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12 - Conflicto de sede",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"sedeId\": 1,\n  \"arbitroDni\": \"35123456\",\n  \"fechaHora\": \"2026-11-15T19:00:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/partidos/2/asignaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"partidos",
+						"2",
+						"asignaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "13 - Conflicto de árbitro",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"sedeId\": 2,\n  \"arbitroDni\": \"35123456\",\n  \"fechaHora\": \"2026-11-15T19:00:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/partidos/2/asignaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"partidos",
+						"2",
+						"asignaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "14 - Exactamente 2 horas de diferencia",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"sedeId\": 1,\n  \"arbitroDni\": \"35123456\",\n  \"fechaHora\": \"2026-11-15T20:00:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/v1/partidos/2/asignaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"partidos",
+						"2",
+						"asignaciones"
 					]
 				}
 			},

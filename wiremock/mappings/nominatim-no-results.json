@@ -1,0 +1,19 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/search",
+    "queryParameters": {
+      "q": {
+        "equalTo": "Calle Inexistente 9999, Ciudad Desconocida, Argentina"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    "jsonBody": []
+  }
+}

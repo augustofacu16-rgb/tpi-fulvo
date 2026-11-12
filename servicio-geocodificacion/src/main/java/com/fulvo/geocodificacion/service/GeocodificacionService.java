@@ -3,6 +3,7 @@ package com.fulvo.geocodificacion.service;
 import com.fulvo.common.dto.GeocodificacionDTO;
 import com.fulvo.geocodificacion.client.NominatimClient;
 import com.fulvo.geocodificacion.dto.NominatimResultado;
+import com.fulvo.geocodificacion.exception.DireccionNoEncontradaException;
 import com.fulvo.geocodificacion.exception.GeocodificacionNoDisponibleException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -38,7 +39,23 @@ public class GeocodificacionService {
                     .executeSupplier(() -> consultarProveedor(
                             solicitud.getDireccion()
                     ));
-        } catch (RestClientException | CallNotPermittedException | IllegalArgumentException | IllegalStateException exception) {
+        } catch (DireccionNoEncontradaException exception) {
+            if (latitudManual != null && longitudManual != null) {
+                return new GeocodificacionDTO(
+                        solicitud.getDireccion(),
+                        latitudManual,
+                        longitudManual,
+                        "MANUAL",
+                        null
+                );
+            }
+
+            throw exception;
+
+        } catch (RestClientException
+                 | CallNotPermittedException
+                 | IllegalArgumentException
+                 | IllegalStateException exception) {
             if (latitudManual != null && longitudManual != null) {
                 log.warn("Proveedor no disponible; se usan coordenadas manuales",
                         exception);
@@ -54,8 +71,7 @@ public class GeocodificacionService {
 
             }
             throw new GeocodificacionNoDisponibleException(
-                    "No se pudo geocodificar la dirección y no se "
-                            + "proporcionaron coordenadas manuales",
+                    "El servicio de geocodificación no está disponible",
                     exception
             );
         }
@@ -69,8 +85,8 @@ public class GeocodificacionService {
 
         if (resultados == null || resultados.length == 0
                 || resultados[0] == null) {
-            throw new IllegalStateException(
-                    "El proveedor no devolvió resultados"
+            throw new DireccionNoEncontradaException(
+                    "No se encontraron resultados para la dirección indicada"
             );
         }
 
