@@ -53,7 +53,8 @@ public class OperacionesApiClient {
                     response.getStatusCode(), response.getBody());
         } catch (Exception e) {
             log.error("Fallo crítico al despachar lote de partidos a servicio-operaciones-partidos: {}", e.getMessage(), e);
-            throw new BusinessRuleException("Error al despachar el lote de partidos hacia el servicio de operaciones: " + e.getMessage());
+            // Cumplimiento estricto de Regla de Oro 2.6 de CONTEXT.md: preservar la causa original e
+            throw new BusinessRuleException("Error al despachar el lote de partidos hacia el servicio de operaciones: " + e.getMessage(), e);
         }
     }
 }
