@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-		"name": "Fulvo - Torneos de Testeo y PR #15",
-		"description": "Colección de pruebas para:\n1) Los 3 torneos de testeo (Liga Iniciada 10/10, Liga Abierta 3/10, Llaves Iniciada 8/8).\n2) Endpoints de la PR #15 (Subsección 3.4): Reemplazos de jugadores (FN-11, RN-11) y Bajas/Descalificaciones (FN-13, RN-04).",
+		"name": "Fulvo - Torneos de Testeo",
+		"description": "Colección de pruebas para los 3 torneos de testeo:\n1) Torneo 1: Formato LIGA - Estado INICIADO con cupos completos (10/10) y fixture de 45 partidos.\n2) Torneo 2: Formato LIGA - Estado ABIERTO_INSCRIPCION (3 admitidos, 7 vacantes, 1 solicitud pendiente para probar postulación y resolución).\n3) Torneo 3: Formato LLAVES - Estado INICIADO con cupos completos (8/8) y árbol de llaves (7 partidos).",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -16,16 +16,22 @@
 							"pm.test(\"Status code es 200 OK\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
-							"pm.test(\"Retorna los 3 torneos con sus estados correspondientes\", function () {",
+							"pm.test(\"Retorna los 3 torneos de testeo con sus estados y cupos\", function () {",
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.length).to.be.at.least(3);",
 							"    var t1 = jsonData.find(t => t.id === 1);",
+							"    pm.expect(t1.nombre).to.eql(\"Torneo Apertura Liga 2026\");",
+							"    pm.expect(t1.formato).to.eql(\"LIGA\");",
 							"    pm.expect(t1.estado).to.eql(\"INICIADO\");",
 							"    pm.expect(t1.equiposInscriptos).to.eql(10);",
 							"    var t2 = jsonData.find(t => t.id === 2);",
+							"    pm.expect(t2.nombre).to.eql(\"Torneo Clausura Liga 2026\");",
+							"    pm.expect(t2.formato).to.eql(\"LIGA\");",
 							"    pm.expect(t2.estado).to.eql(\"ABIERTO_INSCRIPCION\");",
 							"    pm.expect(t2.equiposInscriptos).to.eql(3);",
 							"    var t3 = jsonData.find(t => t.id === 3);",
+							"    pm.expect(t3.nombre).to.eql(\"Supercopa de Campeones 2026\");",
+							"    pm.expect(t3.formato).to.eql(\"LLAVES\");",
 							"    pm.expect(t3.estado).to.eql(\"INICIADO\");",
 							"    pm.expect(t3.equiposInscriptos).to.eql(8);",
 							"});"
@@ -46,12 +52,95 @@
 						"v1",
 						"torneos"
 					]
-				}
+				},
+				"description": "Retorna los 3 torneos de prueba con sus respectivos estados y conteos de inscriptos."
 			},
 			"response": []
 		},
 		{
-			"name": "02 - Torneo 2 - Postular nuevo equipo (FN-04)",
+			"name": "02 - Torneo 1 (Liga Iniciado) - Consultar detalle",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Torneo 1 está INICIADO y con cupo al 100%\", function () {",
+							"    var data = pm.response.json();",
+							"    pm.expect(data.id).to.eql(1);",
+							"    pm.expect(data.formato).to.eql(\"LIGA\");",
+							"    pm.expect(data.cupoEquipos).to.eql(10);",
+							"    pm.expect(data.equiposInscriptos).to.eql(10);",
+							"    pm.expect(data.estado).to.eql(\"INICIADO\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{gateway_url}}/v1/torneos/1",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos",
+						"1"
+					]
+				},
+				"description": "Consulta el Torneo 1 (Liga Profesional Apertura 2026), cupo 10, estado INICIADO."
+			},
+			"response": []
+		},
+		{
+			"name": "03 - Torneo 2 (Liga Abierto) - Consultar detalle",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Torneo 2 está en ABIERTO_INSCRIPCION con vacantes disponibles\", function () {",
+							"    var data = pm.response.json();",
+							"    pm.expect(data.id).to.eql(2);",
+							"    pm.expect(data.formato).to.eql(\"LIGA\");",
+							"    pm.expect(data.cupoEquipos).to.eql(10);",
+							"    pm.expect(data.equiposInscriptos).to.eql(3);",
+							"    pm.expect(data.estado).to.eql(\"ABIERTO_INSCRIPCION\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{gateway_url}}/v1/torneos/2",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos",
+						"2"
+					]
+				},
+				"description": "Consulta el Torneo 2 (Liga Profesional Clausura 2026), cupo 10, 3 equipos inscriptos, 7 vacantes disponibles."
+			},
+			"response": []
+		},
+		{
+			"name": "04 - Torneo 2 (Liga Abierto) - Postular nuevo equipo (FN-04)",
 			"event": [
 				{
 					"listen": "test",
@@ -59,6 +148,12 @@
 						"exec": [
 							"pm.test(\"Status code es 202 Accepted\", function () {",
 							"    pm.response.to.have.status(202);",
+							"});",
+							"pm.test(\"Solicitud creada en estado PENDIENTE\", function () {",
+							"    var res = pm.response.json();",
+							"    pm.expect(res.torneoId).to.eql(2);",
+							"    pm.expect(res.estado).to.eql(\"PENDIENTE\");",
+							"    pm.expect(res.nombreEquipo).to.eql(\"Deportivo Testeo FC\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -102,12 +197,13 @@
 						"2",
 						"solicitudes-inscripcion"
 					]
-				}
+				},
+				"description": "Postula un nuevo equipo al Torneo 2 (quedan 6 vacantes). Devuelve 202 Accepted."
 			},
 			"response": []
 		},
 		{
-			"name": "03 - Torneo 2 - Resolver admisión de solicitud (FN-05)",
+			"name": "05 - Torneo 2 (Liga Abierto) - Resolver admisión de solicitud pendiente (FN-05)",
 			"event": [
 				{
 					"listen": "test",
@@ -116,7 +212,7 @@
 							"pm.test(\"Status code es 200 OK\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
-							"pm.test(\"Solicitud aceptada y equipo generado\", function () {",
+							"pm.test(\"Solicitud aceptada y equipo generado formalmente\", function () {",
 							"    var res = pm.response.json();",
 							"    pm.expect(res.estado).to.eql(\"ACEPTADA\");",
 							"    pm.expect(res.equipoId).to.be.a(\"number\");",
@@ -159,12 +255,13 @@
 						"14",
 						"admision"
 					]
-				}
+				},
+				"description": "Aprueba la solicitud precargada #14 ('Racing de Córdoba'), generando el equipo y descontando cupo."
 			},
 			"response": []
 		},
 		{
-			"name": "04 - PR 15 - Reemplazo Exitoso de Jugador (FN-11 / RN-11)",
+			"name": "06 - Torneo 3 (Llaves Iniciado) - Consultar detalle",
 			"event": [
 				{
 					"listen": "test",
@@ -173,12 +270,13 @@
 							"pm.test(\"Status code es 200 OK\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
-							"pm.test(\"Reemplazo registrado correctamente\", function () {",
+							"pm.test(\"Torneo 3 está INICIADO y con cupo al 100%\", function () {",
 							"    var data = pm.response.json();",
-							"    pm.expect(data.equipoId).to.eql(1);",
-							"    pm.expect(data.cambiosRealizados).to.be.at.least(1);",
-							"    pm.expect(data.cambiosRestantes).to.eql(5 - data.cambiosRealizados);",
-							"    pm.expect(data.nuevoJugadorId).to.be.a(\"number\");",
+							"    pm.expect(data.id).to.eql(3);",
+							"    pm.expect(data.formato).to.eql(\"LLAVES\");",
+							"    pm.expect(data.cupoEquipos).to.eql(8);",
+							"    pm.expect(data.equiposInscriptos).to.eql(8);",
+							"    pm.expect(data.estado).to.eql(\"INICIADO\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -186,364 +284,20 @@
 				}
 			],
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token_delegado}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"jugadorSalienteId\": 1,\n  \"nuevoJugador\": {\n    \"dni\": \"50999001\",\n    \"nombre\": \"Martin\",\n    \"apellido\": \"Palermo\",\n    \"posicion\": \"ARQUERO\",\n    \"dorsal\": 1,\n    \"esCapitan\": false\n  }\n}"
-				},
-				"url": {
-					"raw": "{{gateway_url}}/v1/equipos/1/reemplazos-jugadores",
-					"host": [
-						"{{gateway_url}}"
-					],
-					"path": [
-						"v1",
-						"equipos",
-						"1",
-						"reemplazos-jugadores"
-					]
-				},
-				"description": "Sustituye al jugador #1 (Arquero titular) en el Equipo 1 (Torneo 1 Iniciado) por un nuevo arquero."
-			},
-			"response": []
-		},
-		{
-			"name": "05 - PR 15 - Rechazo Reemplazo: Torneo NO iniciado (RN-11)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code es 409 Conflict\", function () {",
-							"    pm.response.to.have.status(409);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token_delegado}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"jugadorSalienteId\": 151,\n  \"nuevoJugador\": {\n    \"dni\": \"50999002\",\n    \"nombre\": \"Carlos\",\n    \"apellido\": \"Tevez\",\n    \"posicion\": \"DELANTERO\",\n    \"dorsal\": 10,\n    \"esCapitan\": false\n  }\n}"
-				},
-				"url": {
-					"raw": "{{gateway_url}}/v1/equipos/11/reemplazos-jugadores",
-					"host": [
-						"{{gateway_url}}"
-					],
-					"path": [
-						"v1",
-						"equipos",
-						"11",
-						"reemplazos-jugadores"
-					]
-				},
-				"description": "Intenta reemplazar un jugador en el Equipo 11 del Torneo 2 (que está en ABIERTO_INSCRIPCION). Debe responder 409 Conflict."
-			},
-			"response": []
-		},
-		{
-			"name": "06 - PR 15 - Rechazo Reemplazo: DNI ya inscripto en el torneo (RN-02)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code es 409 Conflict\", function () {",
-							"    pm.response.to.have.status(409);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token_delegado}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"jugadorSalienteId\": 2,\n  \"nuevoJugador\": {\n    \"dni\": \"30000016\",\n    \"nombre\": \"Jugador\",\n    \"apellido\": \"Duplicado\",\n    \"posicion\": \"DEFENSOR\",\n    \"dorsal\": 2,\n    \"esCapitan\": false\n  }\n}"
-				},
-				"url": {
-					"raw": "{{gateway_url}}/v1/equipos/1/reemplazos-jugadores",
-					"host": [
-						"{{gateway_url}}"
-					],
-					"path": [
-						"v1",
-						"equipos",
-						"1",
-						"reemplazos-jugadores"
-					]
-				},
-				"description": "El DNI 30000016 pertenece al Equipo 2 del mismo Torneo 1. Debe rechazar con 409 Conflict."
-			},
-			"response": []
-		},
-		{
-			"name": "07 - PR 15 - Rechazo Reemplazo: Dorsal duplicado en el plantel",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code es 400 Bad Request\", function () {",
-							"    pm.response.to.have.status(400);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token_delegado}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"jugadorSalienteId\": 2,\n  \"nuevoJugador\": {\n    \"dni\": \"50999003\",\n    \"nombre\": \"Juan\",\n    \"apellido\": \"Roman\",\n    \"posicion\": \"DEFENSOR\",\n    \"dorsal\": 10,\n    \"esCapitan\": false\n  }\n}"
-				},
-				"url": {
-					"raw": "{{gateway_url}}/v1/equipos/1/reemplazos-jugadores",
-					"host": [
-						"{{gateway_url}}"
-					],
-					"path": [
-						"v1",
-						"equipos",
-						"1",
-						"reemplazos-jugadores"
-					]
-				},
-				"description": "El dorsal 10 ya está asignado al volante creativo del equipo. Debe rechazar con 400 Bad Request."
-			},
-			"response": []
-		},
-		{
-			"name": "08 - PR 15 - Baja Voluntaria de Equipo (FN-13 / RN-04)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code es 200 OK\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"pm.test(\"Equipo pasa a DADO_DE_BAJA\", function () {",
-							"    var data = pm.response.json();",
-							"    pm.expect(data.equipoId).to.eql(11);",
-							"    pm.expect(data.estadoEquipo).to.eql(\"DADO_DE_BAJA\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token_delegado}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "DELETE",
+				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{gateway_url}}/v1/torneos/2/equipos/11?tipo=BAJA_VOLUNTARIA&motivo=Problemas+logisticos",
+					"raw": "{{gateway_url}}/v1/torneos/3",
 					"host": [
 						"{{gateway_url}}"
 					],
 					"path": [
 						"v1",
 						"torneos",
-						"2",
-						"equipos",
-						"11"
-					],
-					"query": [
-						{
-							"key": "tipo",
-							"value": "BAJA_VOLUNTARIA"
-						},
-						{
-							"key": "motivo",
-							"value": "Problemas+logisticos"
-						}
+						"3"
 					]
 				},
-				"description": "Da de baja voluntaria al equipo #11 ('Talleres de Córdoba') en el Torneo 2. Envía email de notificación y actualiza su estado."
-			},
-			"response": []
-		},
-		{
-			"name": "09 - PR 15 - Descalificación de Equipo por Organizador (FN-13 / RN-04)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code es 200 OK\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"pm.test(\"Equipo pasa a DESCALIFICADO\", function () {",
-							"    var data = pm.response.json();",
-							"    pm.expect(data.equipoId).to.eql(12);",
-							"    pm.expect(data.estadoEquipo).to.eql(\"DESCALIFICADO\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token_organizador}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{gateway_url}}/v1/torneos/2/equipos/12?tipo=DESCALIFICACION&motivo=Falta+disciplinaria+grave",
-					"host": [
-						"{{gateway_url}}"
-					],
-					"path": [
-						"v1",
-						"torneos",
-						"2",
-						"equipos",
-						"12"
-					],
-					"query": [
-						{
-							"key": "tipo",
-							"value": "DESCALIFICACION"
-						},
-						{
-							"key": "motivo",
-							"value": "Falta+disciplinaria+grave"
-						}
-					]
-				},
-				"description": "Descalifica al equipo #12 ('Belgrano de Córdoba') por parte de la organización. Envía email de descalificación."
-			},
-			"response": []
-		},
-		{
-			"name": "10 - PR 15 - Rechazo de Baja sobre Equipo Ya Inactivo",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code es 409 Conflict\", function () {",
-							"    pm.response.to.have.status(409);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token_organizador}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{gateway_url}}/v1/torneos/2/equipos/11",
-					"host": [
-						"{{gateway_url}}"
-					],
-					"path": [
-						"v1",
-						"torneos",
-						"2",
-						"equipos",
-						"11"
-					]
-				},
-				"description": "Intenta volver a dar de baja al equipo #11 que ya está DADO_DE_BAJA. Debe rechazar con 409 Conflict."
+				"description": "Consulta el Torneo 3 (Supercopa de Campeones 2026), formato LLAVES, 8 equipos cupo completo, estado INICIADO."
 			},
 			"response": []
 		}
