@@ -131,4 +131,64 @@ public class TorneoNotificacionService {
             notificacionesApiClient.enviarNotificacionAsync(dto);
         }
     }
+
+    /**
+     * Despacha la notificación de baja voluntaria o descalificación de un equipo hacia su delegado
+     * (RN-04, RN-11, FN-13).
+     *
+     * @param emailDestinatario Dirección del delegado del equipo.
+     * @param nombreEquipo      Nombre del equipo afectado.
+     * @param nombreTorneo      Nombre del torneo.
+     * @param descalificado     true si el Organizador lo descalificó; false si fue baja voluntaria.
+     * @param motivo            Motivo informado (puede ser nulo).
+     */
+    public void despacharBajaEquipo(String emailDestinatario, String nombreEquipo, String nombreTorneo,
+                                    boolean descalificado, String motivo) {
+        String asunto = (descalificado ? "Equipo Descalificado - " : "Baja Confirmada - ") + nombreTorneo;
+        String titulo = descalificado ? "⛔ Descalificación de Equipo" : "👋 Baja de Equipo Confirmada";
+        String color = descalificado ? "#d32f2f" : "#f57c00";
+        String detalle = descalificado
+                ? "ha sido <strong>DESCALIFICADO</strong> por el Organizador del certamen."
+                : "ha sido <strong>dado de baja</strong> del certamen a tu solicitud.";
+        String motivoTexto = (motivo != null && !motivo.isBlank()) ? motivo : "Sin motivo informado.";
+
+        String cuerpo = """
+                <html>
+                <body style="font-family: Arial, sans-serif; color: #333;">
+                    <div style="background-color: %s; color: white; padding: 15px; border-radius: 5px;">
+                        <h2>%s</h2>
+                    </div>
+                    <p>Estimado/a delegado/a,</p>
+                    <p>Te informamos que tu equipo <strong>%s</strong> %s (certamen <strong>%s</strong>).</p>
+                    <p><strong>Motivo:</strong> %s</p>
+                    <br/>
+                    <p>Saludos cordiales,<br/><em>Comité Organizador de Fulvo'</em></p>
+                </body>
+                </html>
+                """.formatted(color, titulo, nombreEquipo, detalle, nombreTorneo, motivoTexto);
+
+        NotificacionEmailDTO dto = NotificacionEmailDTO.builder()
+                .destinatario(emailDestinatario)
+                .asunto(asunto)
+                .cuerpo(cuerpo)
+                .tipoEvento(descalificado ? "DESCALIFICACION_EQUIPO" : "BAJA_EQUIPO")
+                .fechaHora(LocalDateTime.now())
+                .build();
+
+        log.info("Disparando notificación de {} del equipo '{}' en certamen '{}' a {}",
+                descalificado ? "descalificación" : "baja voluntaria", nombreEquipo, nombreTorneo, emailDestinatario);
+        notificacionesApiClient.enviarNotificacionAsync(dto);
+    }
+
+    /**
+     * Resuelve la dirección de correo de un usuario a partir de su identificador.
+     * Mientras no exista integración con Keycloak para consultar el email del usuario, si el identificador
+     * ya es un correo se usa tal cual; en caso contrario se emplea la casilla de pruebas de Mailpit.
+     */
+    public String resolverEmailDestinatario(String usuarioId) {
+        if (usuarioId != null && usuarioId.contains("@")) {
+            return usuarioId;
+        }
+        return "fanatico1@fulvo.com";
+    }
 }

@@ -17,6 +17,17 @@ public interface JugadorRepository extends JpaRepository<Jugador, Long> {
     @Query("SELECT j FROM Jugador j WHERE j.equipo.torneo.id = :torneoId AND j.dni = :dni")
     Optional<Jugador> findByTorneoIdAndDni(@Param("torneoId") Long torneoId, @Param("dni") String dni);
 
-    @Query("SELECT COUNT(j) > 0 FROM Jugador j WHERE j.equipo.torneo.id = :torneoId AND j.dni IN :dnis")
+    /**
+     * RN-02: un jugador no puede figurar en dos equipos del mismo certamen.
+     * Solo se consideran los jugadores VIGENTES (activo = true) de equipos ACTIVOS: un jugador
+     * reemplazado o el plantel de un equipo dado de baja/descalificado dejan de bloquear el DNI (Subsección 3.4).
+     */
+    @Query("""
+            SELECT COUNT(j) > 0 FROM Jugador j
+            WHERE j.equipo.torneo.id = :torneoId
+              AND j.dni IN :dnis
+              AND j.activo = true
+              AND j.equipo.estado = com.fulvo.torneos.domain.EstadoEquipo.ACTIVO
+            """)
     boolean existsByTorneoIdAndDniIn(@Param("torneoId") Long torneoId, @Param("dnis") List<String> dnis);
 }

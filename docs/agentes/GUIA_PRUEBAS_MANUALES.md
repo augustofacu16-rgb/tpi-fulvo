@@ -704,8 +704,8 @@ Ejecutar la siguiente secuencia de punta a punta en Postman GUI o Swagger UI:
   * `POST {{gateway_url}}/v1/equipos/1/reemplazos-jugadores` con `{{token_delegado}}`:
     ```json
     {
-      "dniSaliente": "30111002",
-      "jugadorEntrante": {
+      "jugadorSalienteId": 14,
+      "nuevoJugador": {
         "dni": "30999888",
         "nombre": "Lucas",
         "apellido": "Beltran",
@@ -717,7 +717,19 @@ Ejecutar la siguiente secuencia de punta a punta en Postman GUI o Swagger UI:
   * **Status Esperado:** `200 OK`.
 
 #### Prueba 3.4.2: Bloqueo de Reemplazo para Jugador Suspendido (EN-10 / RN-11)
-* Asentar tarjeta roja directa al jugador saliente en un acta previa e intentar reemplazarlo.
+* Asentar tarjeta roja directa al jugador saliente en un acta previa (o configurar `suspendido = true` en base de datos) e intentar reemplazarlo indicando su `jugadorSalienteId`:
+    ```json
+    {
+      "jugadorSalienteId": 14,
+      "nuevoJugador": {
+        "dni": "30999888",
+        "nombre": "Lucas",
+        "apellido": "Beltran",
+        "posicion": "DELANTERO",
+        "dorsal": 18
+      }
+    }
+    ```
 * **Status Esperado:** `400 Bad Request` indicando que no se puede sustituir futbolistas suspendidos.
 
 ---
@@ -1070,4 +1082,30 @@ Ejecutar la siguiente secuencia de validación integral:
 | **EN-10** | Negativo | Exclusividad Arbitral de Partido | `PATCH /v1/partidos/{id}/estado` *(Árbitro ajeno)* | `403 Forbidden` | Denegado: el árbitro no está asignado a ese partido (RN-08). |
 | **EN-11** | Negativo | Cancelación por Disturbios e Incidentes | `PATCH /v1/partidos/{id}/estado` *(a CANCELADO)* | `200 OK` | Partido a `CANCELADO`: 0 puntos en tabla y descalificación en llaves (RN-09). |
 | **EN-12** | Negativo | Reemplazo de Jugador Suspendido / Cupo 5 | `POST /v1/equipos/{id}/reemplazos-jugadores` | `400 Bad Request` | `ProblemDetail`: Prohibido sustituir suspendidos o superar 5 cambios (RN-11). |
+
+---
+
+## 4. Banco de Datos de Testeo Oficial (3 Torneos Precargados)
+
+Para agilizar el desarrollo y la verificación de los endpoints de las próximas etapas (sedes, árbitros, actas, posiciones, bajas y reemplazos), se dispone del script maestro de seed SQL en `initdb/seed-torneos-test.sql` y el ejecutor automático `initdb/apply-seed.ps1`.
+
+### 4.1 Resumen de Torneos de Testeo
+
+| ID | Nombre | Formato | Cupo Total | Estado | Equipos Admitidos | Partidos Generados en Operaciones | Propósito de Testeo Principal |
+|:---:|---|:---:|:---:|:---:|:---:|:---:|---|
+| **1** | **Torneo Apertura Liga 2026** | `LIGA` | 10 | `INICIADO` | 10 equipos (`ACTIVO`, 15 jugadores c/u) | 45 partidos (`PROGRAMADO`, Round Robin 9 fechas) | Testear asignación de sedes/árbitros, actas de partidos, tabla de posiciones y goleadores. |
+| **2** | **Torneo Clausura Liga 2026** | `LIGA` | 10 | `ABIERTO_INSCRIPCION` | 3 equipos admitidos + 1 solicitud `PENDIENTE` | 0 partidos (fixture aún no generado) | Testear inscripciones nuevas (7 cupos libres), resolución de admisión y **dar de baja equipos inscriptos (FN-13)**. |
+| **3** | **Supercopa de Campeones 2026** | `LLAVES` | 8 | `INICIADO` | 8 equipos (`ACTIVO`, 15 jugadores c/u) | 7 partidos (`PROGRAMADO`: 4 Cuartos, 2 Semis, 1 Final) | Testear desempate por penales obligatorio, actas en eliminación directa y promoción de llaves. |
+
+### 4.2 Aplicación del Seeder
+
+* **Vía Docker Compose (Automático en arranque):**
+  Los archivos de `initdb/` se ejecutan al inicializar el contenedor PostgreSQL.
+* **Vía PowerShell sobre contenedor activo:**
+  ```powershell
+  .\initdb\apply-seed.ps1
+  ```
+* **Vía Postman:**
+  Importar la colección `postman/Fulvo - Torneos de Testeo.postman_collection.json`.
+
 

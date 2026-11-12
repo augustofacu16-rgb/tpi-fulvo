@@ -154,10 +154,10 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 3.4: Sincronización de Brackets y Ciclo de Reemplazos de Jugadores
-- [ ] **3.4.1** `POST /v1/equipos/{id}/reemplazos-jugadores` validando máximo 5 cambios y prohibición taxativa de sustituir futbolistas suspendidos (FN-11, RN-11). `[Gastón]`
-- [ ] **3.4.2** `DELETE /v1/torneos/{idTorneo}/equipos/{idEquipo}` para baja voluntaria o descalificación de planteles (FN-13). `[Gastón]`
+- [X] **3.4.1** `POST /v1/equipos/{id}/reemplazos-jugadores` validando máximo 5 cambios y prohibición taxativa de sustituir futbolistas suspendidos (FN-11, RN-11). `[Gastón]`
+- [X] **3.4.2** `DELETE /v1/torneos/{idTorneo}/equipos/{idEquipo}` para baja voluntaria o descalificación de planteles (FN-13). `[Gastón]`
 - *Criterio de Aceptación 3.4:* Sexto cambio o reemplazo de jugador suspendido rechaza con 400 Bad Request.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261112-34]`
 
 #### Subsección 3.5: Seguridad Perimetral y Reglas de Autorización Arbitral en API Gateway
 - [ ] **3.5.1** Configurar rutas en Gateway `/v1/partidos/**`, `/v1/sedes/**` y `/v1/arbitros/**`. `[Tomas]`

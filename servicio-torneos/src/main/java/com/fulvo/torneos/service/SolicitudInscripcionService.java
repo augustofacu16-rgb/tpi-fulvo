@@ -177,10 +177,7 @@ public class SolicitudInscripcionService {
     }
 
     private String obtenerEmailDestinatario(String usuarioId) {
-        if (usuarioId != null && usuarioId.contains("@")) {
-            return usuarioId;
-        }
-        return "fanatico1@fulvo.com";
+        return torneoNotificacionService.resolverEmailDestinatario(usuarioId);
     }
 
     private void validarPlantelBuenaFe(Long torneoId, List<JugadorInscripcionDTO> jugadores) {
