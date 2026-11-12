@@ -1,6 +1,6 @@
 # Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
 
-> **Estado:** `ETAPA 1 COMPLETADA - GATE 1 SUPERADO - EN ARRANQUE ETAPA 2`  
+> **Estado:** `ETAPA 2 COMPLETADA - GATE 2A SUPERADO - EN ARRANQUE ETAPA 3`  
 > **Regla de Operación Obligatoria:**
 > 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las últimas entradas de `docs/audit/`.
 > 2. Al finalizar cada subsección, validar los endpoints y flujos según `GUIA_PRUEBAS_MANUALES.md`, marcar las casillas completadas `[X]` en este archivo y **registrar la auditoría correspondiente en `docs/audit/`** detallando qué se hizo, qué se arregló sobre la marcha y si hubo diferencias con el plan original.
@@ -17,8 +17,8 @@
 |---|---|---|---|---|:---:|:---:|
 | **Día 0** | **Etapa 0** | Planificación, Convenciones y Roles | Todo el Equipo | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-00) |
 | **Día 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, Gastón, Santiago | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261109-GATE1) |
-| **Día 2** | **Etapa 2** | Core de Torneos, Admisiones, Fixtures y Swagger Base | Tomas, Gastón, Santiago, Luis Miguel | `[EN PROCESO]` | `[ ]` | `[ ]` |
-| **Día 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gastón, Tomas, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
+| **Día 2** | **Etapa 2** | Core de Torneos, Admisiones, Fixtures y Swagger Base | Tomas, Gastón, Santiago, Luis Miguel | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261111-GATE2A) |
+| **Día 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gastón, Tomas, Luis Miguel | `[EN ARRANQUE]` | `[ ]` | `[ ]` |
 | **Día 3** | **Etapa 4** | Adaptadores Externos, Resiliencia y Scheduler | Luis Miguel, Santiago, Gastón, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
 | **Día 3** | **Etapa 5** | Despliegue Docker, Auditoría OpenAPI y Postman E2E | Tomas, Gastón, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
 
@@ -103,9 +103,8 @@
 #### Subsección 2.3: Contrato y Recepción de Cruces en Lote en Operaciones
 - [X] **2.3.1** Implementar endpoint `POST /v1/partidos/lote` en `servicio-operaciones-partidos` recibiendo `List<CrucePartidoDTO>`. `[Santiago]`
 - [X] **2.3.2** Persistir masivamente los partidos recibidos en estado `PROGRAMADO` en `esquema_operaciones` desacoplados de tablas de torneos. `[Santiago]`
-- **Estado:** `[EN OBSERVACIÓN]`. Santiago verificó manualmente HTTP 202, persistencia en `PROGRAMADO` y rollback completo de un lote con un elemento inválido. Pendiente coordinar con Luis Miguel la validación de campos del DTO para devolver HTTP 400 (actualmente 500) y completar el tratamiento de sede y árbitro opcionales. Evidencia en `docs/audit/2.3-recepcion-persistencia-lote.md`. Gate 2A pendiente.
-- *Criterio de Aceptación 2.3:* Operaciones persiste los partidos sin claves foráneas físicas directas hacia el esquema de torneos.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Criterio de Aceptación 2.3:* Operaciones persiste los partidos sin claves foráneas físicas directas hacia el esquema de torneos. Verificado en la integración E2E de Etapa 2 con 45 partidos persistidos.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261109-23]`
 
 #### Subsección 2.4: Integración del Cliente RestClient y Notificaciones de Admisión
 - [X] **2.4.1** Implementar cliente `RestClient` en `servicio-torneos` invocando asíncronamente a `servicio-notificaciones` (`POST /v1/notificaciones/emails`). `[Luis Miguel]`
@@ -126,7 +125,7 @@
 - *Criterio de Aceptación 2.6:* Swagger UI unificado y accesible desde el puerto 8080 en `http://localhost:8080/swagger-ui.html`, permitiendo alternar y probar interactivamente los contratos vivos de `servicio-torneos` y `servicio-operaciones-partidos`.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261111-26]`
 
-> ?? **COMPUERTA DE CALIDAD (GATE 2A):** Torneos y Operaciones interactúan fluidamente vía RestClient en la generación y recepción de fixtures.
+> 🔒 **COMPUERTA DE CALIDAD (GATE 2A) [SUPERADA Y CERTIFICADA]:** Torneos y Operaciones interactúan fluidamente vía RestClient en la generación y recepción de fixtures. Validada integralmente mediante la secuencia E2E (Pasos 1 al 11) y formalmente certificada en [docs/audit/2.0-cierre-etapa-2.md](../audit/2.0-cierre-etapa-2.md).
 
 ---
 
