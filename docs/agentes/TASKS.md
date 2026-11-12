@@ -94,11 +94,11 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261110-21]`
 
 #### Subsección 2.2: Generación Algorítmica Determinística de Fixtures
-- [ ] **2.2.1** `PATCH /v1/torneos/{id}/estado` cerrando inscripción únicamente al 100% de cupo (FN-06, RN-01). `[Gastón]`
-- [ ] **2.2.2** Implementar algoritmo Round Robin (Liga) y árbol de emparejamiento con cruces posteriores en `null` (Llaves); transición a `INICIADO`. `[Gastón]`
-- [ ] **2.2.3** Cliente `RestClient` inyectado por constructor con `@RequiredArgsConstructor` (Apunte 18) para despachar lote de cruces a `servicio-operaciones-partidos`. `[Gastón]`
+- [X] **2.2.1** `PATCH /v1/torneos/{id}/estado` cerrando inscripción únicamente al 100% de cupo (FN-06, RN-01). `[Gastón]`
+- [X] **2.2.2** Implementar algoritmo Round Robin (Liga) y árbol de emparejamiento con cruces posteriores en `null` (Llaves); transición a `INICIADO`. `[Gastón]`
+- [X] **2.2.3** Cliente `RestClient` inyectado por constructor con `@RequiredArgsConstructor` (Apunte 18) para despachar lote de cruces a `servicio-operaciones-partidos`. `[Gastón]`
 - *Criterio de Aceptación 2.2:* Intento de cierre con cupo incompleto responde 409; cierre al 100% genera y despacha fixture completo.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261111-22]`
 
 #### Subsección 2.3: Contrato y Recepción de Cruces en Lote en Operaciones
 - [X] **2.3.1** Implementar endpoint `POST /v1/partidos/lote` en `servicio-operaciones-partidos` recibiendo `List<CrucePartidoDTO>`. `[Santiago]`

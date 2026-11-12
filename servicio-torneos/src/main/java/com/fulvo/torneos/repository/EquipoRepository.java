@@ -13,6 +13,8 @@ public interface EquipoRepository extends JpaRepository<Equipo, Long> {
 
     List<Equipo> findByTorneoId(Long torneoId);
 
+    List<Equipo> findByTorneoIdAndEstadoOrderByIdAsc(Long torneoId, EstadoEquipo estado);
+
     long countByTorneoIdAndEstado(Long torneoId, EstadoEquipo estado);
 
     Optional<Equipo> findByTorneoIdAndNombre(Long torneoId, String nombre);
