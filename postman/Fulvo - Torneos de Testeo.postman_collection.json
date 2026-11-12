@@ -1,0 +1,551 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "Fulvo - Torneos de Testeo y PR #15",
+		"description": "Colección de pruebas para:\n1) Los 3 torneos de testeo (Liga Iniciada 10/10, Liga Abierta 3/10, Llaves Iniciada 8/8).\n2) Endpoints de la PR #15 (Subsección 3.4): Reemplazos de jugadores (FN-11, RN-11) y Bajas/Descalificaciones (FN-13, RN-04).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01 - Torneos - Listar todos los torneos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Retorna los 3 torneos con sus estados correspondientes\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).to.be.at.least(3);",
+							"    var t1 = jsonData.find(t => t.id === 1);",
+							"    pm.expect(t1.estado).to.eql(\"INICIADO\");",
+							"    pm.expect(t1.equiposInscriptos).to.eql(10);",
+							"    var t2 = jsonData.find(t => t.id === 2);",
+							"    pm.expect(t2.estado).to.eql(\"ABIERTO_INSCRIPCION\");",
+							"    pm.expect(t2.equiposInscriptos).to.eql(3);",
+							"    var t3 = jsonData.find(t => t.id === 3);",
+							"    pm.expect(t3.estado).to.eql(\"INICIADO\");",
+							"    pm.expect(t3.equiposInscriptos).to.eql(8);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{gateway_url}}/v1/torneos",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 - Torneo 2 - Postular nuevo equipo (FN-04)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 202 Accepted\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_fanatico}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "fanatico_nuevo@fulvo.com"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombreEquipo\": \"Deportivo Testeo FC\",\n  \"jugadores\": [\n    {\"dni\": \"45000001\", \"nombre\": \"Geronimo\", \"apellido\": \"Rulli\", \"posicion\": \"ARQUERO\", \"dorsal\": 1, \"esCapitan\": false},\n    {\"dni\": \"45000002\", \"nombre\": \"Lisandro\", \"apellido\": \"Martinez\", \"posicion\": \"DEFENSOR\", \"dorsal\": 2, \"esCapitan\": true},\n    {\"dni\": \"45000003\", \"nombre\": \"Nahuel\", \"apellido\": \"Molina\", \"posicion\": \"DEFENSOR\", \"dorsal\": 3, \"esCapitan\": false},\n    {\"dni\": \"45000004\", \"nombre\": \"Cristian\", \"apellido\": \"Romero\", \"posicion\": \"DEFENSOR\", \"dorsal\": 4, \"esCapitan\": false},\n    {\"dni\": \"45000005\", \"nombre\": \"Nicolas\", \"apellido\": \"Tagliafico\", \"posicion\": \"DEFENSOR\", \"dorsal\": 5, \"esCapitan\": false},\n    {\"dni\": \"45000006\", \"nombre\": \"Enzo\", \"apellido\": \"Fernandez\", \"posicion\": \"VOLANTE\", \"dorsal\": 6, \"esCapitan\": false},\n    {\"dni\": \"45000007\", \"nombre\": \"Rodrigo\", \"apellido\": \"De Paul\", \"posicion\": \"VOLANTE\", \"dorsal\": 7, \"esCapitan\": false},\n    {\"dni\": \"45000008\", \"nombre\": \"Alexis\", \"apellido\": \"Mac Allister\", \"posicion\": \"VOLANTE\", \"dorsal\": 8, \"esCapitan\": false},\n    {\"dni\": \"45000009\", \"nombre\": \"Julian\", \"apellido\": \"Alvarez\", \"posicion\": \"DELANTERO\", \"dorsal\": 9, \"esCapitan\": false},\n    {\"dni\": \"45000010\", \"nombre\": \"Lionel\", \"apellido\": \"Messi\", \"posicion\": \"DELANTERO\", \"dorsal\": 10, \"esCapitan\": false},\n    {\"dni\": \"45000011\", \"nombre\": \"Angel\", \"apellido\": \"Di Maria\", \"posicion\": \"DELANTERO\", \"dorsal\": 11, \"esCapitan\": false},\n    {\"dni\": \"45000012\", \"nombre\": \"Emiliano\", \"apellido\": \"Martinez\", \"posicion\": \"ARQUERO\", \"dorsal\": 12, \"esCapitan\": false},\n    {\"dni\": \"45000013\", \"nombre\": \"Gonzalo\", \"apellido\": \"Montiel\", \"posicion\": \"DEFENSOR\", \"dorsal\": 13, \"esCapitan\": false},\n    {\"dni\": \"45000014\", \"nombre\": \"Leandro\", \"apellido\": \"Paredes\", \"posicion\": \"VOLANTE\", \"dorsal\": 14, \"esCapitan\": false},\n    {\"dni\": \"45000015\", \"nombre\": \"Lautaro\", \"apellido\": \"Martinez\", \"posicion\": \"DELANTERO\", \"dorsal\": 15, \"esCapitan\": false}\n  ]\n}"
+				},
+				"url": {
+					"raw": "{{gateway_url}}/v1/torneos/2/solicitudes-inscripcion",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos",
+						"2",
+						"solicitudes-inscripcion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 - Torneo 2 - Resolver admisión de solicitud (FN-05)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Solicitud aceptada y equipo generado\", function () {",
+							"    var res = pm.response.json();",
+							"    pm.expect(res.estado).to.eql(\"ACEPTADA\");",
+							"    pm.expect(res.equipoId).to.be.a(\"number\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_organizador}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"estado\": \"ACEPTADA\"\n}"
+				},
+				"url": {
+					"raw": "{{gateway_url}}/v1/solicitudes-inscripcion/14/admision",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"solicitudes-inscripcion",
+						"14",
+						"admision"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 - PR 15 - Reemplazo Exitoso de Jugador (FN-11 / RN-11)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Reemplazo registrado correctamente\", function () {",
+							"    var data = pm.response.json();",
+							"    pm.expect(data.equipoId).to.eql(1);",
+							"    pm.expect(data.cambiosRealizados).to.be.at.least(1);",
+							"    pm.expect(data.cambiosRestantes).to.eql(5 - data.cambiosRealizados);",
+							"    pm.expect(data.nuevoJugadorId).to.be.a(\"number\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_delegado}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jugadorSalienteId\": 1,\n  \"nuevoJugador\": {\n    \"dni\": \"50999001\",\n    \"nombre\": \"Martin\",\n    \"apellido\": \"Palermo\",\n    \"posicion\": \"ARQUERO\",\n    \"dorsal\": 1,\n    \"esCapitan\": false\n  }\n}"
+				},
+				"url": {
+					"raw": "{{gateway_url}}/v1/equipos/1/reemplazos-jugadores",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"equipos",
+						"1",
+						"reemplazos-jugadores"
+					]
+				},
+				"description": "Sustituye al jugador #1 (Arquero titular) en el Equipo 1 (Torneo 1 Iniciado) por un nuevo arquero."
+			},
+			"response": []
+		},
+		{
+			"name": "05 - PR 15 - Rechazo Reemplazo: Torneo NO iniciado (RN-11)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 409 Conflict\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_delegado}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jugadorSalienteId\": 151,\n  \"nuevoJugador\": {\n    \"dni\": \"50999002\",\n    \"nombre\": \"Carlos\",\n    \"apellido\": \"Tevez\",\n    \"posicion\": \"DELANTERO\",\n    \"dorsal\": 10,\n    \"esCapitan\": false\n  }\n}"
+				},
+				"url": {
+					"raw": "{{gateway_url}}/v1/equipos/11/reemplazos-jugadores",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"equipos",
+						"11",
+						"reemplazos-jugadores"
+					]
+				},
+				"description": "Intenta reemplazar un jugador en el Equipo 11 del Torneo 2 (que está en ABIERTO_INSCRIPCION). Debe responder 409 Conflict."
+			},
+			"response": []
+		},
+		{
+			"name": "06 - PR 15 - Rechazo Reemplazo: DNI ya inscripto en el torneo (RN-02)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 409 Conflict\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_delegado}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jugadorSalienteId\": 2,\n  \"nuevoJugador\": {\n    \"dni\": \"30000016\",\n    \"nombre\": \"Jugador\",\n    \"apellido\": \"Duplicado\",\n    \"posicion\": \"DEFENSOR\",\n    \"dorsal\": 2,\n    \"esCapitan\": false\n  }\n}"
+				},
+				"url": {
+					"raw": "{{gateway_url}}/v1/equipos/1/reemplazos-jugadores",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"equipos",
+						"1",
+						"reemplazos-jugadores"
+					]
+				},
+				"description": "El DNI 30000016 pertenece al Equipo 2 del mismo Torneo 1. Debe rechazar con 409 Conflict."
+			},
+			"response": []
+		},
+		{
+			"name": "07 - PR 15 - Rechazo Reemplazo: Dorsal duplicado en el plantel",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_delegado}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jugadorSalienteId\": 2,\n  \"nuevoJugador\": {\n    \"dni\": \"50999003\",\n    \"nombre\": \"Juan\",\n    \"apellido\": \"Roman\",\n    \"posicion\": \"DEFENSOR\",\n    \"dorsal\": 10,\n    \"esCapitan\": false\n  }\n}"
+				},
+				"url": {
+					"raw": "{{gateway_url}}/v1/equipos/1/reemplazos-jugadores",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"equipos",
+						"1",
+						"reemplazos-jugadores"
+					]
+				},
+				"description": "El dorsal 10 ya está asignado al volante creativo del equipo. Debe rechazar con 400 Bad Request."
+			},
+			"response": []
+		},
+		{
+			"name": "08 - PR 15 - Baja Voluntaria de Equipo (FN-13 / RN-04)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Equipo pasa a DADO_DE_BAJA\", function () {",
+							"    var data = pm.response.json();",
+							"    pm.expect(data.equipoId).to.eql(11);",
+							"    pm.expect(data.estadoEquipo).to.eql(\"DADO_DE_BAJA\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_delegado}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{gateway_url}}/v1/torneos/2/equipos/11?tipo=BAJA_VOLUNTARIA&motivo=Problemas+logisticos",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos",
+						"2",
+						"equipos",
+						"11"
+					],
+					"query": [
+						{
+							"key": "tipo",
+							"value": "BAJA_VOLUNTARIA"
+						},
+						{
+							"key": "motivo",
+							"value": "Problemas+logisticos"
+						}
+					]
+				},
+				"description": "Da de baja voluntaria al equipo #11 ('Talleres de Córdoba') en el Torneo 2. Envía email de notificación y actualiza su estado."
+			},
+			"response": []
+		},
+		{
+			"name": "09 - PR 15 - Descalificación de Equipo por Organizador (FN-13 / RN-04)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Equipo pasa a DESCALIFICADO\", function () {",
+							"    var data = pm.response.json();",
+							"    pm.expect(data.equipoId).to.eql(12);",
+							"    pm.expect(data.estadoEquipo).to.eql(\"DESCALIFICADO\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_organizador}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{gateway_url}}/v1/torneos/2/equipos/12?tipo=DESCALIFICACION&motivo=Falta+disciplinaria+grave",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos",
+						"2",
+						"equipos",
+						"12"
+					],
+					"query": [
+						{
+							"key": "tipo",
+							"value": "DESCALIFICACION"
+						},
+						{
+							"key": "motivo",
+							"value": "Falta+disciplinaria+grave"
+						}
+					]
+				},
+				"description": "Descalifica al equipo #12 ('Belgrano de Córdoba') por parte de la organización. Envía email de descalificación."
+			},
+			"response": []
+		},
+		{
+			"name": "10 - PR 15 - Rechazo de Baja sobre Equipo Ya Inactivo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code es 409 Conflict\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_organizador}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{gateway_url}}/v1/torneos/2/equipos/11",
+					"host": [
+						"{{gateway_url}}"
+					],
+					"path": [
+						"v1",
+						"torneos",
+						"2",
+						"equipos",
+						"11"
+					]
+				},
+				"description": "Intenta volver a dar de baja al equipo #11 que ya está DADO_DE_BAJA. Debe rechazar con 409 Conflict."
+			},
+			"response": []
+		}
+	]
+}
