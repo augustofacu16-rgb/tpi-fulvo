@@ -722,6 +722,69 @@ Ejecutar la siguiente secuencia de punta a punta en Postman GUI o Swagger UI:
 
 ---
 
+### Subsección 3.5: Seguridad Perimetral y Reglas de Autorización Arbitral en API Gateway [Tomas]
+
+#### Prueba 3.5.1: Bloqueo Anónimo en Rutas Operativas y Arbitrales (HTTP 401)
+* **Opción C (curl / PowerShell):**
+  ```powershell
+  Invoke-RestMethod -Method Post -Uri "http://localhost:8080/v1/partidos/1/actas" -ContentType "application/json" -Body '{"goles": []}'
+  ```
+* **Status Esperado:** `401 Unauthorized` con cabecera `Content-Type: application/problem+json`, `type: "https://fulvo.com/errors/unauthorized"` y propagación del encabezado `X-Correlation-ID`.
+
+#### Prueba 3.5.2: Exclusividad Arbitral en Actas y Estados (HTTP 403 para no árbitros)
+* **Opción A (Postman):**
+  * Intentar asentar acta con token de Organizador o Fanático: `POST {{gateway_url}}/v1/partidos/1/actas` con `{{token_organizador}}` o `{{token_fanatico}}`:
+    ```json
+    {
+      "goles": [
+        {"dorsal": 9, "minuto": 15, "esLocal": true}
+      ],
+      "tarjetas": []
+    }
+    ```
+  * **Status Esperado:** `403 Forbidden` (`ProblemDetail` RFC 7807: "El usuario autenticado no posee los privilegios requeridos para ejecutar esta operación.").
+  * Intentar cambiar estado del partido a `EN_CURSO` con `{{token_organizador}}`:
+    ```json
+    {
+      "estado": "EN_CURSO"
+    }
+    ```
+  * **Status Esperado:** `403 Forbidden`. Solo el rol `ROL_ARBITRO` está autorizado en el perímetro del Gateway.
+
+#### Prueba 3.5.3: Asentamiento de Acta Autorizado para Árbitro Designado
+* **Opción A (Postman):**
+  * `POST {{gateway_url}}/v1/partidos/1/actas` con `{{token_arbitro}}`:
+    ```json
+    {
+      "goles": [
+        {"dorsal": 9, "minuto": 22, "esLocal": true},
+        {"dorsal": 10, "minuto": 70, "esLocal": false}
+      ],
+      "tarjetas": [
+        {"dorsal": 4, "tipo": "TARJETA_AMARILLA", "minuto": 35, "esLocal": true}
+      ]
+    }
+    ```
+  * **Status Esperado:** `200 OK` (Gateway autoriza la petición y la reenvía a `servicio-operaciones-partidos:8082`).
+
+#### Prueba 3.5.4: Exclusividad del Organizador en Sedes, Árbitros y Asignaciones
+* **Opción A (Postman):**
+  * Intentar crear sede con `{{token_arbitro}}`: `POST {{gateway_url}}/v1/sedes`
+  * **Status Esperado:** `403 Forbidden`.
+  * Intentar asignar sede y árbitro a un partido con `{{token_arbitro}}`: `POST {{gateway_url}}/v1/partidos/1/asignaciones`
+  * **Status Esperado:** `403 Forbidden`.
+  * Ejecutar ambas peticiones con `{{token_organizador}}`:
+  * **Status Esperado:** `201 Created` y `200 OK`.
+
+#### Prueba 3.5.5: Acceso Abierto para Consultas de Tablas y Estadísticas con Token Fanático
+* **Opción A (Postman):**
+  * `GET {{gateway_url}}/v1/torneos/1/posiciones` con `{{token_fanatico}}` $\to$ `200 OK`.
+  * `GET {{gateway_url}}/v1/torneos/1/goleadores` con `{{token_fanatico}}` $\to$ `200 OK`.
+  * `GET {{gateway_url}}/v1/torneos/1/partidos` con `{{token_fanatico}}` $\to$ `200 OK`.
+  * `GET {{gateway_url}}/v1/partidos/1/estadisticas` con `{{token_fanatico}}` $\to$ `200 OK`.
+
+---
+
 ## ?? Recapitulación y Prueba Integral de la ETAPA 3 (E2E de Etapa)
 
 ### 1. ¿Qué debe quedar funcionando al finalizar la Etapa 3?

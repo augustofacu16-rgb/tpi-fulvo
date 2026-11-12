@@ -160,10 +160,10 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 3.5: Seguridad Perimetral y Reglas de Autorización Arbitral en API Gateway
-- [ ] **3.5.1** Configurar rutas en Gateway `/v1/partidos/**`, `/v1/sedes/**` y `/v1/arbitros/**`. `[Tomas]`
-- [ ] **3.5.2** Exigir rol `ROL_ARBITRO` para transiciones y actas; `ROL_ORGANIZADOR` para asignaciones; y acceso público/fanático para consultas de resultados. `[Tomas]`
+- [X] **3.5.1** Configurar rutas en Gateway `/v1/partidos/**`, `/v1/sedes/**` y `/v1/arbitros/**`. `[Tomas]`
+- [X] **3.5.2** Exigir rol `ROL_ARBITRO` para transiciones y actas; `ROL_ORGANIZADOR` para asignaciones; y acceso público/fanático para consultas de resultados. `[Tomas]`
 - *Criterio de Aceptación 3.5:* Intentos de asentar acta sin token de árbitro son rechazados en el perímetro del Gateway.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/3.5-gateway-perimetral-operaciones.md` al finalizar. `[COMPLETADO - AUDIT-20261111-35]`
 
 #### Subsección 3.6: DTOs Especializados, Excepciones Arbitrales y Contratos Comunes
 - [ ] **3.6.1** Incorporar en `fulvo-common-lib` las excepciones `ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`. `[Luis Miguel]`

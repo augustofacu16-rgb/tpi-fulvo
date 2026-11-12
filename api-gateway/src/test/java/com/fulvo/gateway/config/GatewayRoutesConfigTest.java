@@ -17,11 +17,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("GatewayRoutesConfig en api-gateway - Tests unitarios de enrutamiento y agregación Swagger")
+@DisplayName("GatewayRoutesConfig en api-gateway - Tests unitarios de enrutamiento y agregación Swagger (Subsección 3.5)")
 class GatewayRoutesConfigTest {
 
     @Test
-    @DisplayName("Debe registrar las rutas perimetrales de OpenAPI agregadas hacia microservicios downstream")
+    @DisplayName("Debe registrar las rutas perimetrales de OpenAPI agregadas y de negocio hacia microservicios downstream")
     void debeRegistrarRutasOpenAPIAgregadas() {
         GatewayRoutesConfig config = new GatewayRoutesConfig();
         ReflectionTestUtils.setField(config, "torneosServiceUrl", "http://localhost:8081");
@@ -47,6 +47,8 @@ class GatewayRoutesConfigTest {
                 .anyMatch(r -> "torneos-openapi-route".equals(r.getId()));
         boolean hasOperacionesOpenApiRoute = routes.stream()
                 .anyMatch(r -> "operaciones-openapi-route".equals(r.getId()));
+        boolean hasSubrecursosOperacionesRoute = routes.stream()
+                .anyMatch(r -> "servicio-operaciones-torneos-subrecursos-route".equals(r.getId()));
         boolean hasTorneosBusinessRoute = routes.stream()
                 .anyMatch(r -> "servicio-torneos-route".equals(r.getId()));
         boolean hasOperacionesBusinessRoute = routes.stream()
@@ -54,7 +56,27 @@ class GatewayRoutesConfigTest {
 
         assertTrue(hasTorneosOpenApiRoute, "Debe incluir la ruta torneos-openapi-route");
         assertTrue(hasOperacionesOpenApiRoute, "Debe incluir la ruta operaciones-openapi-route");
+        assertTrue(hasSubrecursosOperacionesRoute, "Debe incluir la ruta con precedencia de subrecursos a operaciones");
         assertTrue(hasTorneosBusinessRoute, "Debe incluir la ruta servicio-torneos-route");
-        assertTrue(hasOperacionesBusinessRoute, "Debe incluir la ruta servicio-operaciones-route");
+        assertTrue(hasOperacionesBusinessRoute, "Debe incluir la ruta servicio-operaciones-route para sedes, arbitros y partidos");
+
+        // Validar URIs asignadas
+        Route operacionesRoute = routes.stream()
+                .filter(r -> "servicio-operaciones-route".equals(r.getId()))
+                .findFirst()
+                .orElseThrow();
+        assertEquals("http://localhost:8082", operacionesRoute.getUri().toString());
+
+        Route subrecursosRoute = routes.stream()
+                .filter(r -> "servicio-operaciones-torneos-subrecursos-route".equals(r.getId()))
+                .findFirst()
+                .orElseThrow();
+        assertEquals("http://localhost:8082", subrecursosRoute.getUri().toString());
+
+        Route torneosRoute = routes.stream()
+                .filter(r -> "servicio-torneos-route".equals(r.getId()))
+                .findFirst()
+                .orElseThrow();
+        assertEquals("http://localhost:8081", torneosRoute.getUri().toString());
     }
 }
