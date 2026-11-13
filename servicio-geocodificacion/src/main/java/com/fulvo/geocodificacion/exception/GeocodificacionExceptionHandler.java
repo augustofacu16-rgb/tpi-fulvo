@@ -23,11 +23,11 @@ public class GeocodificacionExceptionHandler {
             GeocodificacionNoDisponibleException exception,
             HttpServletRequest request) {
 
-        log.warn("El servicio de geocodificación no está disponible", exception);
+        log.warn("El servicio de geocodificación no está disponible: {}", exception.getMessage());
 
         ProblemDetail problem = ProblemDetail.forStatus(503);
         problem.setTitle("Servicio de geocodificación no disponible");
-        problem.setDetail(exception.getMessage());
+        problem.setDetail("El servicio de geocodificación no está disponible");
         problem.setType(URI.create(
                 "https://fulvo.com/errors/geocodificacion-no-disponible"));
         problem.setInstance(URI.create(request.getRequestURI()));

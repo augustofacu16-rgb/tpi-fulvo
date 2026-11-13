@@ -1,13 +1,20 @@
 package com.fulvo.operaciones.repository;
 
 import com.fulvo.operaciones.models.Partido;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface PartidoRepository extends JpaRepository<Partido, Long> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT p FROM Partido p WHERE p.id = :id")
+    Optional<Partido> findByIdWithLock(@Param("id") Long id);
 
     @Query("""
             select count(p)

@@ -25,15 +25,18 @@ public class PartidoService {
 
     @Transactional
     public Partido asignar(Long partidoId, AsignarPartidoRequest request) {
-        Partido partido = partidoRepository.findById(partidoId)
+        // 1. Bloqueo pesimista del partido para serializar modificaciones concurrentes sobre el mismo encuentro
+        Partido partido = partidoRepository.findByIdWithLock(partidoId)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Partido", partidoId));
 
-        Sede sede = sedeRepository.findById(request.sedeId())
+        // 2. Orden determinístico de adquisición de bloqueos (Partido -> Sede -> Arbitro)
+        // para prevenir deadlocks en concurrencia entre encuentros distintos.
+        Sede sede = sedeRepository.findByIdWithLock(request.sedeId())
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Sede", request.sedeId()));
 
-        Arbitro arbitro = arbitroRepository.findById(request.arbitroDni())
+        Arbitro arbitro = arbitroRepository.findByIdWithLock(request.arbitroDni())
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Arbitro", request.arbitroDni()));
 
