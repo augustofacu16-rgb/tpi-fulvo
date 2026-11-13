@@ -166,10 +166,10 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 3.6: DTOs Especializados, Excepciones Arbitrales y Contratos Comunes
-- [ ] **3.6.1** Incorporar en `fulvo-common-lib` las excepciones `ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`. `[Luis Miguel]`
-- [ ] **3.6.2** Definir DTOs de actas y reinstalar en `.m2` (`mvn clean install -DskipTests`). `[Luis Miguel]`
+- [X] **3.6.1** Incorporar en `fulvo-common-lib` las excepciones `ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`. `[Luis Miguel]`
+- [X] **3.6.2** Definir DTOs de actas y reinstalar en `.m2` (`mvn clean install -DskipTests`). `[Luis Miguel]`
 - *Criterio de Aceptación 3.6:* Artefacto común actualizado y consumible con excepciones arbitrales estandarizadas.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261113-36]`
 
 > ?? **COMPUERTA DE CALIDAD (GATE 2B):** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas en `docs/audit/`.
 
