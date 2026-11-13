@@ -109,6 +109,34 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "03 - Lote inválido - Datos vacios",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{}}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{operaciones_url}}/v1/partidos/lote",
+					"host": [
+						"{{operaciones_url}}"
+					],
+					"path": [
+						"v1",
+						"partidos",
+						"lote"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [

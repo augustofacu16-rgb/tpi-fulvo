@@ -1,0 +1,321 @@
+{
+	"info": {
+		"_postman_id": "362af09f-5b80-4be8-8975-46795e04717a",
+		"name": "Fulvo - Subsección 4.1 - Geocodificación",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "54325630",
+		"_collection_link": "https://sg2601710-wq-8358223.postman.co/workspace/Santiagolainen's-Workspace~187dfffd-46b2-402f-88f1-9342efb50566/collection/54325630-362af09f-5b80-4be8-8975-46795e04717a?action=share&source=collection_link&creator=54325630"
+	},
+	"item": [
+		{
+			"name": "01 - Geocodificación por proveedor",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"direccion\": \"Av. Cárcano, Córdoba, Argentina\",\n  \"latitud\": null,\n  \"longitud\": null\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/v1/geocodificaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"v1",
+						"geocodificaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 - Fallback manual",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Resuelve mediante fallback manual\", function () {",
+							"    pm.response.to.have.status(201);",
+							"",
+							"    const resultado = pm.response.json();",
+							"    pm.expect(resultado.fuente).to.eql(\"MANUAL\");",
+							"    pm.expect(resultado.latitud).to.eql(-31.4167);",
+							"    pm.expect(resultado.longitud).to.eql(-64.1833);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"direccion\": \"Av. Cárcano, Córdoba, Argentina\",\n  \"latitud\": -31.4167,\n  \"longitud\": -64.1833\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/v1/geocodificaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"v1",
+						"geocodificaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 - Proveedor caído sin fallback",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Responde HTTP 422 sin ubicación disponible\", function () {",
+							"    pm.response.to.have.status(422);",
+							"    pm.expect(pm.response.json().status).to.eql(422);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"direccion\": \"Av. Cárcano, Córdoba, Argentina\",\n  \"latitud\": null,\n  \"longitud\": null\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/v1/geocodificaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"v1",
+						"geocodificaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 - Dirección vacía",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Rechaza la entrada inválida con HTTP 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Devuelve un error estructurado y trazable\", function () {",
+							"    const error = pm.response.json();",
+							"",
+							"    pm.expect(error.status).to.eql(400);",
+							"    pm.expect(error.instance).to.eql(\"/v1/geocodificaciones\");",
+							"    pm.expect(error.correlationId).to.be.a(\"string\").and.not.empty;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"direccion\": \"\", \n    \"latitud\": null, \n    \"longitud\": null\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/v1/geocodificaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"v1",
+						"geocodificaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05 - Coordenadas fuera de rango",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Rechaza la entrada inválida con HTTP 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Devuelve un error estructurado y trazable\", function () {",
+							"    const error = pm.response.json();",
+							"",
+							"    pm.expect(error.status).to.eql(400);",
+							"    pm.expect(error.instance).to.eql(\"/v1/geocodificaciones\");",
+							"    pm.expect(error.correlationId).to.be.a(\"string\").and.not.empty;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"direccion\": \"Av. Cárcano, Córdoba\", \"latitud\": 95, \"longitud\": -64.1833}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/v1/geocodificaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"v1",
+						"geocodificaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06 - Coordenadas incompletas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Rechaza la entrada inválida con HTTP 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Devuelve un error estructurado y trazable\", function () {",
+							"    const error = pm.response.json();",
+							"",
+							"    pm.expect(error.status).to.eql(400);",
+							"    pm.expect(error.instance).to.eql(\"/v1/geocodificaciones\");",
+							"    pm.expect(error.correlationId).to.be.a(\"string\").and.not.empty;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"direccion\": \"Av. Cárcano, Córdoba\", \"latitud\": -31.4167, \"longitud\": null}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/v1/geocodificaciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"v1",
+						"geocodificaciones"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "geolocalizacion_url",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
