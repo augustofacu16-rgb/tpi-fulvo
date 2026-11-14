@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -68,24 +67,8 @@ public class BracketService {
 
         Partido destino = partidoRepository.findByIdWithLock(faseSiguiente.get(indice / 2))
                 .orElseThrow(() -> new ConflictoEstadoException("No existe el partido de destino"));
-        if (destino.getEstado() != EstadoPartido.PROGRAMADO
-                && destino.getEstado() != EstadoPartido.REPROGRAMADO) {
-            throw new ConflictoEstadoException("El partido de destino ya no admite nuevos participantes");
-        }
-
         boolean local = indice % 2 == 0;
-        Long ganador = partido.getGanadorEquipoId();
-        Long ocupante = local ? destino.getEquipoLocalId() : destino.getEquipoVisitanteId();
-        Long rival = local ? destino.getEquipoVisitanteId() : destino.getEquipoLocalId();
-        if ((ocupante != null && !ocupante.equals(ganador))
-                || (ganador != null && Objects.equals(rival, ganador))) {
-            throw new ConflictoEstadoException("El resultado entra en conflicto con el partido de destino");
-        }
-        if (local) {
-            destino.setEquipoLocalId(ganador);
-        } else {
-            destino.setEquipoVisitanteId(ganador);
-        }
+        destino.incorporarClasificado(partido.getGanadorEquipoId(), local);
 
         Partido vecino = partidoRepository.findById(faseActual.get(indice ^ 1))
                 .orElseThrow(() -> new ConflictoEstadoException("No existe la llave vecina"));
@@ -93,10 +76,7 @@ public class BracketService {
                 || vecino.getEstado() == EstadoPartido.CANCELADO;
         if (vecinoResuelto && (partido.getGanadorEquipoId() == null
                 || vecino.getGanadorEquipoId() == null)) {
-            Long clasificado = ganador != null ? ganador : vecino.getGanadorEquipoId();
-            destino.setGanadorEquipoId(clasificado);
-            destino.setEstado(clasificado == null
-                    ? EstadoPartido.CANCELADO : EstadoPartido.FINALIZADO);
+            destino.resolverAvanceSinRival();
             partidoRepository.save(destino);
             propagarResolucion(destino);
         } else {

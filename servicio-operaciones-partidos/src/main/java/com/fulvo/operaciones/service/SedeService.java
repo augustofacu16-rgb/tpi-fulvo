@@ -1,7 +1,7 @@
 package com.fulvo.operaciones.service;
 
-import com.fulvo.common.dto.GeocodificacionDTO;
-import com.fulvo.operaciones.client.GeocodificacionApiClient;
+import com.fulvo.operaciones.port.GeocodificacionPort;
+import com.fulvo.operaciones.port.UbicacionResuelta;
 import com.fulvo.operaciones.dto.CrearSedeRequest;
 import com.fulvo.operaciones.models.Sede;
 import com.fulvo.operaciones.repository.SedeRepository;
@@ -13,23 +13,17 @@ import org.springframework.stereotype.Service;
 public class SedeService {
 
     private final SedeRepository sedeRepository;
-    private final GeocodificacionApiClient geocodificacionApiClient;
+    private final GeocodificacionPort geocodificacion;
 
     public Sede crear(CrearSedeRequest request) {
-        GeocodificacionDTO solicitud = GeocodificacionDTO.builder()
-                .direccion(request.getDireccion())
-                .latitud(request.getLatitudManual())
-                .longitud(request.getLongitudManual())
-                .build();
-
-        GeocodificacionDTO ubicacion =
-                geocodificacionApiClient.resolver(solicitud);
+        UbicacionResuelta ubicacion = geocodificacion.resolver(
+                request.getDireccion(), request.getLatitudManual(), request.getLongitudManual());
 
         Sede sede = new Sede(
                 request.getNombre(),
                 request.getDireccion(),
-                ubicacion.getLatitud(),
-                ubicacion.getLongitud()
+                ubicacion.latitud(),
+                ubicacion.longitud()
         );
 
         return sedeRepository.save(sede);

@@ -2,6 +2,8 @@ package com.fulvo.operaciones.client;
 
 import com.fulvo.common.dto.GeocodificacionDTO;
 import com.fulvo.operaciones.exception.GeocodificacionIntegracionException;
+import com.fulvo.operaciones.port.GeocodificacionPort;
+import com.fulvo.operaciones.port.UbicacionResuelta;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -15,11 +17,17 @@ import org.springframework.web.client.RestClientResponseException;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class GeocodificacionApiClient {
+public class GeocodificacionApiClient implements GeocodificacionPort {
 
     private final RestClient geocodificacionRestClient;
 
-    public GeocodificacionDTO resolver(GeocodificacionDTO solicitud) {
+    @Override
+    public UbicacionResuelta resolver(String direccion, Double latitudManual, Double longitudManual) {
+        GeocodificacionDTO solicitud = GeocodificacionDTO.builder()
+                .direccion(direccion)
+                .latitud(latitudManual)
+                .longitud(longitudManual)
+                .build();
         try {
             String correlationId = MDC.get("correlationId");
 
@@ -47,7 +55,7 @@ public class GeocodificacionApiClient {
                 );
             }
 
-            return resultado;
+            return new UbicacionResuelta(resultado.getLatitud(), resultado.getLongitud());
 
         } catch (RestClientResponseException ex) {
             int statusCode = ex.getStatusCode().value();

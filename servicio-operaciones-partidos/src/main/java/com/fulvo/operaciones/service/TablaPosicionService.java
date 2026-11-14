@@ -32,7 +32,11 @@ public class TablaPosicionService {
                 .findAllByTorneoIdAndEstadoIn(torneoId,
                         List.of(EstadoPartido.FINALIZADO, EstadoPartido.CANCELADO));
 
-        Map<Long, Estadisticas> estadisticasPorEquipo = new LinkedHashMap<>();
+        Map<Long, TablaPosicion> posicionesPorEquipo = new LinkedHashMap<>();
+        for (TablaPosicion posicion : tablaPosicionRepository.findAllByTorneoId(torneoId)) {
+            posicion.reiniciarEstadisticas();
+            posicionesPorEquipo.put(posicion.getEquipoId(), posicion);
+        }
 
         for (Partido partido : partidosComputables) {
             boolean canceladoLiga = partido.getEstado() == EstadoPartido.CANCELADO
@@ -45,58 +49,31 @@ public class TablaPosicionService {
                 continue;
             }
 
-            Estadisticas local = estadisticasPorEquipo.computeIfAbsent(
-                    partido.getEquipoLocalId(),
-                    ignored -> new Estadisticas()
-            );
-            Estadisticas visitante = estadisticasPorEquipo.computeIfAbsent(
-                    partido.getEquipoVisitanteId(),
-                    ignored -> new Estadisticas()
-            );
+            TablaPosicion local = posicionesPorEquipo.computeIfAbsent(
+                    partido.getEquipoLocalId(), equipoId -> new TablaPosicion(torneoId, equipoId));
+            TablaPosicion visitante = posicionesPorEquipo.computeIfAbsent(
+                    partido.getEquipoVisitanteId(), equipoId -> new TablaPosicion(torneoId, equipoId));
 
-            local.partidosJugados++;
-            visitante.partidosJugados++;
             if (canceladoLiga) {
-                local.partidosPerdidos++;
-                visitante.partidosPerdidos++;
+                local.registrarDerrotaPorIncidentes();
+                visitante.registrarDerrotaPorIncidentes();
                 continue;
             }
 
-            int golesLocal = valorOCero(partido.getGolesLocal());
-            int golesVisitante = valorOCero(partido.getGolesVisitante());
-            local.golesAFavor += golesLocal;
-            local.golesEnContra += golesVisitante;
-            visitante.golesAFavor += golesVisitante;
-            visitante.golesEnContra += golesLocal;
-
+            int golesLocal = partido.getGolesLocal();
+            int golesVisitante = partido.getGolesVisitante();
             if (partido.getGanadorEquipoId() == null) {
-                local.partidosEmpatados++;
-                visitante.partidosEmpatados++;
-                local.puntos++;
-                visitante.puntos++;
+                local.registrarEmpate(golesLocal, golesVisitante);
+                visitante.registrarEmpate(golesVisitante, golesLocal);
             } else if (partido.getGanadorEquipoId().equals(partido.getEquipoLocalId())) {
-                local.partidosGanados++;
-                visitante.partidosPerdidos++;
-                local.puntos += 3;
+                local.registrarVictoria(golesLocal, golesVisitante);
+                visitante.registrarDerrota(golesVisitante, golesLocal);
             } else {
-                visitante.partidosGanados++;
-                local.partidosPerdidos++;
-                visitante.puntos += 3;
+                visitante.registrarVictoria(golesVisitante, golesLocal);
+                local.registrarDerrota(golesLocal, golesVisitante);
             }
         }
-
-        for (TablaPosicion tabla : tablaPosicionRepository.findAllByTorneoId(torneoId)) {
-            resetear(tabla);
-        }
-
-        for (Map.Entry<Long, Estadisticas> entry : estadisticasPorEquipo.entrySet()) {
-            TablaPosicion tabla = tablaPosicionRepository
-                    .findByTorneoIdAndEquipoId(torneoId, entry.getKey())
-                    .orElseGet(() -> new TablaPosicion(torneoId, entry.getKey()));
-
-            aplicar(tabla, entry.getValue());
-            tablaPosicionRepository.save(tabla);
-        }
+        tablaPosicionRepository.saveAll(posicionesPorEquipo.values());
     }
 
     @Transactional
@@ -151,41 +128,4 @@ public class TablaPosicionService {
                 .toList();
     }
 
-    private int valorOCero(Integer valor) {
-        return valor == null ? 0 : valor;
-    }
-
-    private void resetear(TablaPosicion tabla) {
-        tabla.setPartidosJugados(0);
-        tabla.setPartidosGanados(0);
-        tabla.setPartidosEmpatados(0);
-        tabla.setPartidosPerdidos(0);
-        tabla.setGolesAFavor(0);
-        tabla.setGolesEnContra(0);
-        tabla.setDiferenciaGol(0);
-        tabla.setPuntos(0);
-    }
-
-    private void aplicar(TablaPosicion tabla, Estadisticas estadisticas) {
-        tabla.setPartidosJugados(estadisticas.partidosJugados);
-        tabla.setPartidosGanados(estadisticas.partidosGanados);
-        tabla.setPartidosEmpatados(estadisticas.partidosEmpatados);
-        tabla.setPartidosPerdidos(estadisticas.partidosPerdidos);
-        tabla.setGolesAFavor(estadisticas.golesAFavor);
-        tabla.setGolesEnContra(estadisticas.golesEnContra);
-        tabla.setDiferenciaGol(
-                estadisticas.golesAFavor - estadisticas.golesEnContra
-        );
-        tabla.setPuntos(estadisticas.puntos);
-    }
-
-    private static class Estadisticas {
-        int partidosJugados;
-        int partidosGanados;
-        int partidosEmpatados;
-        int partidosPerdidos;
-        int golesAFavor;
-        int golesEnContra;
-        int puntos;
-    }
 }
