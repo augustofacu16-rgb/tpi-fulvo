@@ -300,7 +300,7 @@ flowchart TD
   - DTOs normalizados para actas e incidencias de partidos.
   - Mapeo en `@RestControllerAdvice` con códigos RFC 7807 (400, 403, 409) y reinstalación en `.m2`.
 
-> ?? **COMPUERTA DE CALIDAD (GATE 2B):** Circuito arbitral completo, asignación horaria anti-superposición verificada y tabla de posiciones calculada atómicamente.
+> 🔒 **COMPUERTA DE CALIDAD (GATE 2B) [SUPERADA Y CERTIFICADA]:** Circuito arbitral completo, asignación horaria anti-superposición verificada, tabla de posiciones calculada atómicamente y planteles sincronizados. Validado de punta a punta y documentado en [docs/audit/3.0-cierre-etapa-3.md](../audit/3.0-cierre-etapa-3.md).
 
 ---
 

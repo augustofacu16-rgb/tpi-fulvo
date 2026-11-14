@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import com.fulvo.common.dto.JugadorPlantelDTO;
 
 import java.net.URI;
 import java.util.List;
@@ -78,5 +79,10 @@ public class TorneoController {
     public ResponseEntity<FixtureGeneradoResponseDTO> generarFixture(@PathVariable Long id) {
         FixtureGeneradoResponseDTO fixture = torneoService.generarFixture(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(fixture);
+    }
+    @Operation(summary = "Listar jugadores de los planteles activos de un torneo")
+    @GetMapping("/{id}/jugadores")
+    public ResponseEntity<List<JugadorPlantelDTO>> obtenerJugadoresTorneo(@PathVariable Long id) {
+        return ResponseEntity.ok(torneoService.obtenerJugadoresPlantel(id));
     }
 }

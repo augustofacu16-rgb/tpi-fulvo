@@ -14,4 +14,6 @@ public interface SedeRepository extends JpaRepository<Sede, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT s FROM Sede s WHERE s.id = :id")
     Optional<Sede> findByIdWithLock(@Param("id") Long id);
+
+    boolean existsByLatitudAndLongitud(Double latitud, Double longitud);
 }

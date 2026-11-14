@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.fulvo.common.dto.JugadorPlantelDTO;
+import com.fulvo.torneos.repository.JugadorRepository;
 
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class TorneoService {
     private final EquipoRepository equipoRepository;
     private final FixtureGeneratorService fixtureGeneratorService;
     private final OperacionesApiClient operacionesApiClient;
+    private final JugadorRepository jugadorRepository;
 
     @Transactional
     public TorneoResponseDTO crearTorneo(CrearTorneoDTO dto) {
@@ -176,5 +179,15 @@ public class TorneoService {
                 .fechaInicio(torneo.getFechaInicio())
                 .fechaCreacion(torneo.getFechaCreacion())
                 .build();
+    }
+    public List<JugadorPlantelDTO> obtenerJugadoresPlantel(Long torneoId) {
+        return jugadorRepository.findActivosByTorneoId(torneoId).stream()
+                .map(j -> new JugadorPlantelDTO(
+                        j.getEquipo().getId(),
+                        j.getDorsal(),
+                        j.getNombre(),
+                        j.getApellido()
+                ))
+                .toList();
     }
 }

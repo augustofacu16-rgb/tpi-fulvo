@@ -13,6 +13,8 @@ import com.fulvo.operaciones.repository.ActuacionJugadorRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.fulvo.common.dto.JugadorPlantelDTO;
+import com.fulvo.operaciones.client.TorneosApiClient;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,6 +27,7 @@ public class TablaPosicionService {
     private final PartidoRepository partidoRepository;
     private final TablaPosicionRepository tablaPosicionRepository;
     private final ActuacionJugadorRepository actuacionJugadorRepository;
+    private final TorneosApiClient torneosApiClient;
 
     @Transactional
     public void recalcular(Long torneoId) {
@@ -101,6 +104,7 @@ public class TablaPosicionService {
     public List<GoleadorResponse> obtenerGoleadores(Long torneoId) {
         Map<String, Integer> golesPorJugador = new LinkedHashMap<>();
 
+        // 1. Consulta los goles de partidos finalizados con el método real del repositorio
         List<ActuacionJugador> goles = actuacionJugadorRepository
                 .findAllByTipoAndPartido_TorneoIdAndPartido_Estado(
                         TipoActuacion.GOL,
@@ -113,13 +117,27 @@ public class TablaPosicionService {
             golesPorJugador.merge(clave, 1, Integer::sum);
         }
 
+        // 2. Trae el mapa de nombres y apellidos desde Torneos
+        Map<String, JugadorPlantelDTO> mapaJugadores = torneosApiClient.obtenerJugadoresTorneo(torneoId);
+
+        // 3. Mapea enriqueciendo con los datos personales
         return golesPorJugador.entrySet()
                 .stream()
                 .map(entry -> {
-                    String[] partes = entry.getKey().split(":");
+                    String clave = entry.getKey();
+                    String[] partes = clave.split(":");
+                    Long equipoId = Long.valueOf(partes[0]);
+                    Integer dorsal = Integer.valueOf(partes[1]);
+
+                    JugadorPlantelDTO jugador = (mapaJugadores != null) ? mapaJugadores.get(clave) : null;
+                    String nombre = (jugador != null) ? jugador.nombre() : "Jugador";
+                    String apellido = (jugador != null) ? jugador.apellido() : "Dorsal " + dorsal;
+
                     return new GoleadorResponse(
-                            Long.valueOf(partes[0]),
-                            Integer.valueOf(partes[1]),
+                            equipoId,
+                            dorsal,
+                            nombre,
+                            apellido,
                             entry.getValue()
                     );
                 })

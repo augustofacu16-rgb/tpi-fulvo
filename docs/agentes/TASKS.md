@@ -1,6 +1,6 @@
 # Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
 
-> **Estado:** `ETAPA 2 COMPLETADA - GATE 2A SUPERADO - EN ARRANQUE ETAPA 3`  
+> **Estado:** `ETAPA 3 COMPLETADA - GATE 2B SUPERADO - EN ARRANQUE ETAPA 4`  
 > **Regla de Operación Obligatoria:**
 > 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las últimas entradas de `docs/audit/`.
 > 2. Al finalizar cada subsección, validar los endpoints y flujos según `GUIA_PRUEBAS_MANUALES.md`, marcar las casillas completadas `[X]` en este archivo y **registrar la auditoría correspondiente en `docs/audit/`** detallando qué se hizo, qué se arregló sobre la marcha y si hubo diferencias con el plan original.
@@ -18,7 +18,7 @@
 | **Día 0** | **Etapa 0** | Planificación, Convenciones y Roles | Todo el Equipo | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-00) |
 | **Día 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, Gastón, Santiago | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261109-GATE1) |
 | **Día 2** | **Etapa 2** | Core de Torneos, Admisiones, Fixtures y Swagger Base | Tomas, Gastón, Santiago, Luis Miguel | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261111-GATE2A) |
-| **Día 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gastón, Tomas, Luis Miguel | `[EN ARRANQUE]` | `[ ]` | `[ ]` |
+| **Día 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gastón, Tomas, Luis Miguel | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261114-GATE2B) |
 | **Día 3** | **Etapa 4** | Adaptadores Externos, Resiliencia y Scheduler | Luis Miguel, Santiago, Gastón, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
 | **Día 3** | **Etapa 5** | Despliegue Docker, Auditoría OpenAPI y Postman E2E | Tomas, Gastón, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
 
@@ -179,7 +179,7 @@
 - *Criterio de Aceptación 3.6:* Artefacto común actualizado y consumible con excepciones arbitrales estandarizadas.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261113-36]`
 
-> ?? **COMPUERTA DE CALIDAD (GATE 2B):** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas en `docs/audit/`.
+> 🔒 **COMPUERTA DE CALIDAD (GATE 2B) [SUPERADA Y CERTIFICADA]:** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas. Validada integralmente mediante pruebas E2E en Postman y formalmente certificada en [docs/audit/3.0-cierre-etapa-3.md](../audit/3.0-cierre-etapa-3.md).
 
 ---
 
