@@ -240,9 +240,10 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 5.2: Enriquecimiento y Documentación OpenAPI 3.0 en `servicio-torneos`
-- [ ] **5.2.1** Anotaciones exhaustivas de esquemas, descripciones y respuestas RFC 7807 en `servicio-torneos`. `[Gastón]`
+- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/5.2-documentacion-openapi-torneos.md`.
+- [X] **5.2.1** Anotaciones exhaustivas de esquemas, descripciones y respuestas RFC 7807 en `servicio-torneos`. `[Gastón]`
 - *Criterio de Aceptación 5.2:* Swagger UI de Torneos documenta el 100% de endpoints con códigos de negocio.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/5.2-documentacion-openapi-torneos.md`.
 
 #### Subsección 5.3: Enriquecimiento y Documentación OpenAPI 3.0 en `servicio-operaciones-partidos`
 - [ ] **5.3.1** Anotaciones exhaustivas de sedes, árbitros, actas, posiciones y goleadores. `[Santiago]`
