@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 
 /**
  * DTO para el envío de notificaciones por correo electrónico transaccionales
- * hacia servicio-notificaciones (POST /v1/notificaciones/emails) cubriendo los 7 eventos del ciclo (RN-11).
+ * hacia servicio-notificaciones (POST /v1/notificaciones/emails) cubriendo los 7 eventos del ciclo (RN-11)
+ * y reprogramaciones (Subsección 4.5).
  */
 @Data
 @Builder
@@ -49,11 +50,11 @@ public class NotificacionEmailDTO implements Serializable {
     /**
      * Tipo de evento notificado:
      * SOLICITUD_ENVIADA, SOLICITUD_ACEPTADA, SOLICITUD_RECHAZADA,
-     * BAJA_EQUIPO, DESCALIFICACION_EQUIPO, CANCELACION_TORNEO, PARTIDO_SUSPENDIDO.
+     * BAJA_EQUIPO, DESCALIFICACION_EQUIPO, CANCELACION_TORNEO, PARTIDO_SUSPENDIDO, PARTIDO_REPROGRAMADO.
      */
     @NotBlank(message = "El tipo de evento notificado es obligatorio")
     @Pattern(
-        regexp = "^(SOLICITUD_ENVIADA|SOLICITUD_ACEPTADA|SOLICITUD_RECHAZADA|BAJA_EQUIPO|DESCALIFICACION_EQUIPO|CANCELACION_TORNEO|PARTIDO_SUSPENDIDO)$",
+        regexp = "^(SOLICITUD_ENVIADA|SOLICITUD_ACEPTADA|SOLICITUD_RECHAZADA|BAJA_EQUIPO|DESCALIFICACION_EQUIPO|CANCELACION_TORNEO|PARTIDO_SUSPENDIDO|PARTIDO_REPROGRAMADO)$",
         message = "Tipo de evento de notificación no reconocido"
     )
     private String tipoEvento;

@@ -7,15 +7,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Servicio de dominio responsable de orquestar y generar los eventos de notificación
- * correspondientes al ciclo de admisiones y gestión de certámenes (FN-14, RN-12).
+ * correspondientes al ciclo de admisiones, gestión de certámenes y contingencias de partidos (FN-14, RN-07, RN-11, RN-12).
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TorneoNotificacionService {
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private final NotificacionesApiClient notificacionesApiClient;
 
@@ -177,6 +180,108 @@ public class TorneoNotificacionService {
 
         log.info("Disparando notificación de {} del equipo '{}' en certamen '{}' a {}",
                 descalificado ? "descalificación" : "baja voluntaria", nombreEquipo, nombreTorneo, emailDestinatario);
+        notificacionesApiClient.enviarNotificacionAsync(dto);
+    }
+
+    /**
+     * Despacha alerta de suspensión de partido hacia el delegado de un equipo involucrado
+     * (RN-07, RN-11, RN-12, Subsección 4.5).
+     *
+     * @param emailDestinatario Dirección del delegado destinatario.
+     * @param nombreEquipo      Nombre del equipo del delegado.
+     * @param nombreRival       Nombre del equipo contrincante.
+     * @param nombreTorneo      Nombre del torneo.
+     * @param partidoId         ID del partido suspendido.
+     * @param motivo            Motivo de la suspensión (clima severo, fuerza mayor, etc.).
+     * @param fechaOriginal     Fecha y hora original del encuentro.
+     */
+    public void despacharSuspensionPartido(String emailDestinatario, String nombreEquipo, String nombreRival,
+                                           String nombreTorneo, Long partidoId, String motivo, LocalDateTime fechaOriginal) {
+        String asunto = "Alerta Meteorológica: Partido Suspendido por Tormenta - " + nombreTorneo;
+        String fechaTexto = fechaOriginal != null ? fechaOriginal.format(FORMATTER) : "A confirmar";
+        String motivoTexto = (motivo != null && !motivo.isBlank())
+                ? motivo
+                : "Condiciones meteorológicas adversas / tormenta severa.";
+
+        String cuerpo = """
+                <html>
+                <body style="font-family: Arial, sans-serif; color: #333;">
+                    <div style="background-color: #d32f2f; color: white; padding: 15px; border-radius: 5px;">
+                        <h2>⚠️ Alerta Meteorológica: Partido Suspendido</h2>
+                    </div>
+                    <p>Estimado/a delegado/a de <strong>%s</strong>,</p>
+                    <p>Te comunicamos que el partido <strong>#%d</strong> frente a <strong>%s</strong> correspondiente al certamen <strong>%s</strong> ha sido <span style="color:#d32f2f; font-weight:bold;">SUSPENDIDO</span>.</p>
+                    <p><strong>Fecha programada originalmente:</strong> %s</p>
+                    <p><strong>Motivo informado:</strong> %s</p>
+                    <p>El encuentro queda en estado pendiente y será reprogramado en una nueva fecha y sede por el Comité Organizador.</p>
+                    <br/>
+                    <p>Saludos cordiales,<br/><em>Comité Organizador de Fulvo'</em></p>
+                </body>
+                </html>
+                """.formatted(nombreEquipo, partidoId, nombreRival, nombreTorneo, fechaTexto, motivoTexto);
+
+        NotificacionEmailDTO dto = NotificacionEmailDTO.builder()
+                .destinatario(emailDestinatario)
+                .asunto(asunto)
+                .cuerpo(cuerpo)
+                .tipoEvento("PARTIDO_SUSPENDIDO")
+                .fechaHora(LocalDateTime.now())
+                .build();
+
+        log.info("Disparando alerta de suspensión de partido #{} para equipo '{}' en certamen '{}' a {}",
+                partidoId, nombreEquipo, nombreTorneo, emailDestinatario);
+        notificacionesApiClient.enviarNotificacionAsync(dto);
+    }
+
+    /**
+     * Despacha notificación de reprogramación de partido hacia el delegado de un equipo involucrado (Subsección 4.5).
+     *
+     * @param emailDestinatario Dirección del delegado destinatario.
+     * @param nombreEquipo      Nombre del equipo del delegado.
+     * @param nombreRival       Nombre del equipo contrincante.
+     * @param nombreTorneo      Nombre del torneo.
+     * @param partidoId         ID del partido reprogramado.
+     * @param motivo            Motivo informado.
+     * @param nuevaFechaHora    Nueva fecha y hora fijada para la disputa.
+     * @param nuevaSedeId       Nueva sede asignada.
+     */
+    public void despacharReprogramacionPartido(String emailDestinatario, String nombreEquipo, String nombreRival,
+                                              String nombreTorneo, Long partidoId, String motivo,
+                                              LocalDateTime nuevaFechaHora, Long nuevaSedeId) {
+        String asunto = "Partido Reprogramado - " + nombreTorneo;
+        String fechaTexto = nuevaFechaHora != null ? nuevaFechaHora.format(FORMATTER) : "A confirmar";
+        String sedeTexto = nuevaSedeId != null ? "Sede #" + nuevaSedeId : "Sede a confirmar";
+        String motivoTexto = (motivo != null && !motivo.isBlank()) ? motivo : "Reasignación logística de fecha y predio.";
+
+        String cuerpo = """
+                <html>
+                <body style="font-family: Arial, sans-serif; color: #333;">
+                    <div style="background-color: #1976d2; color: white; padding: 15px; border-radius: 5px;">
+                        <h2>📅 Notificación de Partido Reprogramado</h2>
+                    </div>
+                    <p>Estimado/a delegado/a de <strong>%s</strong>,</p>
+                    <p>Te informamos que el partido <strong>#%d</strong> frente a <strong>%s</strong> (certamen <strong>%s</strong>) ha sido <span style="color:#1976d2; font-weight:bold;">REPROGRAMADO</span>.</p>
+                    <p><strong>Nueva Fecha y Hora de Disputa:</strong> %s</p>
+                    <p><strong>Lugar:</strong> %s</p>
+                    <p><strong>Detalle:</strong> %s</p>
+                    <br/>
+                    <p>Por favor comunicarle a tu plantel la actualización de la jornada.</p>
+                    <br/>
+                    <p>Saludos cordiales,<br/><em>Comité Organizador de Fulvo'</em></p>
+                </body>
+                </html>
+                """.formatted(nombreEquipo, partidoId, nombreRival, nombreTorneo, fechaTexto, sedeTexto, motivoTexto);
+
+        NotificacionEmailDTO dto = NotificacionEmailDTO.builder()
+                .destinatario(emailDestinatario)
+                .asunto(asunto)
+                .cuerpo(cuerpo)
+                .tipoEvento("PARTIDO_REPROGRAMADO")
+                .fechaHora(LocalDateTime.now())
+                .build();
+
+        log.info("Disparando notificación de reprogramación de partido #{} para equipo '{}' en certamen '{}' a {}",
+                partidoId, nombreEquipo, nombreTorneo, emailDestinatario);
         notificacionesApiClient.enviarNotificacionAsync(dto);
     }
 

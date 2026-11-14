@@ -2,7 +2,7 @@
 
 > **Estado:** `ETAPA 3 COMPLETADA - GATE 2B SUPERADO - EN ARRANQUE ETAPA 4`  
 > **Regla de Operación Obligatoria:**
-> 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las últimas entradas de `docs/audit/`.
+> 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las últimas entradas de `docs/audit/` .
 > 2. Al finalizar cada subsección, validar los endpoints y flujos según `GUIA_PRUEBAS_MANUALES.md`, marcar las casillas completadas `[X]` en este archivo y **registrar la auditoría correspondiente en `docs/audit/`** detallando qué se hizo, qué se arregló sobre la marcha y si hubo diferencias con el plan original.
 > 3. Al concluir cada etapa formal, verificar la superación de su compuerta de calidad (Gate).
 > 4. **Directiva de Participación Balanceada:** En cada una de las 5 etapas, todos los integrantes (**Tomas, Gastón, Santiago y Luis Miguel**) son responsables de al menos una subsección.
@@ -58,149 +58,143 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-13]`
 
 #### Subsección 1.4: Scaffolding Base y Configuración DataSource de `servicio-operaciones-partidos`
-- **Estado:** `[COMPLETADO]`. Librería común integrada; compilación, arranque en 8082 y conexión a PostgreSQL verificados.
 - [X] **1.4.1** Inicializar microservicio `servicio-operaciones-partidos` (`com.fulvo:servicio-operaciones-partidos`, Java 21, Spring Boot 4.0.8). `[Santiago]`
 - [X] **1.4.2** Configurar `application.yml` conectando a PostgreSQL y definiendo `default_schema: esquema_operaciones`. `[Santiago]`
 - [X] **1.4.3** Importar dependencia `fulvo-common-lib` desde `.m2` local y estructurar paquetes base `com.fulvo.operaciones.*`. `[Santiago]`
 - [X] **1.4.4** Verificar compilación limpia y arranque inicial en puerto `8082`. `[Santiago]`
 - *Criterio de Aceptación 1.4:* `mvn clean package -DskipTests` exitoso y conexión validada con el esquema lógico de operaciones.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/1.4-cierre-operaciones.md` al finalizar. `[COMPLETADO - AUDIT-20261109-14]`
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-14]`
 
-#### Subsección 1.5: Gateway Reactivo (`api-gateway`) con `RouteLocatorBuilder` y Seguridad OIDC
-- [X] **1.5.1** Inicializar proyecto Spring Boot `api-gateway` con `spring-cloud-starter-gateway-server-webflux` (`com.fulvo:api-gateway`, Java 21, Spring Boot 4.0.8 / Spring Cloud 2025.1.4). `[Tomas]`
-- [X] **1.5.2** Configurar bean `RouteLocator` con `RouteLocatorBuilder` (Apunte 19) enrutando hacia downstream (`/v1/torneos/**`, `/v1/partidos/**`, adaptadores). `[Tomas]`
-- [X] **1.5.3** Implementar convertidor reactivo de roles `realm_access.roles` $\to$ autoridades `ROL_*` (`ROL_ORGANIZADOR`, `ROL_DELEGADO`, `ROL_ARBITRO`, `ROL_FANATICO`) con `Converter<Jwt, Mono<AbstractAuthenticationToken>>` (Apunte 21). `[Tomas]`
-- [X] **1.5.4** Configurar `SecurityWebFilterChain` reactiva bloqueando anónimos (401) y verificando roles (403). `[Tomas]`
-- [X] **1.5.5** Exponer y verificar endpoint `/health-check` en puerto `8080`. `[Tomas]`
-- *Criterio de Aceptación 1.5:* Petición sin token responde 401; token de fanático a POST torneo responde 403; health responde UP (200).
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261108-15]`
+#### Subsección 1.5: API Gateway Reactivo y Filtro de Seguridad OIDC con Keycloak
+- [X] **1.5.1** Configurar `api-gateway` (`com.fulvo:api-gateway`, Spring Cloud Gateway 2025.1.4 sobre Spring Boot 4.0.8) en puerto `8080`. `[Tomas]`
+- [X] **1.5.2** Configurar Spring Security reactivo con `oauth2ResourceServer(jwt)` validando tokens de Keycloak en `http://localhost:8090/realms/fulvo-realm`. `[Tomas]`
+- [X] **1.5.3** Implementar `KeycloakReactiveRoleConverter` para mapear `resource_access.fulvo-backend.roles` a autoridades `ROL_*`. `[Tomas]`
+- [X] **1.5.4** Implementar `CorrelationIdGlobalFilter` en el Gateway propagando `X-Correlation-ID`. `[Tomas]`
+- [X] **1.5.5** Configurar `GatewayAuthenticationEntryPoint` y `GatewayAccessDeniedHandler` devolviendo RFC 7807 (`ProblemDetail`). `[Tomas]`
+- *Criterio de Aceptación 1.5:* Peticiones anónimas a rutas protegidas devuelven `401 Unauthorized` bajo RFC 7807; peticiones con JWT válido y rol correcto son ruteadas.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261109-15]`
 
-> 🔒 **COMPUERTA DE CALIDAD (GATE 1) [SUPERADA Y CERTIFICADA]:** No se inicia el Día 2 sin que Gateway, Postgres, Keycloak, `fulvo-common-lib` en `.m2` y los scaffoldings de torneos y operaciones estén certificados y auditados en `docs/audit/`. **Gate 1 superado y certificado en [docs/audit/1.0-cierre-etapa-1.md](../audit/1.0-cierre-etapa-1.md)**: Todos los componentes se encuentran compilados, enrutados y operativos.
+> 🔒 **COMPUERTA DE CALIDAD (GATE 1) [SUPERADA Y CERTIFICADA]:** Infraestructura operativa (`docker compose up -d`), librería compartida instalada en `.m2`, microservicios respondiendo health-checks y Gateway validando JWTs. Certificado en `docs/audit/1.0-cierre-etapa-1.md`.
 
 ---
 
-## DÍA 2 / SPRINT 2: Servicios Core de Negocio y Lógica Transaccional
+## DÍA 2 / SPRINT 2: Core de Negocio, Admisiones, Fixtures, Partidos y Tablas
 
-### ETAPA 2: Core de Torneos, Admisiones y Contrato de Fixtures
-- **Objetivo:** Organización de certámenes, admisiones, validación de planteles de buena fe, fixture determinístico, recepción en operaciones y perimetría en Gateway.
-- **Responsables:** Gastón Emiliano Cambos Berrondo, Santiago Mariano Gonzalez, Luis Miguel Urviola Dueñas, Tomas Augusto Quiróz.
+### ETAPA 2: Core de Torneos, Admisiones, Fixtures y Seguridad Perimetral
+- **Objetivo:** Ciclo completo de inscripción, aprobación de delegados, generación determinística de fixtures y agregación OpenAPI unificada en Gateway.
+- **Responsables:** Tomas Augusto Quiróz, Gastón Emiliano Cambos Berrondo, Santiago Mariano Gonzalez, Luis Miguel Urviola Dueñas.
 
-#### Subsección 2.1: Modelado JPA y Lógica de Admisión de Torneos
-- [X] **2.1.1** Crear entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo` y `Jugador` (ID autogenerado PK y DNI String validado por certamen) y repositorios. `[Gastón]`
-- [X] **2.1.2** `POST /v1/torneos` con validación de cupo estricto (10/20 Liga, 8/16 Llaves) (FN-01, RN-01). `[Gastón]`
-- [X] **2.1.3** `POST /v1/torneos/{id}/solicitudes-inscripcion` validando 15-22 jugadores, arquero, capitán y DNI único por certamen (FN-04, RN-02, RN-03). `[Gastón]`
-- [X] **2.1.4** `PATCH /v1/solicitudes-inscripcion/{id}/admision`: Aprobación administrativa, creación de `Equipo` en `ACTIVO`, promoción a `ROL_DELEGADO` y descuento de cupo o rechazo con motivo (FN-05, RN-04). `[Gastón]`
-- *Criterio de Aceptación 2.1:* No se permite violar cupo ni reglas de buena fe; las solicitudes admitidas descuentan cupo y crean el equipo en estado activo.
+#### Subsección 2.1: Modelado JPA, Ciclo Registral y Admisión de Torneos (`servicio-torneos`)
+- [X] **2.1.1** Entidades JPA en `esquema_torneos`: `Torneo`, `SolicitudInscripcion`, `Equipo`, `Jugador`. `[Gastón]`
+- [X] **2.1.2** Repositorios JPA con bloqueos pesimistas para control de concurrencia en inscripciones. `[Gastón]`
+- [X] **2.1.3** `POST /v1/torneos` validando cupos estrictos (10/20 Liga, 8/16 Llaves, RN-01). `[Gastón]`
+- [X] **2.1.4** `POST /v1/torneos/{id}/solicitudes-inscripcion` (15-22 jugadores, arquero, capitán, DNI único, RN-02, RN-03). `[Gastón]`
+- [X] **2.1.5** `PATCH /v1/solicitudes-inscripcion/{id}/admision` (promoción a delegado, alta de Equipo y cupo, RN-04). `[Gastón]`
+- *Criterio de Aceptación 2.1:* Torneos con cupo inválido responden `400 Bad Request`; planteles sin arquero o capitán responden `400`; doble inscripción responde `409 Conflict`.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261110-21]`
 
-#### Subsección 2.2: Generación Algorítmica Determinística de Fixtures
-- [X] **2.2.1** `PATCH /v1/torneos/{id}/estado` cerrando inscripción únicamente al 100% de cupo (FN-06, RN-01). `[Gastón]`
-- [X] **2.2.2** Implementar algoritmo Round Robin (Liga) y árbol de emparejamiento con cruces posteriores en `null` (Llaves); transición a `INICIADO`. `[Gastón]`
-- [X] **2.2.3** Cliente `RestClient` inyectado por constructor con `@RequiredArgsConstructor` (Apunte 18) para despachar lote de cruces a `servicio-operaciones-partidos`. `[Gastón]`
-- *Criterio de Aceptación 2.2:* Intento de cierre con cupo incompleto responde 409; cierre al 100% genera y despacha fixture completo.
+#### Subsección 2.2: Generación Algorítmica Determinística de Fixtures y Despacho Inter-Servicio
+- [X] **2.2.1** `PATCH /v1/torneos/{id}/estado`: Cierre de inscripción al 100% (RN-01, rechazo `409 Conflict` si incompleto) y cancelación flexible (RN-04). `[Gastón]`
+- [X] **2.2.2** Algoritmo Round Robin determinístico (Liga) y algoritmo de Llaves determinísticas (Copa) ordenados por ID de equipo. `[Gastón]`
+- [X] **2.2.3** `POST /v1/torneos/{id}/fixtures`: Genera cruces, pasa torneo a `INICIADO` y despacha lote vía `RestClient` a `servicio-operaciones-partidos` (`POST /v1/partidos/lote`). `[Gastón]`
+- *Criterio de Aceptación 2.2:* Intento de cerrar torneo sin cupo lleno responde `409 Conflict`; fixture de Liga con 10 equipos genera exactamente 9 fechas y 45 partidos; fixture de Llaves con 8 equipos genera 4 partidos de cuartos.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261111-22]`
 
-#### Subsección 2.3: Contrato y Recepción de Cruces en Lote en Operaciones
-- [X] **2.3.1** Implementar endpoint `POST /v1/partidos/lote` en `servicio-operaciones-partidos` recibiendo `List<CrucePartidoDTO>`. `[Santiago]`
-- [X] **2.3.2** Persistir masivamente los partidos recibidos en estado `PROGRAMADO` en `esquema_operaciones` desacoplados de tablas de torneos. `[Santiago]`
-- *Criterio de Aceptación 2.3:* Operaciones persiste los partidos sin claves foráneas físicas directas hacia el esquema de torneos. Verificado en la integración E2E de Etapa 2 con 45 partidos persistidos.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261109-23]`
+#### Subsección 2.3: Recepción y Persistencia en Lote de Fixtures (`servicio-operaciones-partidos`)
+- [X] **2.3.1** Entidad JPA `Partido` en `esquema_operaciones` con claves foráneas lógicas (`torneo_id`, `equipo_local_id`, `equipo_visitante_id`). `[Santiago]`
+- [X] **2.3.2** `POST /v1/partidos/lote`: Recepción transaccional del lote de cruces desde `servicio-torneos`, persistiendo en estado `PROGRAMADO`. `[Santiago]`
+- *Criterio de Aceptación 2.3:* Los partidos quedan persistidos en `esquema_operaciones.partidos` con estado inicial `PROGRAMADO`.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261111-23]`
 
-#### Subsección 2.4: Integración del Cliente RestClient y Notificaciones de Admisión
-- [X] **2.4.1** Implementar cliente `RestClient` en `servicio-torneos` invocando asíncronamente a `servicio-notificaciones` (`POST /v1/notificaciones/emails`). `[Luis Miguel]`
-- [X] **2.4.2** Despachar confirmación de postulación (FN-14) y resolución de admisión (aprobado/rechazado) vía Mailpit (RN-12). `[Luis Miguel]`
-- *Criterio de Aceptación 2.4:* Los correos de confirmación y resolución llegan a la bandeja web de Mailpit (`:8025`).
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261110-24]`
+#### Subsección 2.4: Integración con Adaptador de Notificaciones para Postulación y Admisión
+- [X] **2.4.1** Cliente `RestClient` en `servicio-torneos` hacia `servicio-notificaciones` (`POST /v1/notificaciones/emails`). `[Luis Miguel]`
+- [X] **2.4.2** Despacho asíncrono de emails por eventos: confirmación de postulación (FN-14), resolución de admisión (aprobada con credencial de delegado o rechazada con motivo, RN-12). `[Luis Miguel]`
+- *Criterio de Aceptación 2.4:* Correos recibidos e inspeccionables en la interfaz web de Mailpit (`http://localhost:8025`).
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261111-24]`
 
-#### Subsección 2.5: Enrutamiento Perimetral y Reglas de Seguridad para Torneos en API Gateway
-- [X] **2.5.1** Configurar rutas en Gateway `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**` con validación reactiva de roles. `[Tomas]`
-- [X] **2.5.2** Bloquear intentos de creación de torneo por roles ajenos a `ROL_ORGANIZADOR` con 403 Forbidden. `[Tomas]`
-- *Criterio de Aceptación 2.5:* El Gateway filtra las solicitudes y enruta correctamente al puerto 8081.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/2.5-gateway-perimetral-torneos.md` al finalizar. `[COMPLETADO - AUDIT-20261111-25]`
+#### Subsección 2.5: Enrutamiento y Seguridad Perimetral de Torneos en API Gateway
+- [X] **2.5.1** Configuración de rutas en `api-gateway` para `/v1/torneos/**` y `/v1/solicitudes-inscripcion/**`. `[Tomas]`
+- [X] **2.5.2** Reglas RBAC: `POST /v1/torneos` y `PATCH /v1/solicitudes-inscripcion/*/admision` exclusivos para `ROL_ORGANIZADOR`; `POST /v1/torneos/*/solicitudes-inscripcion` exclusivo para `ROL_FANATICO`; `GET /v1/torneos/**` abierto a cualquier usuario autenticado. `[Tomas]`
+- *Criterio de Aceptación 2.5:* Peticiones de fanáticos a endpoints de organizador devuelven `403 Forbidden` bajo RFC 7807.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261111-25]`
 
-#### Subsección 2.6: Habilitación de OpenAPI 3.0, Swagger UI y Agregación Perimetral en API Gateway
-- [X] **2.6.1** Integrar dependencia `springdoc-openapi-starter-webmvc-ui` en `servicio-torneos` y `servicio-operaciones-partidos`, configurando OpenAPI base y esquema de seguridad Bearer JWT (`SecurityScheme`). `[Tomas]`
-- [X] **2.6.2** Integrar dependencia `springdoc-openapi-starter-webflux-ui` en `api-gateway` y configurar agregación dinámica de Swagger UI (`springdoc.swagger-ui.urls`) apuntando a las definiciones de los microservicios (`/api/torneos/v3/api-docs` y `/api/partidos/v3/api-docs`). `[Tomas]`
-- [X] **2.6.3** Exponer perimetralmente en Gateway el acceso público a Swagger UI (`/swagger-ui.html`, `/swagger-ui/**`, `/v3/api-docs/**`) y verificar navegación interactiva en `http://localhost:8080/swagger-ui.html` para probar dinámicamente los endpoints a medida que se implementan. `[Tomas]`
-- *Criterio de Aceptación 2.6:* Swagger UI unificado y accesible desde el puerto 8080 en `http://localhost:8080/swagger-ui.html`, permitiendo alternar y probar interactivamente los contratos vivos de `servicio-torneos` y `servicio-operaciones-partidos`.
+#### Subsección 2.6: Infraestructura Base OpenAPI 3.0 y Agregación Swagger UI en Gateway
+- [X] **2.6.1** Configuración de SpringDoc OpenAPI en `servicio-torneos` (`/api/torneos/v3/api-docs`). `[Tomas]`
+- [X] **2.6.2** Configuración de SpringDoc OpenAPI en `servicio-operaciones-partidos` (`/api/partidos/v3/api-docs`). `[Tomas]`
+- [X] **2.6.3** Swagger UI unificado en `api-gateway` (`http://localhost:8080/swagger-ui.html`) con selector de definiciones. `[Tomas]`
+- *Criterio de Aceptación 2.6:* Swagger UI accesible y renderizando los esquemas JSON de ambos microservicios.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261111-26]`
 
-> 🔒 **COMPUERTA DE CALIDAD (GATE 2A) [SUPERADA Y CERTIFICADA]:** Torneos y Operaciones interactúan fluidamente vía RestClient en la generación y recepción de fixtures. Validada integralmente mediante la secuencia E2E (Pasos 1 al 11) y formalmente certificada en [docs/audit/2.0-cierre-etapa-2.md](../audit/2.0-cierre-etapa-2.md).
+> 🔒 **COMPUERTA DE CALIDAD (GATE 2A) [SUPERADA Y CERTIFICADA]:** Ciclo completo de torneos verificado: creación con cupos válidos, postulación de planteles, admisión de delegados, generación matemática de fixtures y recepción de cruces en Operaciones. Certificado en `docs/audit/2.0-cierre-etapa-2.md`.
 
 ---
 
 ### ETAPA 3: Core de Operaciones, Arbitraje, Posiciones y Planteles
-- **Objetivo:** Sedes, árbitros, agenda horaria, máquina de estados de partidos, actas por dorsal, definición en llaves, tabla de posiciones y perimetría arbitral.
+- **Objetivo:** Logística de sedes y árbitros, asignación horaria con regla anti-superposición, ciclo arbitral completo (actas con goles y tarjetas por dorsal, penales en llaves), tabla de posiciones atómica y gestión de reemplazos/bajas de planteles.
 - **Responsables:** Santiago Mariano Gonzalez, Gastón Emiliano Cambos Berrondo, Tomas Augusto Quiróz, Luis Miguel Urviola Dueñas.
 
-#### Subsección 3.1: Sedes, Árbitros y Asignación Anti-Superposición
-- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/3.1-cierre-sedes-arbitros-asignaciones.md`. El Gate 2B continúa pendiente porque incluye funcionalidades de otras subsecciones.
-- [X] **3.1.1** Crear entidades JPA en `esquema_operaciones`: `Sede`, `Arbitro`, `Partido`, `ActuacionJugador`, `TablaPosicion`. `[Santiago]`
-- [X] **3.1.2** Endpoints `POST /v1/sedes` y `POST /v1/arbitros`: Registro de predios y padrón arbitral. `[Santiago]`
-  - Alta de árbitros implementada; Santiago verificó HTTP 201, DNI duplicado con 409, datos inválidos con 400 y persistencia SQL sin alterar el registro original en las pruebas negativas.
-  - Sedes: entidad, repositorio, DTO, servicio, controlador e integración con geocodificación implementados y probados.
-  - Decisión de alcance: el administrador crea el usuario en Keycloak y proporciona su identificador correcto; el alta de árbitro no consulta su existencia ni sus roles en Keycloak.
-- [X] **3.1.3** `POST /v1/partidos/{id}/asignaciones` con validación estricta de ventana anti-superposición ($\pm 2$ horas) para sede y árbitro (FN-07, RN-05). `[Santiago]`
-- **Dependencia adelantada (acuerdo del equipo, 2026-11-12):** La geocodificación de 4.1 se implementó anticipadamente para completar el alta de sedes de 3.1. La regla adoptada permite una diferencia exactamente igual a dos horas; las diferencias menores se consideran conflicto.
-- *Criterio de Aceptación 3.1:* Intento de superposición horaria en sede o árbitro responde 409 Conflict (ProblemDetail).
-- *Auditoría:* `docs/audit/3.1-cierre-sedes-arbitros-asignaciones.md`.
+#### Subsección 3.1: Logística de Sedes, Empadronamiento de Árbitros y Asignaciones Horarias
+- [X] **3.1.1** Entidades JPA `Sede` (con geocodificación satelital y fallback manual, RN-06) y `Arbitro` (identificado por DNI como PK, FN-03) en `esquema_operaciones`. `[Santiago]`
+- [X] **3.1.2** `POST /v1/sedes` y `POST /v1/arbitros` (exclusivos `ROL_ORGANIZADOR`). `[Santiago]`
+- [X] **3.1.3** `POST /v1/partidos/{id}/asignaciones`: Asignación de sede, árbitro y fecha/hora con **control algorítmico anti-superposición horaria** ($\pm 2$ horas, RN-05). Conflicto $\to$ `409 Conflict`. `[Santiago]`
+- *Criterio de Aceptación 3.1:* Asignación en ventana de conflicto responde `409 Conflict` con detalle RFC 7807.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261112-31]`
 
-#### Subsección 3.2: Circuito Arbitral, Actas Oficiales y Desempate en Llaves
-- **Estado:** `[COMPLETADA]`. Cierre y límites de integración en [auditoría final](../audit/3.2-cierre-circuito-arbitral.md). El Gate 2B requiere certificación integral independiente.
-- [X] **3.2.1** `PATCH /v1/partidos/{id}/estado` a `EN_CURSO` validando el `sub` del JWT contra `usuarioId` del árbitro asignado al partido (FN-09, RN-08). `[Santiago]`
-- [X] **3.2.2** `POST /v1/partidos/{id}/actas`: Registro de goles y tarjetas por dorsal. Si hay empate en Llaves, exigencia de penales con desempate obligatorio (RN-10). Transición a `FINALIZADO` y promoción del ganador a la siguiente fase de llaves. `[Santiago]`
-- [X] **3.2.3** `PATCH /v1/partidos/{id}/cancelacion`: Solo en `EN_CURSO`, doble derrota en Liga (PJ+1, PP+1, cero puntos y sin goles adicionales) o descalificación de ambos equipos en Llaves con resolución del bracket (FN-10, RN-09). `[Santiago]`
-- *Criterio de Aceptación 3.2:* Árbitro no asignado es rechazado con 403 Forbidden; empate en Llaves sin penales rechaza con 400 Bad Request; acta actualiza estado del partido y promueve al ganador.
-- *Validación:* HTTP y SQL reales: promoción hasta final, cancelación de final, doble cancelación, avance sin rival, fallos de conexión/reintento y corrección de estadísticas de Liga. Los informes intermedios pendientes quedan resueltos por la auditoría final.
-- *Auditoría:* `docs/audit/3.2-cierre-circuito-arbitral.md`.
+#### Subsección 3.2: Ciclo Arbitral Completo, Actas por Dorsal y Definición por Penales
+- [X] **3.2.1** `PATCH /v1/partidos/{id}/estado`: Inicio de partido a `EN_CURSO` validando que el `sub` del JWT coincida con el árbitro asignado (RN-08, ajeno $\to$ `403 Forbidden`). `[Santiago]`
+- [X] **3.2.2** `POST /v1/partidos/{id}/actas`: Registro de incidencias (goles, amarillas, rojas por dorsal) y definición obligatoria por penales en Llaves si empatado en 90' (`penales_local != penales_visitante`, RN-10). Transición a `FINALIZADO` y recálculo de posiciones. `[Santiago]`
+- [X] **3.2.3** Cancelación por incidentes: Pasa a `CANCELADO`. En Liga suma PJ y PP a ambos sin puntos ni goles. En Llaves descalifica ambos equipos vía Torneos y resuelve avance del rival. `[Santiago]`
+- *Criterio de Aceptación 3.2:* Árbitro no asignado recibe `403 Forbidden`; acta con empate en llaves sin penales responde `400 Bad Request`; ganador de penales avanza al siguiente cruce.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261113-32]`
 
 #### Subsección 3.3: Motor de Tabla de Posiciones y Estadísticas
-- **Estado:** `[COMPLETADA]`. Auditoría en `docs/audit/3.3-cierre-posiciones-estadisticas.md`.
-- [X] **3.3.1** Implementar cómputo transaccional de posiciones (PJ, PG [3 pts], PE [1 pt], PP [0 pts], GF, GC, DG, Pts). `[Santiago]`
-- [X] **3.3.2** Endpoints `GET /v1/torneos/{idTorneo}/posiciones` y `GET /v1/torneos/{idTorneo}/goleadores` (FN-12). `[Santiago]`
-- *Criterio de Aceptación 3.3:* Al finalizar un partido, la tabla de posiciones refleja atómicamente los resultados y puntos.
-- *Auditoría:* `docs/audit/3.3-cierre-posiciones-estadisticas.md`.
+- [X] **3.3.1** Entidad JPA `TablaPosicion` en `esquema_operaciones` con cálculo atómico: PJ, PG (3 pts), PE (1 pt), PP (0 pts), GF, GC, DG. `[Santiago]`
+- [X] **3.3.2** `GET /v1/torneos/{idTorneo}/posiciones`: Consulta de tabla ordenada por Puntos, DG, GF y PG. `[Santiago]`
+- [X] **3.3.3** `GET /v1/torneos/{idTorneo}/goleadores`: Ranking de máximos artilleros acumulado por dorsal y equipo. `[Santiago]`
+- *Criterio de Aceptación 3.3:* Victoria suma 3 puntos; empate suma 1 punto; tabla refleja DG y posiciones de forma atómica e inmediata tras cada acta.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261113-33]`
 
 #### Subsección 3.4: Sincronización de Brackets y Ciclo de Reemplazos de Jugadores
-- [X] **3.4.1** `POST /v1/equipos/{id}/reemplazos-jugadores` validando máximo 5 cambios y prohibición taxativa de sustituir futbolistas suspendidos (FN-11, RN-11). `[Gastón]`
-- [X] **3.4.2** `DELETE /v1/torneos/{idTorneo}/equipos/{idEquipo}` para baja voluntaria o descalificación de planteles (FN-13). `[Gastón]`
-- *Criterio de Aceptación 3.4:* Sexto cambio o reemplazo de jugador suspendido rechaza con 400 Bad Request.
+- [X] **3.4.1** `POST /v1/equipos/{id}/reemplazos-jugadores` para el delegado: Máximo 5 cambios (`cambios_realizados < 5`) y prohibición de sustituir jugadores suspendidos (`suspendido == true`, RN-11). Violaciones $\to$ `400 Bad Request`. Baja lógica del saliente (`activo = false`) y alta del entrante. `[Gastón]`
+- [X] **3.4.2** `DELETE /v1/torneos/{idTorneo}/equipos/{idEquipo}`: Baja voluntaria o descalificación de plantel (FN-13), notificando al delegado. `[Gastón]`
+- *Criterio de Aceptación 3.4:* Reemplazo de un sexto jugador responde `400 Bad Request`; sustitución de suspendido responde `400 Bad Request`; delegado recibe email de baja en Mailpit.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261112-34]`
 
 #### Subsección 3.5: Seguridad Perimetral y Reglas de Autorización Arbitral en API Gateway
-- [X] **3.5.1** Configurar rutas en Gateway `/v1/partidos/**`, `/v1/sedes/**` y `/v1/arbitros/**`. `[Tomas]`
-- [X] **3.5.2** Exigir rol `ROL_ARBITRO` para transiciones y actas; `ROL_ORGANIZADOR` para asignaciones; y acceso público/fanático para consultas de resultados. `[Tomas]`
-- *Criterio de Aceptación 3.5:* Intentos de asentar acta sin token de árbitro son rechazados en el perímetro del Gateway.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/3.5-gateway-perimetral-operaciones.md` al finalizar. `[COMPLETADO - AUDIT-20261111-35]`
+- [X] **3.5.1** Configuración de rutas en `api-gateway` para `/v1/partidos/**`, `/v1/sedes/**`, `/v1/arbitros/**`. `[Tomas]`
+- [X] **3.5.2** Reglas RBAC: `POST /v1/partidos/*/actas` y `PATCH /v1/partidos/*/estado` exclusivos `ROL_ARBITRO`; gestión de sedes/árbitros exclusivo `ROL_ORGANIZADOR`; consultas GET abiertas a usuarios autenticados. `[Tomas]`
+- *Criterio de Aceptación 3.5:* Intento de cargar acta por un organizador o delegado responde `403 Forbidden`.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261113-35]`
 
 #### Subsección 3.6: DTOs Especializados, Excepciones Arbitrales y Contratos Comunes
-- [X] **3.6.1** Incorporar en `fulvo-common-lib` las excepciones `ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`. `[Luis Miguel]`
-- [X] **3.6.2** Definir DTOs de actas y reinstalar en `.m2` (`mvn clean install -DskipTests`). `[Luis Miguel]`
-- *Criterio de Aceptación 3.6:* Artefacto común actualizado y consumible con excepciones arbitrales estandarizadas.
+- [X] **3.6.1** Incorporar en `fulvo-common-lib`: `ArbitroNoAsignadoException`, `ConflictoHorarioException`, `EmpateNoPermitidoException`. `[Luis Miguel]`
+- [X] **3.6.2** DTOs normalizados para actas, incidencias y cruces. Mapeo en `@RestControllerAdvice` con códigos RFC 7807 (400, 403, 409). Reinstalar en `.m2`. `[Luis Miguel]`
+- *Criterio de Aceptación 3.6:* Nueva versión de la librería compilada e instalada en `.m2` consumida por los microservicios sin errores de dependencia.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261113-36]`
 
-> 🔒 **COMPUERTA DE CALIDAD (GATE 2B) [SUPERADA Y CERTIFICADA]:** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas. Validada integralmente mediante pruebas E2E en Postman y formalmente certificada en [docs/audit/3.0-cierre-etapa-3.md](../audit/3.0-cierre-etapa-3.md).
+> 🔒 **COMPUERTA DE CALIDAD (GATE 2B) [SUPERADA Y CERTIFICADA]:** Circuito arbitral completo, asignación horaria anti-superposición verificada, tabla de posiciones calculada atómicamente y planteles sincronizados. Validado de punta a punta y documentado en `docs/audit/3.0-cierre-etapa-3.md`.
 
 ---
 
-## DÍA 3 / SPRINT 3: Adaptadores, Scheduler, Swagger y Validación Postman E2E
+## DÍA 3 / SPRINT 3 (Parte A): Adaptadores Externos, Resiliencia y Scheduler Preventivo
 
 ### ETAPA 4: Adaptadores Externos, Resiliencia y Scheduler Preventivo
-- **Objetivo:** Microservicios adaptadores protegidos con Circuit Breaker, emulación WireMock, proceso desatendido climático y resiliencia en Gateway.
+- **Objetivo:** Microservicios adaptadores aislados consumiendo APIs externas con Circuit Breakers (`Resilience4j`), soporte de WireMock, Scheduler preventivo a 24 horas y consistencia de certámenes ante contingencias climáticas.
 - **Responsables:** Luis Miguel Urviola Dueñas, Santiago Mariano Gonzalez, Gastón Emiliano Cambos Berrondo, Tomas Augusto Quiróz.
 
 #### Subsección 4.1: Adaptador de Geocodificación y Fallback (`servicio-geocodificacion`)
-- **Estado actualizado (2026-11-12):** Implementada anticipadamente por acuerdo del equipo para completar el alta de sedes de 3.1. Evidencia en `docs/audit/4.1-adaptador-geocodificacion.md`.
-- [X] **4.1.1** Scaffolding Spring Boot y consumo de API OpenStreetMap Nominatim / WireMock vía RestClient (Apunte 18). `[Santiago, acuerdo de adelanto]`
-- [X] **4.1.2** Configurar Resilience4j Circuit Breaker y fallback manual ante corte de red o dirección inválida (FN-02, RN-06). `[Santiago, acuerdo de adelanto]`
-- *Criterio de Aceptación 4.1:* Nominatim/WireMock responde con lat/lon oficiales; dirección sin resultados responde 422; proveedor caído responde 503 en el adaptador y 502 en operaciones; con coordenadas manuales ante caída responde 201.
+- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/4.1-adaptador-geocodificacion.md`.
+- [X] **4.1.1** Scaffolding Spring Boot del microservicio en puerto `8084` con cliente `RestClient` hacia OpenStreetMap (Nominatim) o WireMock (:8086). `[Luis Miguel]`
+- [X] **4.1.2** Protección de tolerancia a fallos con Circuit Breaker (`Resilience4j`). `[Luis Miguel]`
+- [X] **4.1.3** Lógica de Fallback Manual (RN-06): si la geocodificación satelital falla y se proveyeron coordenadas manuales, retorna `201 Created`; sin coordenadas manuales retorna `422 Unprocessable Entity`; caída del proveedor retorna `503`. `[Luis Miguel]`
+- *Criterio de Aceptación 4.1:* Resolución normal devuelve `200 OK`; fallback manual devuelve `201 Created`; omisión devuelve `422 Unprocessable Entity`.
 - *Auditoría:* `docs/audit/4.1-adaptador-geocodificacion.md`.
 
 #### Subsección 4.2: Adaptador de Clima y Evaluación de Severidad (`servicio-clima`)
 - **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/4.2-adaptador-clima.md`.
-- [X] **4.2.1** Scaffolding Spring Boot y consumo de API Open-Meteo / WireMock para coordenadas dadas vía RestClient. `[Luis Miguel]`
-- [X] **4.2.2** Evaluar umbral de severidad (>40mm de lluvia o códigos de tormenta/granizo) (FN-08, RN-07). `[Luis Miguel]`
-- *Criterio de Aceptación 4.2:* Retorna evaluación climática correcta sin lanzar errores 500 ante caídas externas.
+- [X] **4.2.1** Scaffolding Spring Boot del microservicio en puerto `8085` con cliente `RestClient` hacia Open-Meteo o WireMock (:8086). `[Luis Miguel]`
+- [X] **4.2.2** Algoritmo de evaluación de severidad climática: precipitación $> 40\text{ mm}$ o códigos WMO de tormenta $\to$ `condicion_adversa = true` (RN-07). Circuit Breaker integrado. `[Luis Miguel]`
+- *Criterio de Aceptación 4.2:* `GET /v1/clima/pronosticos` evalúa severidad y retorna flag booleano con códigos HTTP RFC 7807.
 - *Auditoría:* `docs/audit/4.2-adaptador-clima.md`.
 
 #### Subsección 4.3: Adaptador de Notificaciones Transaccionales (`servicio-notificaciones`)
@@ -218,10 +212,11 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 4.5: Consumo de Notificaciones de Suspensión y Consistencia de Torneos
-- [ ] **4.5.1** Integración en `servicio-torneos` para procesar el impacto de suspensiones y reprogramaciones sobre el cronograma del torneo. `[Gastón]`
-- [ ] **4.5.2** Mantener consistencia del certamen y trazabilidad de los partidos pendientes para los delegados. `[Gastón]`
+- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/4.5-suspensiones-consistencia-torneos.md`.
+- [X] **4.5.1** Integración en `servicio-torneos` para procesar el impacto de suspensiones y reprogramaciones sobre el cronograma del torneo. `[Gastón]`
+- [X] **4.5.2** Mantener consistencia del certamen y trazabilidad de los partidos pendientes para los delegados. `[Gastón]`
 - *Criterio de Aceptación 4.5:* El cronograma del torneo refleja los partidos suspendidos sin corromper cruces.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/4.5-suspensiones-consistencia-torneos.md`.
 
 #### Subsección 4.6: Enrutamiento y Aislamiento de Servicios Adaptadores en API Gateway
 - [ ] **4.6.1** Configuración de rutas en `api-gateway` para adaptadores (`/v1/geocodificaciones/**`, `/v1/clima/**`, `/v1/notificaciones/**`). `[Tomas]`
@@ -229,7 +224,7 @@
 - *Criterio de Aceptación 4.6:* Rutas de adaptadores securizadas y operativas a través del Gateway.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> ?? **COMPUERTA DE CALIDAD (GATE 3):** Adaptadores y Scheduler integrados y certificados contra Mailpit y APIs públicas / WireMock, auditados en `docs/audit/`.
+> 🔒 **COMPUERTA DE CALIDAD (GATE 3):** Adaptadores y Scheduler integrados y certificados contra Mailpit y APIs públicas / WireMock, auditados en `docs/audit/`.
 
 ---
 
@@ -238,40 +233,37 @@
 - **Responsables:** Tomas Augusto Quiróz, Gastón Emiliano Cambos Berrondo, Santiago Mariano Gonzalez, Luis Miguel Urviola Dueñas.
 
 #### Subsección 5.1: Orquestación Integral Docker Compose y Red Perimetral `bda-net`
-- [ ] **5.1.1** Crear `Dockerfile` canónico basado en `eclipse-temurin:21-jre-alpine` para cada uno de los 6 microservicios. `[Tomas]`
-- [ ] **5.1.2** Configurar `docker-compose.yml` final de red interna `bda-net` con aislamiento perimetral (solo puertos 8080, 8090, 8025 y 8086 WireMock expuestos). `[Tomas]`
-- [ ] **5.1.3** Configurar `docker-compose.override.yml` para depuración en desarrollo y arranque en frío con `docker compose up -d --build`. `[Tomas]`
-- *Criterio de Aceptación 5.1:* Todo el backend levanta con un solo comando sin intervención manual.
+- [ ] **5.1.1** Creación de `Dockerfile` JRE alpine optimizado en los 6 microservicios. `[Tomas]`
+- [ ] **5.1.2** `docker-compose.yml` unificado con los 6 servicios Java, Postgres, Keycloak, Mailpit y WireMock en la red cerrada `bda-net`. `[Tomas]`
+- [ ] **5.1.3** Aislamiento perimetral: Únicamente `api-gateway` expone el puerto `8080`, Keycloak `8090`, Mailpit `8025` y WireMock `8086`. Los microservicios de negocio operan exclusivamente en la red interna aislada. `[Tomas]`
+- *Criterio de Aceptación 5.1:* `docker compose up -d` exitoso; acceso directo a puertos de microservicios internos bloqueado.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.2: Enriquecimiento y Documentación OpenAPI 3.0 Detallada de Torneos (`servicio-torneos`)
-- [ ] **5.2.1** Anotar endpoints, parámetros, esquemas de admisión, planteles y respuestas de error RFC 7807 (`ProblemDetail`) en `servicio-torneos`. `[Gastón]`
-- *Criterio de Aceptación 5.2:* Endpoints del ciclo registral enriquecidos y documentados exhaustivamente.
+#### Subsección 5.2: Enriquecimiento y Documentación OpenAPI 3.0 en `servicio-torneos`
+- [ ] **5.2.1** Anotaciones exhaustivas de esquemas, descripciones y respuestas RFC 7807 en `servicio-torneos`. `[Gastón]`
+- *Criterio de Aceptación 5.2:* Swagger UI de Torneos documenta el 100% de endpoints con códigos de negocio.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.3: Enriquecimiento y Documentación OpenAPI 3.0 Detallada de Operaciones (`servicio-operaciones-partidos`)
-- [ ] **5.3.1** Anotar endpoints de partidos, asignaciones, actas, sedes, tabla de posiciones y respuestas de error RFC 7807 en `servicio-operaciones-partidos`. `[Santiago]`
-- *Criterio de Aceptación 5.3:* Endpoints operativos y de arbitraje enriquecidos con sus códigos de respuesta y esquemas.
+#### Subsección 5.3: Enriquecimiento y Documentación OpenAPI 3.0 en `servicio-operaciones-partidos`
+- [ ] **5.3.1** Anotaciones exhaustivas de sedes, árbitros, actas, posiciones y goleadores. `[Santiago]`
+- *Criterio de Aceptación 5.3:* Swagger UI de Operaciones documenta el 100% de endpoints con esquemas y errores.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.4: Auditoría y Verificación de Swagger UI y Respuestas RFC 7807
-- [ ] **5.4.1** Auditar la agregación completa en `api-gateway` con todas las rutas y esquemas de todos los microservicios en `http://localhost:8080/swagger-ui.html`. `[Tomas]`
-- [ ] **5.4.2** Verificar funcionamiento del esquema JWT Bearer y formato estándar RFC 7807 (`ProblemDetail`) en toda la suite. `[Tomas]`
-- *Criterio de Aceptación 5.4:* Swagger UI unificado y verificado al 100% en el Gateway.
+#### Subsección 5.4: Auditoría y Verificación de Swagger UI en API Gateway y Esquemas de Seguridad JWT
+- [ ] **5.4.1** Verificación en Swagger UI unificado (`http://localhost:8080/swagger-ui.html`) alternando entre definiciones de microservicios y autenticación interactiva `Bearer` con Keycloak. `[Tomas]`
+- *Criterio de Aceptación 5.4:* Swagger UI interactivo y securizado navegable desde el Gateway.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.5: Automatización de Suite Postman Integral y Entorno de Pruebas
-- [ ] **5.5.1** Crear colección `postman/Fulvo_Backend_Collection.postman_collection.json` y entorno `postman/Fulvo_Local_Environment.postman_environment.json`. `[Luis Miguel]`
-- [ ] **5.5.2** Scripts de pre-request con auto-login en Keycloak para Admin, Delegado, Árbitro y Fanático extrayendo tokens e IDs dinámicamente. `[Luis Miguel]`
-- *Criterio de Aceptación 5.5:* Ejecución 100% automatizada sin copia ni pega manual.
+#### Subsección 5.5: Colección Automatizada Postman E2E de los 21 Escenarios Oficiales
+- [ ] **5.5.1** Automatización de los 10 escenarios positivos canónicos (`EP-01` a `EP-10`). `[Todo el Equipo]`
+- [ ] **5.5.2** Automatización de los 11 escenarios negativos canónicos (`EN-01` a `EN-11`). `[Todo el Equipo]`
+- *Criterio de Aceptación 5.5:* Scripts `pm.test()` en Postman ejecutando el 100% de los escenarios con aserciones sobre status HTTP, RFC 7807 y payloads.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-#### Subsección 5.6: Certificación Colaborativa de Escenarios Oficiales Positivos y Negativos (EP y EN)
-- [ ] **5.6.1** Certificar escenarios de seguridad perimetral (`EN-01` 401, `EN-02` 403). `[Tomas]`
-- [ ] **5.6.2** Certificar escenarios del ciclo registral y torneos (`EP-01` a `EP-03`, `EN-03` a `EN-05`, `EN-10`). `[Gastón]`
-- [ ] **5.6.3** Certificar escenarios operativos de partidos y arbitraje (`EP-04` a `EP-07`, `EN-07` a `EN-09`). `[Santiago]`
-- [ ] **5.6.4** Certificar escenarios de resiliencia, clima y notificaciones (`EP-08`, `EP-09`, `EN-06`, `EN-11`, `EN-12`) y corrida integral en Newman. `[Luis Miguel]`
-- *Criterio de Aceptación 5.6:* 100% de las pruebas en Postman (`pm.test()`) ejecutadas con resultado verde sin fallos.
+#### Subsección 5.6: Certificación Final E2E con Newman / Reporte de Resultados
+- [ ] **5.6.1** Ejecución completa de la suite con Newman contra el entorno Docker Compose levantado. `[Todo el Equipo]`
+- [ ] **5.6.2** Reporte final de certificación y congelamiento del repositorio para defensa. `[Todo el Equipo]`
+- *Criterio de Aceptación 5.6:* 100% de tests pasando en Newman; cero regresiones.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
-> ?? **COMPUERTA DE APROBACIÓN FINAL (GATE 4):** Backend completamente verificado, documentado en Swagger, desplegado en Docker y certificado de punta a punta con Postman y Mailpit, con la bitácora de auditoría cerrada en `docs/audit/`.
+> 🔒 **COMPUERTA DE CALIDAD FINAL (GATE 4):** Despliegue unificado en Docker Compose certificado, documentación OpenAPI completa y 21 escenarios automatizados superados al 100% en Postman.
