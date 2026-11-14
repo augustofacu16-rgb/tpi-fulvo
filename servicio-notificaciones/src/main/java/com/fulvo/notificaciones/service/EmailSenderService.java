@@ -4,6 +4,7 @@ import com.fulvo.common.dto.NotificacionEmailDTO;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,12 @@ import java.nio.charset.StandardCharsets;
 public class EmailSenderService {
 
     private final JavaMailSender mailSender;
+
+    @Value("${app.mail.from:notificaciones@fulvo.com}")
+    private String mailFrom;
+
+    @Value("${app.mail.from-name:Fulvo! Notificaciones}")
+    private String mailFromName;
 
     /**
      * Envía un correo electrónico transaccional hacia el servidor SMTP configurado (Mailpit en puerto 1025).
@@ -39,7 +46,7 @@ public class EmailSenderService {
                     StandardCharsets.UTF_8.name()
             );
 
-            helper.setFrom("notificaciones@fulvo.com", "Fulvo! Notificaciones");
+            helper.setFrom(mailFrom, mailFromName);
             helper.setTo(dto.getDestinatario());
             helper.setSubject(dto.getAsunto());
             helper.setText(dto.getCuerpo(), true); // Contenido renderizable en HTML

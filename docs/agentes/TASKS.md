@@ -200,10 +200,11 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 4.3: Adaptador de Notificaciones Transaccionales (`servicio-notificaciones`)
-- [ ] **4.3.1** Scaffolding Spring Boot y configuración de `JavaMailSender` apuntando a Mailpit (puerto 1025). `[Luis Miguel]`
-- [ ] **4.3.2** `POST /v1/notificaciones/emails` con control silencioso de excepciones que preserve la transacción del llamador (FN-14, RN-12). `[Luis Miguel]`
+- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/4.3-adaptador-notificaciones.md`.
+- [X] **4.3.1** Scaffolding Spring Boot y configuración de `JavaMailSender` apuntando a Mailpit (puerto 1025). `[Luis Miguel]`
+- [X] **4.3.2** `POST /v1/notificaciones/emails` con control silencioso de excepciones que preserve la transacción del llamador (FN-14, RN-12). `[Luis Miguel]`
 - *Criterio de Aceptación 4.3:* Emails visibles en la bandeja web de Mailpit (`http://localhost:8025`).
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/4.3-adaptador-notificaciones.md`.
 
 #### Subsección 4.4: Scheduler Climático Preventivo a 24 Horas y Reprogramación
 - [ ] **4.4.1** Implementar `@Scheduled` en `servicio-operaciones-partidos` consultando partidos a 24h. `[Santiago]`
