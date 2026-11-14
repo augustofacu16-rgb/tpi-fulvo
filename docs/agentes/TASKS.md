@@ -206,11 +206,11 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 4.4: Scheduler Climático Preventivo a 24 Horas y Reprogramación
-- [ ] **4.4.1** Implementar `@Scheduled` en `servicio-operaciones-partidos` consultando partidos a 24h. `[Santiago]`
-- [ ] **4.4.2** Suspender automáticamente encuentros ante tormenta severa (`SUSPENDIDO`, RN-07) e invocar Notificaciones (RN-12). `[Santiago]`
-- [ ] **4.4.3** `POST /v1/partidos/{id}/reprogramaciones` para reasignar fecha y sede pasando a `REPROGRAMADO`. `[Santiago]`
+- [X] **4.4.1** Implementar `@Scheduled` en `servicio-operaciones-partidos` consultando partidos a 24h. `[Luis Miguel]`
+- [X] **4.4.2** Suspender automáticamente encuentros ante tormenta severa (`SUSPENDIDO`, RN-07) e invocar Notificaciones (RN-12). `[Luis Miguel]`
+- [X] **4.4.3** `POST /v1/partidos/{id}/reprogramaciones` para reasignar fecha y sede pasando a `REPROGRAMADO`. `[Luis Miguel]`
 - *Criterio de Aceptación 4.4:* El scheduler suspende el encuentro ante tormenta y envía el correo de alerta al delegado.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/4.4-scheduler-climatico-reprogramacion.md` al finalizar. `[COMPLETADO - AUDIT-20261113-44]`
 
 #### Subsección 4.5: Consumo de Notificaciones de Suspensión y Consistencia de Torneos
 - [ ] **4.5.1** Integración en `servicio-torneos` para procesar el impacto de suspensiones y reprogramaciones sobre el cronograma del torneo. `[Gastón]`

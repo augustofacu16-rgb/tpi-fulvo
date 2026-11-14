@@ -1,5 +1,6 @@
 package com.fulvo.operaciones.repository;
 
+import com.fulvo.operaciones.models.EstadoPartido;
 import com.fulvo.operaciones.models.Partido;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface PartidoRepository extends JpaRepository<Partido, Long> {
@@ -44,6 +46,22 @@ public interface PartidoRepository extends JpaRepository<Partido, Long> {
             @Param("desde") LocalDateTime desde,
             @Param("hasta") LocalDateTime hasta,
             @Param("partidoId") Long partidoId
+    );
+
+    @Query("""
+            select p
+            from Partido p
+            join fetch p.sede s
+            where p.estado in :estados
+              and p.fechaHora >= :desde
+              and p.fechaHora <= :hasta
+              and s.latitud is not null
+              and s.longitud is not null
+            """)
+    List<Partido> findPartidosEnVentanaClimatica(
+            @Param("estados") List<EstadoPartido> estados,
+            @Param("desde") LocalDateTime desde,
+            @Param("hasta") LocalDateTime hasta
     );
 
 }
