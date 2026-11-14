@@ -73,4 +73,8 @@ public class Partido {
 
     @Column(name = "ganador_equipo_id")
     private Long ganadorEquipoId;
+
+    public String obtenerArbitroUsuarioId() {
+        return this.arbitro.getUsuarioId();
+    }
 }

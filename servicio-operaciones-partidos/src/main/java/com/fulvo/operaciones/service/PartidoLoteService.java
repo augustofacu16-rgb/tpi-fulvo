@@ -30,7 +30,7 @@ public class PartidoLoteService {
     }
 
     private Partido convertirAPartido(CrucePartidoDTO cruce) {
-        return new Partido(
+        Partido partido = new Partido(
                 cruce.getTorneoId(),
                 cruce.getFormatoTorneo(),
                 cruce.getFechaOFase(),
@@ -38,6 +38,7 @@ public class PartidoLoteService {
                 cruce.getEquipoVisitanteId(),
                 cruce.getFechaHora()
         );
+        return partido;
     }
 
 }

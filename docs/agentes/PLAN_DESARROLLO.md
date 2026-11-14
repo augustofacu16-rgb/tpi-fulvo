@@ -249,17 +249,22 @@ flowchart TD
     - **Regla Anti-Superposición (RN-05):** Validación algorítmica de que ni la sede ni el árbitro tengan otro partido asignado en la ventana de `fecha_hora ± 2 horas`. Conflicto $\to$ `409 Conflict`.
 
 #### Subsección 3.2: Circuito Arbitral, Actas Oficiales y Desempate en Llaves (FN-09, FN-10, RN-08 a RN-10)
+- **Estado actualizado (2026-11-13):** COMPLETADA y verificada mediante HTTP y PostgreSQL. Cierre en [3.2-cierre-circuito-arbitral.md](../audit/3.2-cierre-circuito-arbitral.md), con evidencias y límites de consistencia entre servicios. No certifica por sí solo el Gate 2B.
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
   - Endpoint `PATCH /v1/partidos/{id}/estado`:
-    - Transición a `EN_CURSO`: Validación estricta de identidad del árbitro asignado (`@AuthenticationPrincipal Jwt jwt` vs `partido.arbitro_dni`, RN-08 $\to$ `403 Forbidden`).
-    - Cancelación por incidentes (RN-09): Pasa a `CANCELADO`, asigna 0 puntos a ambos en tabla y en Llaves descalifica a ambos equipos.
+    - Transición a `EN_CURSO`: Compara el `sub` del JWT con `usuarioId` del árbitro asignado, identificado por DNI en el partido (RN-08 $\to$ `403 Forbidden`). Requiere ambos equipos definidos.
+  - Endpoint `PATCH /v1/partidos/{id}/cancelacion`: pasa de `EN_CURSO` a `CANCELADO`. En Liga suma PJ y PP a ambos sin puntos ni goles adicionales. En Llaves descalifica ambos equipos mediante Torneos y resuelve los avances sin rival.
   - Endpoint `POST /v1/partidos/{id}/actas`:
     - Registro de incidencias por dorsal (goles, tarjetas amarillas y rojas).
     - Definición por penales (RN-10): Si es Llaves y finaliza empatado en los 90', exige `penales_local` y `penales_visitante` sin empate. Asigna `ganador_equipo_id` y promueve automáticamente al equipo a la siguiente fase de llaves.
     - Transición del partido a `FINALIZADO` y disparo transaccional de recálculo de tabla de posiciones.
+  - Bracket: partidos ordenados por ID dentro de torneo/fase; destino en índice entero `i / 2`, local si `i` es par y visitante si es impar. Sin nueva columna ni dependencia de IDs consecutivos. Un avance automático termina sin marcador; una rama sin clasificados propaga la ausencia, y una final cancelada queda sin ganador.
+  - Integración interna: Torneos descalifica la pareja en una transacción idempotente. Un fallo HTTP devuelve 502 y revierte Operaciones; ante respuesta perdida o fallo de commit local puede requerirse reintento, porque no hay transacción distribuida.
 
 #### Subsección 3.3: Motor de Tabla de Posiciones y Estadísticas (FN-12)
+- **Estado actualizado (2026-11-13):** Subsección implementada y validada manualmente. Evidencia en `docs/audit/3.3-cierre-posiciones-estadisticas.md`.
+- **Corrección integrada desde 3.2:** Las cancelaciones de Liga aportan PJ y PP a ambos equipos, sin goles ni puntos adicionales; las cancelaciones de Llaves y los avances técnicos sin marcador no computan. Evidencia en `docs/audit/3.2-correccion-cancelacion-liga.md`.
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
   - Servicio transaccional de estadísticas: cómputo atómico de PJ, PG (3 pts), PE (1 pt), PP (0 pts), cálculo de GF, GC y DG.
