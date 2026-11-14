@@ -30,4 +30,11 @@ public interface JugadorRepository extends JpaRepository<Jugador, Long> {
               AND j.equipo.estado = com.fulvo.torneos.domain.EstadoEquipo.ACTIVO
             """)
     boolean existsByTorneoIdAndDniIn(@Param("torneoId") Long torneoId, @Param("dnis") List<String> dnis);
+    @Query("""
+            SELECT j FROM Jugador j
+            WHERE j.equipo.torneo.id = :torneoId
+              AND j.activo = true
+              AND j.equipo.estado = com.fulvo.torneos.domain.EstadoEquipo.ACTIVO
+            """)
+    List<Jugador> findActivosByTorneoId(@Param("torneoId") Long torneoId);
 }

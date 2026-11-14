@@ -98,7 +98,7 @@ public class ClimaSchedulerService {
                 return false;
             }
 
-            partido.setEstado(EstadoPartido.SUSPENDIDO);
+            partido.suspenderPorClima();
             partidoRepository.save(partido);
 
             log.warn("Partido {} suspendido preventivamente por clima adverso en sede '{}' (precipitación={}mm, desc='{}')",

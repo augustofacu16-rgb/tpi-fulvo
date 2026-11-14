@@ -113,8 +113,11 @@ public class SecurityConfig {
                     .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
 
                 // Transición de estado de partido (EN_CURSO, SUSPENDIDO, CANCELADO) (FN-09, RN-08, RN-09): Exclusivo ROL_ARBITRO
-                .pathMatchers(HttpMethod.PATCH, "/v1/partidos/*/estado", "/v1/partidos/*/estado/**")
-                    .hasAnyAuthority("ROL_ARBITRO", "ROLE_ARBITRO")
+                .pathMatchers(
+                        HttpMethod.PATCH,
+                        "/v1/partidos/*/estado", "/v1/partidos/*/estado/**",
+                        "/v1/partidos/*/cancelacion", "/v1/partidos/*/cancelacion/**"
+                ).hasAnyAuthority("ROL_ARBITRO", "ROLE_ARBITRO")
 
                 // Carga y asentamiento de actas oficiales con dorsales y penales (FN-10, RN-08, RN-10): Exclusivo ROL_ARBITRO
                 .pathMatchers(HttpMethod.POST, "/v1/partidos/*/actas", "/v1/partidos/*/actas/**")

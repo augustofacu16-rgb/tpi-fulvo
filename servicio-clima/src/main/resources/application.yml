@@ -1,0 +1,36 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: servicio-clima
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        health: health-check
+      exposure:
+        include: health
+
+logging:
+  pattern:
+    level: "%5p [%X{correlationId}]"
+
+open-meteo:
+  base-url: http://localhost:8086
+  #base-url: https://api.open-meteo.com
+  connect-timeout-ms: 2000
+  read-timeout-ms: 3000
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      openMeteo:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 2

@@ -1,6 +1,7 @@
 package com.fulvo.torneos.service;
 
 import com.fulvo.common.exception.BusinessRuleException;
+import com.fulvo.common.dto.DescalificarEquiposRequest;
 import com.fulvo.common.exception.ConflictoEstadoException;
 import com.fulvo.common.exception.RecursoNoEncontradoException;
 import com.fulvo.torneos.domain.Equipo;
@@ -42,6 +43,38 @@ public class EquipoService {
     private final JugadorRepository jugadorRepository;
     private final TorneoRepository torneoRepository;
     private final TorneoNotificacionService torneoNotificacionService;
+
+    @Transactional
+    public void descalificarPorIncidentes(Long torneoId, DescalificarEquiposRequest request) {
+        if (request.equipoLocalId().equals(request.equipoVisitanteId())) {
+            throw new BusinessRuleException("Los equipos de la descalificación deben ser distintos");
+        }
+        Torneo torneo = torneoRepository.findByIdWithLock(torneoId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Torneo", torneoId));
+        if (torneo.getFormato() != com.fulvo.torneos.domain.FormatoTorneo.LLAVES
+                || torneo.getEstado() != EstadoTorneo.INICIADO) {
+            throw new ConflictoEstadoException("La descalificación arbitral requiere un torneo LLAVES INICIADO");
+        }
+        List<Equipo> equipos = java.util.stream.Stream.of(
+                        request.equipoLocalId(), request.equipoVisitanteId())
+                .sorted()
+                .map(id -> equipoRepository.findByIdWithLock(id)
+                        .filter(equipo -> equipo.getTorneo().getId().equals(torneoId))
+                        .orElseThrow(() -> new RecursoNoEncontradoException("Equipo", id)))
+                .toList();
+        for (Equipo equipo : equipos) {
+            if (equipo.getEstado() != EstadoEquipo.ACTIVO
+                    && equipo.getEstado() != EstadoEquipo.DESCALIFICADO) {
+                throw new ConflictoEstadoException("El equipo no está activo ni descalificado");
+            }
+        }
+        for (Equipo equipo : equipos) {
+            if (equipo.getEstado() == EstadoEquipo.ACTIVO) {
+                darDeBajaEquipo(torneoId, equipo.getId(), TIPO_DESCALIFICACION,
+                        "Cancelación arbitral por incidentes (RN-09)");
+            }
+        }
+    }
 
     /**
      * Reemplaza un jugador del plantel (Subsección 3.4.1, FN-11, RN-05/RN-11).

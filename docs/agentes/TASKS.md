@@ -1,6 +1,6 @@
 # Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
 
-> **Estado:** `ETAPA 2 COMPLETADA - GATE 2A SUPERADO - EN ARRANQUE ETAPA 3`  
+> **Estado:** `ETAPA 3 COMPLETADA - GATE 2B SUPERADO - EN ARRANQUE ETAPA 4`  
 > **Regla de Operación Obligatoria:**
 > 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las últimas entradas de `docs/audit/`.
 > 2. Al finalizar cada subsección, validar los endpoints y flujos según `GUIA_PRUEBAS_MANUALES.md`, marcar las casillas completadas `[X]` en este archivo y **registrar la auditoría correspondiente en `docs/audit/`** detallando qué se hizo, qué se arregló sobre la marcha y si hubo diferencias con el plan original.
@@ -18,7 +18,7 @@
 | **Día 0** | **Etapa 0** | Planificación, Convenciones y Roles | Todo el Equipo | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-00) |
 | **Día 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, Gastón, Santiago | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261109-GATE1) |
 | **Día 2** | **Etapa 2** | Core de Torneos, Admisiones, Fixtures y Swagger Base | Tomas, Gastón, Santiago, Luis Miguel | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261111-GATE2A) |
-| **Día 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gastón, Tomas, Luis Miguel | `[EN ARRANQUE]` | `[ ]` | `[ ]` |
+| **Día 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gastón, Tomas, Luis Miguel | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261114-GATE2B) |
 | **Día 3** | **Etapa 4** | Adaptadores Externos, Resiliencia y Scheduler | Luis Miguel, Santiago, Gastón, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
 | **Día 3** | **Etapa 5** | Despliegue Docker, Auditoría OpenAPI y Postman E2E | Tomas, Gastón, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
 
@@ -146,17 +146,20 @@
 - *Auditoría:* `docs/audit/3.1-cierre-sedes-arbitros-asignaciones.md`.
 
 #### Subsección 3.2: Circuito Arbitral, Actas Oficiales y Desempate en Llaves
-- [ ] **3.2.1** `PATCH /v1/partidos/{id}/estado` a `EN_CURSO` validando identidad del árbitro (`@AuthenticationPrincipal Jwt jwt` vs `partido.arbitro_dni`, FN-09, RN-08). `[Santiago]`
-- [ ] **3.2.2** `POST /v1/partidos/{id}/actas`: Registro de goles y tarjetas por dorsal. Si hay empate en Llaves, exigencia de penales con desempate obligatorio (RN-10). Transición a `FINALIZADO` y promoción del ganador a la siguiente fase de llaves. `[Santiago]`
-- [ ] **3.2.3** Cancelación por incidentes en `EN_CURSO` transicionando a `CANCELADO` y asignando 0 puntos en tabla o descalificación mutua (FN-10, RN-09). `[Santiago]`
+- **Estado:** `[COMPLETADA]`. Cierre y límites de integración en [auditoría final](../audit/3.2-cierre-circuito-arbitral.md). El Gate 2B requiere certificación integral independiente.
+- [X] **3.2.1** `PATCH /v1/partidos/{id}/estado` a `EN_CURSO` validando el `sub` del JWT contra `usuarioId` del árbitro asignado al partido (FN-09, RN-08). `[Santiago]`
+- [X] **3.2.2** `POST /v1/partidos/{id}/actas`: Registro de goles y tarjetas por dorsal. Si hay empate en Llaves, exigencia de penales con desempate obligatorio (RN-10). Transición a `FINALIZADO` y promoción del ganador a la siguiente fase de llaves. `[Santiago]`
+- [X] **3.2.3** `PATCH /v1/partidos/{id}/cancelacion`: Solo en `EN_CURSO`, doble derrota en Liga (PJ+1, PP+1, cero puntos y sin goles adicionales) o descalificación de ambos equipos en Llaves con resolución del bracket (FN-10, RN-09). `[Santiago]`
 - *Criterio de Aceptación 3.2:* Árbitro no asignado es rechazado con 403 Forbidden; empate en Llaves sin penales rechaza con 400 Bad Request; acta actualiza estado del partido y promueve al ganador.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Validación:* HTTP y SQL reales: promoción hasta final, cancelación de final, doble cancelación, avance sin rival, fallos de conexión/reintento y corrección de estadísticas de Liga. Los informes intermedios pendientes quedan resueltos por la auditoría final.
+- *Auditoría:* `docs/audit/3.2-cierre-circuito-arbitral.md`.
 
 #### Subsección 3.3: Motor de Tabla de Posiciones y Estadísticas
-- [ ] **3.3.1** Implementar cómputo transaccional de posiciones (PJ, PG [3 pts], PE [1 pt], PP [0 pts], GF, GC, DG, Pts). `[Santiago]`
-- [ ] **3.3.2** Endpoints `GET /v1/torneos/{idTorneo}/posiciones` y `GET /v1/torneos/{idTorneo}/goleadores` (FN-12). `[Santiago]`
+- **Estado:** `[COMPLETADA]`. Auditoría en `docs/audit/3.3-cierre-posiciones-estadisticas.md`.
+- [X] **3.3.1** Implementar cómputo transaccional de posiciones (PJ, PG [3 pts], PE [1 pt], PP [0 pts], GF, GC, DG, Pts). `[Santiago]`
+- [X] **3.3.2** Endpoints `GET /v1/torneos/{idTorneo}/posiciones` y `GET /v1/torneos/{idTorneo}/goleadores` (FN-12). `[Santiago]`
 - *Criterio de Aceptación 3.3:* Al finalizar un partido, la tabla de posiciones refleja atómicamente los resultados y puntos.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/3.3-cierre-posiciones-estadisticas.md`.
 
 #### Subsección 3.4: Sincronización de Brackets y Ciclo de Reemplazos de Jugadores
 - [X] **3.4.1** `POST /v1/equipos/{id}/reemplazos-jugadores` validando máximo 5 cambios y prohibición taxativa de sustituir futbolistas suspendidos (FN-11, RN-11). `[Gastón]`
@@ -176,7 +179,7 @@
 - *Criterio de Aceptación 3.6:* Artefacto común actualizado y consumible con excepciones arbitrales estandarizadas.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261113-36]`
 
-> ?? **COMPUERTA DE CALIDAD (GATE 2B):** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas en `docs/audit/`.
+> 🔒 **COMPUERTA DE CALIDAD (GATE 2B) [SUPERADA Y CERTIFICADA]:** Torneos y Operaciones integrados con todas las reglas de negocio verificadas y auditadas. Validada integralmente mediante pruebas E2E en Postman y formalmente certificada en [docs/audit/3.0-cierre-etapa-3.md](../audit/3.0-cierre-etapa-3.md).
 
 ---
 
@@ -194,16 +197,18 @@
 - *Auditoría:* `docs/audit/4.1-adaptador-geocodificacion.md`.
 
 #### Subsección 4.2: Adaptador de Clima y Evaluación de Severidad (`servicio-clima`)
-- [ ] **4.2.1** Scaffolding Spring Boot y consumo de API Open-Meteo / WireMock para coordenadas dadas vía RestClient. `[Luis Miguel]`
-- [ ] **4.2.2** Evaluar umbral de severidad (>40mm de lluvia o códigos de tormenta/granizo) (FN-08, RN-07). `[Luis Miguel]`
+- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/4.2-adaptador-clima.md`.
+- [X] **4.2.1** Scaffolding Spring Boot y consumo de API Open-Meteo / WireMock para coordenadas dadas vía RestClient. `[Luis Miguel]`
+- [X] **4.2.2** Evaluar umbral de severidad (>40mm de lluvia o códigos de tormenta/granizo) (FN-08, RN-07). `[Luis Miguel]`
 - *Criterio de Aceptación 4.2:* Retorna evaluación climática correcta sin lanzar errores 500 ante caídas externas.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/4.2-adaptador-clima.md`.
 
 #### Subsección 4.3: Adaptador de Notificaciones Transaccionales (`servicio-notificaciones`)
-- [ ] **4.3.1** Scaffolding Spring Boot y configuración de `JavaMailSender` apuntando a Mailpit (puerto 1025). `[Luis Miguel]`
-- [ ] **4.3.2** `POST /v1/notificaciones/emails` con control silencioso de excepciones que preserve la transacción del llamador (FN-14, RN-12). `[Luis Miguel]`
+- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/4.3-adaptador-notificaciones.md`.
+- [X] **4.3.1** Scaffolding Spring Boot y configuración de `JavaMailSender` apuntando a Mailpit (puerto 1025). `[Luis Miguel]`
+- [X] **4.3.2** `POST /v1/notificaciones/emails` con control silencioso de excepciones que preserve la transacción del llamador (FN-14, RN-12). `[Luis Miguel]`
 - *Criterio de Aceptación 4.3:* Emails visibles en la bandeja web de Mailpit (`http://localhost:8025`).
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/4.3-adaptador-notificaciones.md`.
 
 #### Subsección 4.4: Scheduler Climático Preventivo a 24 Horas y Reprogramación
 - [X] **4.4.1** Implementar `@Scheduled` en `servicio-operaciones-partidos` consultando partidos a 24h. `[Luis Miguel]`

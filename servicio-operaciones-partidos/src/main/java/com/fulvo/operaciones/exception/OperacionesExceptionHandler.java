@@ -21,6 +21,23 @@ import java.time.Instant;
 @Order(0)
 public class OperacionesExceptionHandler {
 
+    @ExceptionHandler(TorneosIntegracionException.class)
+    public ResponseEntity<ProblemDetail> handleTorneos(
+            TorneosIntegracionException ex, HttpServletRequest request) {
+        log.warn("Fallo de integración con Torneos", ex);
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_GATEWAY, ex.getMessage());
+        problem.setTitle("Servicio de Torneos no disponible");
+        problem.setType(URI.create("https://fulvo.com/errors/integracion-torneos"));
+        problem.setInstance(URI.create(request.getRequestURI()));
+        problem.setProperty("timestamp", Instant.now().toString());
+        String correlationId = MDC.get("correlationId");
+        if (correlationId != null) {
+            problem.setProperty("correlationId", correlationId);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(problem);
+    }
+
     @ExceptionHandler(GeocodificacionIntegracionException.class)
     public ResponseEntity<ProblemDetail> handleGeocodificacion(
             GeocodificacionIntegracionException ex,
