@@ -146,17 +146,20 @@
 - *Auditoría:* `docs/audit/3.1-cierre-sedes-arbitros-asignaciones.md`.
 
 #### Subsección 3.2: Circuito Arbitral, Actas Oficiales y Desempate en Llaves
-- [ ] **3.2.1** `PATCH /v1/partidos/{id}/estado` a `EN_CURSO` validando identidad del árbitro (`@AuthenticationPrincipal Jwt jwt` vs `partido.arbitro_dni`, FN-09, RN-08). `[Santiago]`
-- [ ] **3.2.2** `POST /v1/partidos/{id}/actas`: Registro de goles y tarjetas por dorsal. Si hay empate en Llaves, exigencia de penales con desempate obligatorio (RN-10). Transición a `FINALIZADO` y promoción del ganador a la siguiente fase de llaves. `[Santiago]`
-- [ ] **3.2.3** Cancelación por incidentes en `EN_CURSO` transicionando a `CANCELADO` y asignando 0 puntos en tabla o descalificación mutua (FN-10, RN-09). `[Santiago]`
+- **Estado:** `[COMPLETADA]`. Cierre y límites de integración en [auditoría final](../audit/3.2-cierre-circuito-arbitral.md). El Gate 2B requiere certificación integral independiente.
+- [X] **3.2.1** `PATCH /v1/partidos/{id}/estado` a `EN_CURSO` validando el `sub` del JWT contra `usuarioId` del árbitro asignado al partido (FN-09, RN-08). `[Santiago]`
+- [X] **3.2.2** `POST /v1/partidos/{id}/actas`: Registro de goles y tarjetas por dorsal. Si hay empate en Llaves, exigencia de penales con desempate obligatorio (RN-10). Transición a `FINALIZADO` y promoción del ganador a la siguiente fase de llaves. `[Santiago]`
+- [X] **3.2.3** `PATCH /v1/partidos/{id}/cancelacion`: Solo en `EN_CURSO`, doble derrota en Liga (PJ+1, PP+1, cero puntos y sin goles adicionales) o descalificación de ambos equipos en Llaves con resolución del bracket (FN-10, RN-09). `[Santiago]`
 - *Criterio de Aceptación 3.2:* Árbitro no asignado es rechazado con 403 Forbidden; empate en Llaves sin penales rechaza con 400 Bad Request; acta actualiza estado del partido y promueve al ganador.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Validación:* HTTP y SQL reales: promoción hasta final, cancelación de final, doble cancelación, avance sin rival, fallos de conexión/reintento y corrección de estadísticas de Liga. Los informes intermedios pendientes quedan resueltos por la auditoría final.
+- *Auditoría:* `docs/audit/3.2-cierre-circuito-arbitral.md`.
 
 #### Subsección 3.3: Motor de Tabla de Posiciones y Estadísticas
-- [ ] **3.3.1** Implementar cómputo transaccional de posiciones (PJ, PG [3 pts], PE [1 pt], PP [0 pts], GF, GC, DG, Pts). `[Santiago]`
-- [ ] **3.3.2** Endpoints `GET /v1/torneos/{idTorneo}/posiciones` y `GET /v1/torneos/{idTorneo}/goleadores` (FN-12). `[Santiago]`
+- **Estado:** `[COMPLETADA]`. Auditoría en `docs/audit/3.3-cierre-posiciones-estadisticas.md`.
+- [X] **3.3.1** Implementar cómputo transaccional de posiciones (PJ, PG [3 pts], PE [1 pt], PP [0 pts], GF, GC, DG, Pts). `[Santiago]`
+- [X] **3.3.2** Endpoints `GET /v1/torneos/{idTorneo}/posiciones` y `GET /v1/torneos/{idTorneo}/goleadores` (FN-12). `[Santiago]`
 - *Criterio de Aceptación 3.3:* Al finalizar un partido, la tabla de posiciones refleja atómicamente los resultados y puntos.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/3.3-cierre-posiciones-estadisticas.md`.
 
 #### Subsección 3.4: Sincronización de Brackets y Ciclo de Reemplazos de Jugadores
 - [X] **3.4.1** `POST /v1/equipos/{id}/reemplazos-jugadores` validando máximo 5 cambios y prohibición taxativa de sustituir futbolistas suspendidos (FN-11, RN-11). `[Gastón]`

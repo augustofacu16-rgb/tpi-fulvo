@@ -3,12 +3,10 @@ package com.fulvo.operaciones.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name="tabla_posicion", schema="esquema_operaciones")
 @Getter
-@Setter
 @NoArgsConstructor
 public class TablaPosicion {
     public TablaPosicion(Long torneoId, Long equipoId) {
@@ -50,4 +48,50 @@ public class TablaPosicion {
 
     @Column(name="puntos")
     private Integer puntos = 0;
+
+    public void reiniciarEstadisticas() {
+        partidosJugados = 0;
+        partidosGanados = 0;
+        partidosEmpatados = 0;
+        partidosPerdidos = 0;
+        golesAFavor = 0;
+        golesEnContra = 0;
+        diferenciaGol = 0;
+        puntos = 0;
+    }
+
+    public void registrarVictoria(int golesFavor, int golesContra) {
+        registrarPartido(golesFavor, golesContra);
+        partidosGanados++;
+        puntos += 3;
+    }
+
+    public void registrarEmpate(int golesFavor, int golesContra) {
+        if (golesFavor != golesContra) {
+            throw new IllegalArgumentException("Un empate requiere la misma cantidad de goles");
+        }
+        registrarPartido(golesFavor, golesContra);
+        partidosEmpatados++;
+        puntos++;
+    }
+
+    public void registrarDerrota(int golesFavor, int golesContra) {
+        registrarPartido(golesFavor, golesContra);
+        partidosPerdidos++;
+    }
+
+    public void registrarDerrotaPorIncidentes() {
+        partidosJugados++;
+        partidosPerdidos++;
+    }
+
+    private void registrarPartido(int golesFavor, int golesContra) {
+        if (golesFavor < 0 || golesContra < 0) {
+            throw new IllegalArgumentException("Los goles no pueden ser negativos");
+        }
+        partidosJugados++;
+        golesAFavor += golesFavor;
+        golesEnContra += golesContra;
+        diferenciaGol = golesAFavor - golesEnContra;
+    }
 }

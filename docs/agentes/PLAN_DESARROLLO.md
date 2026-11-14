@@ -239,6 +239,7 @@ flowchart TD
 **Objetivo:** Gestionar sedes, árbitros, agenda horaria, máquina de estados de partidos, actas por dorsal, penales, tabla de posiciones, ciclo de reemplazos de planteles y seguridad arbitral en Gateway.
 
 #### Subsección 3.1: Sedes, Árbitros y Asignación Anti-Superposición (FN-02, FN-03, FN-07, RN-05)
+- **Validaciones de dominio (2026-11-14):** Sede valida nombre, dirección y coherencia/rangos/valores finitos de coordenadas. ActuacionJugador valida partido, equipo participante, dorsal y tipo al construirse. Constructores vacíos protegidos para JPA y creación pública validada; coordinación permanece en servicios. Evidencia en [3.1-refactor-validaciones-sede-actuacion.md](../audit/3.1-refactor-validaciones-sede-actuacion.md).
 - **Estado actualizado (2026-11-12):** Subsección completada y documentada en `docs/audit/3.1-cierre-sedes-arbitros-asignaciones.md`. El adaptador de geocodificación de 4.1 se adelantó para completar el alta de sedes. El alta de árbitros asume que el administrador crea y vincula correctamente el usuario de Keycloak; no se consulta su existencia ni sus roles durante el alta.
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
@@ -249,17 +250,29 @@ flowchart TD
     - **Regla Anti-Superposición (RN-05):** Validación algorítmica de que ni la sede ni el árbitro tengan otro partido asignado en la ventana de `fecha_hora ± 2 horas`. Conflicto $\to$ `409 Conflict`.
 
 #### Subsección 3.2: Circuito Arbitral, Actas Oficiales y Desempate en Llaves (FN-09, FN-10, RN-08 a RN-10)
+- **Patrón Adapter (2026-11-14):** Se limita a geocodificación: SedeService depende de GeocodificacionPort y recibe UbicacionResuelta; GeocodificacionApiClient adapta los DTOs remotos. Por decisión de Santiago se retiró el puerto de descalificación: PartidoService utiliza directamente TorneosApiClient para la comunicación interna. API y esquema sin cambios; evidencia y verificaciones en [3.2-patron-adapter-integraciones.md](../audit/3.2-patron-adapter-integraciones.md).
+- **Separación State/Strategy (2026-11-14):** Los estados validan y deciden las transiciones y las estrategias concretas validan la cancelación según formato. Partido almacena el resultado y aplica el enum elegido mediante operaciones internas. Se conservaron endpoints/esquema y pasaron 31 comprobaciones HTTP/SQL; evidencia en [3.2-separacion-state-strategy.md](../audit/3.2-separacion-state-strategy.md).
+- **Patrón Strategy (2026-11-14):** Partido delega las reglas de empates, penales y ganador en EstrategiaLiga/EstrategiaLlaves, que implementan la interfaz EstrategiaFormatoPartido con sus propias validaciones y cálculo. Se seleccionan por el formato persistido. State conserva las restricciones por estado. Sin cambios de API o esquema; 29 comprobaciones HTTP/SQL aprobadas después del cambio a interfaz. Evidencia en [3.2-patron-strategy-formato.md](../audit/3.2-patron-strategy-formato.md).
+- **Patrón State (2026-11-14):** Partido delega las operaciones dependientes del estado en EstadoDelPartido, conservando EstadoPartido como enum persistido y los contratos HTTP. Se deshabilitó el setter público de estado; 29 comprobaciones HTTP/SQL aprobadas. Evidencia y matriz de comportamiento en [3.2-patron-state-partido.md](../audit/3.2-patron-state-partido.md).
+- **Clasificados en el dominio (2026-11-14):** Partido valida la incorporación de clasificados y resuelve avances sin rival; BracketService mantiene consultas, posición y resolución de ambas ramas previas. Regresión de 24 comprobaciones HTTP/SQL aprobada; evidencia en [3.2-refactor-clasificados-partido.md](../audit/3.2-refactor-clasificados-partido.md).
+- **Refactorización (2026-11-14):** Partido encapsula inicio, cancelación por incidentes, validación de participantes/penales y finalización con ResultadoPartido. PartidoService mantiene autenticación, transacciones, persistencia y coordinación. Se conservaron los contratos HTTP y se aprobaron 21 comprobaciones funcionales; evidencia en [3.2-refactor-comportamiento-partido.md](../audit/3.2-refactor-comportamiento-partido.md).
+- **Estado actualizado (2026-11-13):** COMPLETADA y verificada mediante HTTP y PostgreSQL. Cierre en [3.2-cierre-circuito-arbitral.md](../audit/3.2-cierre-circuito-arbitral.md), con evidencias y límites de consistencia entre servicios. No certifica por sí solo el Gate 2B.
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
   - Endpoint `PATCH /v1/partidos/{id}/estado`:
-    - Transición a `EN_CURSO`: Validación estricta de identidad del árbitro asignado (`@AuthenticationPrincipal Jwt jwt` vs `partido.arbitro_dni`, RN-08 $\to$ `403 Forbidden`).
-    - Cancelación por incidentes (RN-09): Pasa a `CANCELADO`, asigna 0 puntos a ambos en tabla y en Llaves descalifica a ambos equipos.
+    - Transición a `EN_CURSO`: Compara el `sub` del JWT con `usuarioId` del árbitro asignado, identificado por DNI en el partido (RN-08 $\to$ `403 Forbidden`). Requiere ambos equipos definidos.
+  - Endpoint `PATCH /v1/partidos/{id}/cancelacion`: pasa de `EN_CURSO` a `CANCELADO`. En Liga suma PJ y PP a ambos sin puntos ni goles adicionales. En Llaves descalifica ambos equipos mediante Torneos y resuelve los avances sin rival.
   - Endpoint `POST /v1/partidos/{id}/actas`:
     - Registro de incidencias por dorsal (goles, tarjetas amarillas y rojas).
     - Definición por penales (RN-10): Si es Llaves y finaliza empatado en los 90', exige `penales_local` y `penales_visitante` sin empate. Asigna `ganador_equipo_id` y promueve automáticamente al equipo a la siguiente fase de llaves.
     - Transición del partido a `FINALIZADO` y disparo transaccional de recálculo de tabla de posiciones.
+  - Bracket: partidos ordenados por ID dentro de torneo/fase; destino en índice entero `i / 2`, local si `i` es par y visitante si es impar. Sin nueva columna ni dependencia de IDs consecutivos. Un avance automático termina sin marcador; una rama sin clasificados propaga la ausencia, y una final cancelada queda sin ganador.
+  - Integración interna: Torneos descalifica la pareja en una transacción idempotente. Un fallo HTTP devuelve 502 y revierte Operaciones; ante respuesta perdida o fallo de commit local puede requerirse reintento, porque no hay transacción distribuida.
 
 #### Subsección 3.3: Motor de Tabla de Posiciones y Estadísticas (FN-12)
+- **Refactorización (2026-11-14):** TablaPosicion encapsula victorias, empates, derrotas y sanciones, manteniendo juntos contadores, goles y puntos. El servicio coordina recálculo y persistencia. Se retiraron los setters y se verificaron 24 comprobaciones HTTP/SQL; evidencia en [3.3-refactor-comportamiento-posiciones.md](../audit/3.3-refactor-comportamiento-posiciones.md).
+- **Estado actualizado (2026-11-13):** Subsección implementada y validada manualmente. Evidencia en `docs/audit/3.3-cierre-posiciones-estadisticas.md`.
+- **Corrección integrada desde 3.2:** Las cancelaciones de Liga aportan PJ y PP a ambos equipos, sin goles ni puntos adicionales; las cancelaciones de Llaves y los avances técnicos sin marcador no computan. Evidencia en `docs/audit/3.2-correccion-cancelacion-liga.md`.
 - **Responsable:** **Santiago Mariano Gonzalez**
 - **Partes a Desarrollar:**
   - Servicio transaccional de estadísticas: cómputo atómico de PJ, PG (3 pts), PE (1 pt), PP (0 pts), cálculo de GF, GC y DG.

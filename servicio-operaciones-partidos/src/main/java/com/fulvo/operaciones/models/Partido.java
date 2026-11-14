@@ -1,9 +1,12 @@
 package com.fulvo.operaciones.models;
 
+import com.fulvo.operaciones.models.strategy.EstrategiaFormatoPartido;
+import com.fulvo.operaciones.models.strategy.EstrategiasFormatoPartido;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.AccessLevel;
 
 import java.time.LocalDateTime;
 
@@ -49,6 +52,7 @@ public class Partido {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
+    @Setter(AccessLevel.NONE)
     private EstadoPartido estado;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -73,4 +77,60 @@ public class Partido {
 
     @Column(name = "ganador_equipo_id")
     private Long ganadorEquipoId;
+
+    public String obtenerArbitroUsuarioId() {
+        return this.arbitro.getUsuarioId();
+    }
+
+    public void iniciar() {
+        comportamientoActual().iniciar(this);
+    }
+
+    public void cancelarPorIncidentes() {
+        comportamientoActual().cancelarPorIncidentes(this);
+    }
+
+    public void validarEquipoDelPartido(Long equipoId) {
+        if (equipoId == null || (!equipoId.equals(equipoLocalId)
+                && !equipoId.equals(equipoVisitanteId))) {
+            throw new IllegalArgumentException(
+                    "La actuación pertenece a un equipo que no participa del partido");
+        }
+    }
+
+    public void validarFinalizacion(ResultadoPartido resultado) {
+        comportamientoActual().validarFinalizacion(this, resultado);
+    }
+
+    public void finalizar(ResultadoPartido resultado) {
+        comportamientoActual().finalizar(this, resultado);
+    }
+
+    void registrarResultado(ResultadoPartido resultado, Long ganador) {
+        golesLocal = resultado.golesLocal();
+        golesVisitante = resultado.golesVisitante();
+        penalesLocal = resultado.penalesLocal();
+        penalesVisitante = resultado.penalesVisitante();
+        ganadorEquipoId = ganador;
+    }
+
+    public void incorporarClasificado(Long equipoId, boolean comoLocal) {
+        comportamientoActual().incorporarClasificado(this, equipoId, comoLocal);
+    }
+
+    public void resolverAvanceSinRival() {
+        comportamientoActual().resolverAvanceSinRival(this);
+    }
+
+    private EstadoDelPartido comportamientoActual() {
+        return EstadoDelPartido.para(estado);
+    }
+
+    void transicionarA(EstadoPartido destino) {
+        estado = destino;
+    }
+
+    EstrategiaFormatoPartido estrategiaFormato() {
+        return EstrategiasFormatoPartido.para(formatoTorneo);
+    }
 }

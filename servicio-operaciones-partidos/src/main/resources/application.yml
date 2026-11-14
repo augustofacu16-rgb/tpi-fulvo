@@ -15,6 +15,11 @@ spring:
     properties:
       hibernate:
         default_schema: esquema_operaciones
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://localhost:8090/realms/fulvo-realm/protocol/openid-connect/certs}
 
 management:
   endpoints:
@@ -46,3 +51,8 @@ geocodificacion:
   base-url: http://localhost:8084
   connect-timeout-ms: 2000
   read-timeout-ms: 7000
+
+torneos:
+  base-url: ${TORNEOS_BASE_URL:http://localhost:8081}
+  connect-timeout-ms: 2000
+  read-timeout-ms: 5000
