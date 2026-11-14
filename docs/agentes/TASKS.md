@@ -194,10 +194,11 @@
 - *Auditoría:* `docs/audit/4.1-adaptador-geocodificacion.md`.
 
 #### Subsección 4.2: Adaptador de Clima y Evaluación de Severidad (`servicio-clima`)
-- [ ] **4.2.1** Scaffolding Spring Boot y consumo de API Open-Meteo / WireMock para coordenadas dadas vía RestClient. `[Luis Miguel]`
-- [ ] **4.2.2** Evaluar umbral de severidad (>40mm de lluvia o códigos de tormenta/granizo) (FN-08, RN-07). `[Luis Miguel]`
+- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/4.2-adaptador-clima.md`.
+- [X] **4.2.1** Scaffolding Spring Boot y consumo de API Open-Meteo / WireMock para coordenadas dadas vía RestClient. `[Luis Miguel]`
+- [X] **4.2.2** Evaluar umbral de severidad (>40mm de lluvia o códigos de tormenta/granizo) (FN-08, RN-07). `[Luis Miguel]`
 - *Criterio de Aceptación 4.2:* Retorna evaluación climática correcta sin lanzar errores 500 ante caídas externas.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/4.2-adaptador-clima.md`.
 
 #### Subsección 4.3: Adaptador de Notificaciones Transaccionales (`servicio-notificaciones`)
 - [ ] **4.3.1** Scaffolding Spring Boot y configuración de `JavaMailSender` apuntando a Mailpit (puerto 1025). `[Luis Miguel]`
