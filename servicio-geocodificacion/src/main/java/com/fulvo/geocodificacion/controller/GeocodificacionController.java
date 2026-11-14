@@ -18,7 +18,7 @@ public class GeocodificacionController {
 
     private final GeocodificacionService geocodificacionService;
 
-    @PostMapping
+    @PostMapping({"", "/direcciones"})
     public ResponseEntity<GeocodificacionDTO> resolver(
             @Valid @RequestBody GeocodificacionDTO solicitud
     ) {
