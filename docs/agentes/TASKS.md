@@ -251,9 +251,10 @@
 - *Auditoría:* `docs/audit/5.2-documentacion-openapi-torneos.md`. `[COMPLETADO - AUDIT-20261114-52]`
 
 #### Subsección 5.3: Enriquecimiento y Documentación OpenAPI 3.0 en `servicio-operaciones-partidos`
-- [ ] **5.3.1** Anotaciones exhaustivas de sedes, árbitros, actas, posiciones y goleadores. `[Santiago]`
+- **Estado:** `[COMPLETADA]`. Verificación manual en Swagger confirmada por Santiago.
+- [X] **5.3.1** Anotaciones exhaustivas de sedes, árbitros, actas, posiciones y goleadores. Incluye lotes, asignaciones, estados, cancelaciones, scheduler y reprogramaciones. `[Santiago]`
 - *Criterio de Aceptación 5.3:* Swagger UI de Operaciones documenta el 100% de endpoints con esquemas y errores.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/5.3-documentacion-openapi-operaciones.md`. `[COMPLETADO - AUDIT-20261115-53]`
 
 #### Subsección 5.4: Auditoría y Verificación de Swagger UI en API Gateway y Esquemas de Seguridad JWT
 - [X] **5.4.1** Verificación en Swagger UI unificado (`http://localhost:8080/swagger-ui.html`) alternando entre definiciones de microservicios y autenticación interactiva `Bearer` con Keycloak. `[Tomas]`
