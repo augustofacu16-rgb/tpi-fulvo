@@ -1,0 +1,952 @@
+{
+  "info": {
+    "_postman_id": "fulvo-backend-collection-5-5",
+    "name": "Fulvo Backend - Suite Integral E2E (Subsección 5.5)",
+    "description": "Colección automatizada integral para TPI Fulvo' con auto-login en Keycloak, extracción dinámica de tokens/IDs, enrutamiento perimetral por API Gateway y aserciones pm.test() para los escenarios oficiales.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// 1. Sufijo único de corrida para evitar colisiones de DNI/nombres/coordenadas",
+          "if (!pm.environment.get('run_suffix')) {",
+          "    pm.environment.set('run_suffix', String(Date.now()).slice(-6));",
+          "}",
+          "",
+          "// 2. Helper para verificar expiración de JWT",
+          "function isJwtExpired(token) {",
+          "    if (!token) return true;",
+          "    try {",
+          "        var payloadPart = token.split('.')[1];",
+          "        var base64 = payloadPart.replace(/-/g, '+').replace(/_/g, '/');",
+          "        var jsonPayload = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.enc.Base64.parse(base64)));",
+          "        var nowSec = Math.floor(Date.now() / 1000);",
+          "        return !jsonPayload.exp || (jsonPayload.exp - 30) <= nowSec;",
+          "    } catch (e) {",
+          "        return true;",
+          "    }",
+          "}",
+          "",
+          "function extractSub(token) {",
+          "    try {",
+          "        var payloadPart = token.split('.')[1];",
+          "        var base64 = payloadPart.replace(/-/g, '+').replace(/_/g, '/');",
+          "        var jsonPayload = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.enc.Base64.parse(base64)));",
+          "        return jsonPayload.sub || '';",
+          "    } catch (e) {",
+          "        return '';",
+          "    }",
+          "}",
+          "",
+          "// 3. Auto-login en Keycloak para los 4 roles si algún token falta o expiró",
+          "var keycloakUrl = pm.environment.get('keycloak_url') || 'http://localhost:8090';",
+          "var roles = [",
+          "    { user: 'admin1', envVar: 'token_organizador' },",
+          "    { user: 'delegado1', envVar: 'token_delegado' },",
+          "    { user: 'arbitro1', envVar: 'token_arbitro' },",
+          "    { user: 'fanatico1', envVar: 'token_fanatico' }",
+          "];",
+          "",
+          "roles.forEach(function (r) {",
+          "    var current = pm.environment.get(r.envVar);",
+          "    if (isJwtExpired(current)) {",
+          "        pm.sendRequest({",
+          "            url: keycloakUrl + '/realms/fulvo-realm/protocol/openid-connect/token',",
+          "            method: 'POST',",
+          "            header: { 'Content-Type': 'application/x-www-form-urlencoded' },",
+          "            body: {",
+          "                mode: 'urlencoded',",
+          "                urlencoded: [",
+          "                    { key: 'client_id', value: 'fulvo-backend' },",
+          "                    { key: 'grant_type', value: 'password' },",
+          "                    { key: 'username', value: r.user },",
+          "                    { key: 'password', value: 'admin123' }",
+          "                ]",
+          "            }",
+          "        }, function (err, res) {",
+          "            if (!err && res.code === 200) {",
+          "                var data = res.json();",
+          "                if (data.access_token) {",
+          "                    pm.environment.set(r.envVar, data.access_token);",
+          "                    if (r.user === 'arbitro1') {",
+          "                        pm.environment.set('arbitro_sub', extractSub(data.access_token));",
+          "                    }",
+          "                }",
+          "            }",
+          "        });",
+          "    } else if (r.user === 'arbitro1' && !pm.environment.get('arbitro_sub')) {",
+          "        pm.environment.set('arbitro_sub', extractSub(current));",
+          "    }",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Autenticación Keycloak y Health",
+      "item": [
+        {
+          "name": "EP-01 - Login Organizador (admin1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EP-01: Keycloak retorna 200 OK y access_token', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.access_token).to.be.a('string').and.not.empty;",
+                  "    pm.environment.set('token_organizador', json.access_token);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "client_id", "value": "fulvo-backend", "type": "text" },
+                { "key": "grant_type", "value": "password", "type": "text" },
+                { "key": "username", "value": "admin1", "type": "text" },
+                { "key": "password", "value": "admin123", "type": "text" }
+              ]
+            },
+            "url": "{{keycloak_url}}/realms/fulvo-realm/protocol/openid-connect/token"
+          }
+        },
+        {
+          "name": "Gateway Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Gateway responde 200 UP', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql('UP');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{gateway_url}}/health-check"
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 - Seguridad Perimetral (Gateway)",
+      "item": [
+        {
+          "name": "EN-01 - Bloqueo sin token (401 Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EN-01: Petición sin token responde 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{gateway_url}}/v1/torneos"
+          }
+        },
+        {
+          "name": "EN-02 - Bloqueo por rol insuficiente (403 Forbidden)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EN-02: Fanático creando torneo responde 403', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_fanatico}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Torneo No Autorizado\",\n  \"formato\": \"LIGA\",\n  \"cupoEquipos\": 10\n}"
+            },
+            "url": "{{gateway_url}}/v1/torneos"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Infraestructura Deportiva (Sedes y Árbitros)",
+      "item": [
+        {
+          "name": "EP-02 - Alta de Sede con Geocodificación (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EP-02: Sede creada con coordenadas (201)', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.be.a('number');",
+                  "    pm.expect(json.latitud).to.be.a('number');",
+                  "    pm.expect(json.longitud).to.be.a('number');",
+                  "    pm.environment.set('sede_id', json.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Predio Kempes {{run_suffix}}\",\n  \"direccion\": \"Av. Cárcano s/n, Córdoba, Argentina\",\n  \"latitudManual\": -31.368{{run_suffix}},\n  \"longitudManual\": -64.246{{run_suffix}}\n}"
+            },
+            "url": "{{gateway_url}}/v1/sedes"
+          }
+        },
+        {
+          "name": "Alta de Árbitro con sub de Keycloak (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Árbitro empadronado (201)', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.environment.set('arbitro_dni', json.dni);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dni\": \"30{{run_suffix}}\",\n  \"usuarioId\": \"{{arbitro_sub}}\",\n  \"nombre\": \"Martin\",\n  \"apellido\": \"Perez\"\n}"
+            },
+            "url": "{{gateway_url}}/v1/arbitros"
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Ciclo Registral, Inscripciones y Fixtures",
+      "item": [
+        {
+          "name": "EN-03a - Crear Torneo con cupo inválido (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EN-03a: Cupo inválido retorna 400 ProblemDetail', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Torneo Inválido\",\n  \"formato\": \"LIGA\",\n  \"cupoEquipos\": 7\n}"
+            },
+            "url": "{{gateway_url}}/v1/torneos"
+          }
+        },
+        {
+          "name": "Crear Torneo Liga 10 equipos (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Torneo creado (201) y ID guardado', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.be.a('number');",
+                  "    pm.environment.set('torneo_liga_id', json.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Liga Fulvo QA {{run_suffix}}\",\n  \"formato\": \"LIGA\",\n  \"cupoEquipos\": 10,\n  \"fechaInicio\": \"2026-12-01T15:00:00\"\n}"
+            },
+            "url": "{{gateway_url}}/v1/torneos"
+          }
+        },
+        {
+          "name": "EN-04 - Postular plantel inválido <15 jugadores (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EN-04: Plantel menor a 15 jugadores retorna 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_fanatico}}" },
+              { "key": "X-User-Id", "value": "fanatico-qa-{{run_suffix}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreEquipo\": \"Club Incompleto\",\n  \"jugadores\": [\n    { \"dni\": \"40000001\", \"nombre\": \"Uno\", \"apellido\": \"Test\", \"posicion\": \"ARQUERO\", \"dorsal\": 1, \"esCapitan\": true }\n  ]\n}"
+            },
+            "url": "{{gateway_url}}/v1/torneos/{{torneo_liga_id}}/solicitudes-inscripcion"
+          }
+        },
+        {
+          "name": "EP-03 - Postular plantel válido 15 jugadores (202 Accepted)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var s = pm.environment.get('run_suffix') || '123456';",
+                  "var jugadores = [];",
+                  "for (var i = 1; i <= 15; i++) {",
+                  "    jugadores.push({",
+                  "        dni: '4' + s + String(i).padStart(2, '0'),",
+                  "        nombre: 'Jugador' + i,",
+                  "        apellido: 'Test',",
+                  "        posicion: i === 1 ? 'ARQUERO' : (i <= 5 ? 'DEFENSOR' : (i <= 10 ? 'MEDIOCAMPISTA' : 'DELANTERO')),",
+                  "        dorsal: i,",
+                  "        esCapitan: i === 10",
+                  "    });",
+                  "}",
+                  "pm.variables.set('plantel_valido_body', JSON.stringify({",
+                  "    nombreEquipo: 'Atlético QA ' + s,",
+                  "    jugadores: jugadores",
+                  "}));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EP-03: Solicitud aceptada en cola (202)', function () {",
+                  "    pm.response.to.have.status(202);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.be.a('number');",
+                  "    pm.environment.set('solicitud_id', json.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_fanatico}}" },
+              { "key": "X-User-Id", "value": "fanatico-qa-{{run_suffix}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{plantel_valido_body}}"
+            },
+            "url": "{{gateway_url}}/v1/torneos/{{torneo_liga_id}}/solicitudes-inscripcion"
+          }
+        },
+        {
+          "name": "EN-06 - Doble postulación mismo fanático (409 Conflict)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EN-06: Doble solicitud del mismo usuario retorna 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_fanatico}}" },
+              { "key": "X-User-Id", "value": "fanatico-qa-{{run_suffix}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{plantel_valido_body}}"
+            },
+            "url": "{{gateway_url}}/v1/torneos/{{torneo_liga_id}}/solicitudes-inscripcion"
+          }
+        },
+        {
+          "name": "EP-04 - Aprobar Solicitud de Inscripción (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EP-04: Solicitud aprobada (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.estado).to.eql('ACEPTADA');",
+                  "    if (json.equipoId) {",
+                  "        pm.environment.set('equipo_id', json.equipoId);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"ACEPTADA\"\n}"
+            },
+            "url": "{{gateway_url}}/v1/solicitudes-inscripcion/{{solicitud_id}}/admision"
+          }
+        },
+        {
+          "name": "EN-03b - Cierre prematuro de cupo incompleto (409 Conflict)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EN-03b: Cierre de inscripción con cupo incompleto retorna 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"INSCRIPCION_CERRADA\"\n}"
+            },
+            "url": "{{gateway_url}}/v1/torneos/{{torneo_liga_id}}/estado"
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Operaciones, Arbitraje, Posiciones y Reemplazos",
+      "item": [
+        {
+          "name": "EP-06 - Asignación logística de partido (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EP-06: Partido asignado sin conflicto horario (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sedeId\": {{sede_id}},\n  \"arbitroDni\": \"{{arbitro_dni}}\",\n  \"fechaHora\": \"2026-12-10T16:00:00\"\n}"
+            },
+            "url": "{{gateway_url}}/v1/partidos/{{partido_id}}/asignaciones"
+          }
+        },
+        {
+          "name": "EN-07 - Conflicto horario ±2h en sede/árbitro (409 Conflict)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EN-07: Superposición horaria menor a 2h retorna 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sedeId\": {{sede_id}},\n  \"arbitroDni\": \"{{arbitro_dni}}\",\n  \"fechaHora\": \"2026-12-10T17:00:00\"\n}"
+            },
+            "url": "{{gateway_url}}/v1/partidos/{{partido_conflicto_id}}/asignaciones"
+          }
+        },
+        {
+          "name": "EN-10 - Exclusividad arbitral bloquea otro rol (403 Forbidden)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EN-10: Usuario sin rol/asignación arbitral recibe 403', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" }
+            ],
+            "url": "{{gateway_url}}/v1/partidos/{{partido_id}}/estado"
+          }
+        },
+        {
+          "name": "Iniciar Partido por Árbitro Asignado (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Partido iniciado a EN_CURSO (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.estado).to.eql('EN_CURSO');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_arbitro}}" }
+            ],
+            "url": "{{gateway_url}}/v1/partidos/{{partido_id}}/estado"
+          }
+        },
+        {
+          "name": "EP-07 - Registrar Acta Oficial (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EP-07: Acta registrada y partido FINALIZADO (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.estado).to.eql('FINALIZADO');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_arbitro}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"golesLocal\": 2,\n  \"golesVisitante\": 1,\n  \"actuaciones\": []\n}"
+            },
+            "url": "{{gateway_url}}/v1/partidos/{{partido_id}}/actas"
+          }
+        },
+        {
+          "name": "EP-08 - Consultar Tabla de Posiciones (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EP-08: Tabla de posiciones responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_fanatico}}" }
+            ],
+            "url": "{{gateway_url}}/v1/torneos/1/posiciones"
+          }
+        },
+        {
+          "name": "Consultar Goleadores del Torneo (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Goleadores responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_fanatico}}" }
+            ],
+            "url": "{{gateway_url}}/v1/torneos/1/goleadores"
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Adaptadores Externos vía API Gateway (Subsección 4.6)",
+      "item": [
+        {
+          "name": "Seguridad Perimetral Adaptadores - Bloqueo Fanático (403 Forbidden)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Adaptadores restringidos a ROL_ORGANIZADOR en Gateway (403)', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_fanatico}}" }
+            ],
+            "url": "{{gateway_url}}/v1/clima/pronosticos?latitud=-31.9999&longitud=-64.1833&fechaHora=2026-11-15T16:00:00"
+          }
+        },
+        {
+          "name": "EN-08 - Geocodificación vía Gateway (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EN-08: Geocodificación vía Gateway retorna 201 con coordenadas', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.latitud).to.be.a('number');",
+                  "    pm.expect(json.longitud).to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direccion\": \"Av. Colón 1500, Córdoba, Argentina\",\n  \"latitud\": -31.4135,\n  \"longitud\": -64.1811\n}"
+            },
+            "url": "{{gateway_url}}/v1/geocodificaciones"
+          }
+        },
+        {
+          "name": "Clima - Pronóstico Tormenta Severa vía Gateway (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Clima vía Gateway evalúa tormenta severa (condicionAdversa=true)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.condicionAdversa).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" }
+            ],
+            "url": "{{gateway_url}}/v1/clima/pronosticos?latitud=-31.9999&longitud=-64.1833&fechaHora=2026-11-15T16:00:00"
+          }
+        },
+        {
+          "name": "Notificaciones - Enviar Email vía Gateway a Mailpit (202 Accepted)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Notificación procesada por Gateway (202 Accepted)', function () {",
+                  "    pm.response.to.have.status(202);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.enviado).to.be.a('boolean');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinatario\": \"delegado1@fulvo.com\",\n  \"asunto\": \"Prueba Suite Postman 5.5\",\n  \"cuerpo\": \"Validación automatizada de notificación transaccional.\",\n  \"tipoEvento\": \"SOLICITUD_ENVIADA\",\n  \"fechaHora\": \"2026-11-15T11:00:00\"\n}"
+            },
+            "url": "{{gateway_url}}/v1/notificaciones/emails"
+          }
+        },
+        {
+          "name": "Mailpit - Verificar bandeja de mensajes (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mailpit responde mensajes (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.messages).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{mailpit_url}}/api/v1/messages"
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Scheduler Climático, Reprogramación y Cronograma (4.4 y 4.5)",
+      "item": [
+        {
+          "name": "EN-09 - Ejecutar Scheduler Climático 24h (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('EN-09: Scheduler climático responde 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" }
+            ],
+            "url": "{{gateway_url}}/v1/partidos/scheduler-clima/ejecutar"
+          }
+        },
+        {
+          "name": "Reprogramar Partido Suspendido (200 OK)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var d = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);",
+                  "pm.variables.set('nueva_fecha_futura', d.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Partido reprogramado (200) y estado REPROGRAMADO', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.estado).to.eql('REPROGRAMADO');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_organizador}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nuevaSedeId\": {{sede_id}},\n  \"nuevaFechaHora\": \"{{nueva_fecha_futura}}\"\n}"
+            },
+            "url": "{{gateway_url}}/v1/partidos/{{partido_id}}/reprogramaciones"
+          }
+        },
+        {
+          "name": "Consultar Cronograma de Torneo (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Cronograma del torneo responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_delegado}}" }
+            ],
+            "url": "{{gateway_url}}/v1/torneos/1/cronograma"
+          }
+        },
+        {
+          "name": "Consultar Partidos Pendientes de Torneo (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Partidos pendientes responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_delegado}}" }
+            ],
+            "url": "{{gateway_url}}/v1/torneos/1/partidos-pendientes"
+          }
+        }
+      ]
+    }
+  ]
+}

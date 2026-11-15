@@ -259,10 +259,10 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 5.5: Colección Automatizada Postman E2E de los 21 Escenarios Oficiales
-- [ ] **5.5.1** Automatización de los 10 escenarios positivos canónicos (`EP-01` a `EP-10`). `[Todo el Equipo]`
-- [ ] **5.5.2** Automatización de los 11 escenarios negativos canónicos (`EN-01` a `EN-11`). `[Todo el Equipo]`
+- [X] **5.5.1** Automatización de los 10 escenarios positivos canónicos (`EP-01` a `EP-10`). `[Todo el Equipo]`
+- [X] **5.5.2** Automatización de los 11 escenarios negativos canónicos (`EN-01` a `EN-11`). `[Todo el Equipo]`
 - *Criterio de Aceptación 5.5:* Scripts `pm.test()` en Postman ejecutando el 100% de los escenarios con aserciones sobre status HTTP, RFC 7807 y payloads.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/5.5-suite-postman-integral.md` al finalizar. `[COMPLETADO - AUDIT-20261115-55]`
 
 #### Subsección 5.6: Certificación Final E2E con Newman / Reporte de Resultados
 - [ ] **5.6.1** Ejecución completa de la suite con Newman contra el entorno Docker Compose levantado. `[Todo el Equipo]`
