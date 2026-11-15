@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuración programática de rutas de Spring Cloud Gateway mediante RouteLocatorBuilder (Apunte 19).
- * Desacopla la red externa del perímetro interno hacia servicio-torneos y servicio-operaciones-partidos,
- * asegurando la precedencia de subrecursos operativos (Subsecciones 2.5, 3.5) y la agregación
- * perimetral de especificaciones OpenAPI 3.0 (Subsección 2.6).
+ * Desacopla la red externa del perímetro interno hacia servicio-torneos, servicio-operaciones-partidos
+ * y los microservicios adaptadores (servicio-geocodificacion, servicio-clima, servicio-notificaciones),
+ * asegurando la precedencia de subrecursos operativos (Subsecciones 2.5, 3.5), el enrutamiento y aislamiento
+ * de adaptadores (Subsección 4.6) y la agregación perimetral de especificaciones OpenAPI 3.0 (Subsección 2.6).
  * Responsable: Tomas Augusto Quiróz.
  */
 @Configuration
@@ -22,10 +23,19 @@ public class GatewayRoutesConfig {
     @Value("${services.operaciones.url:http://localhost:8082}")
     private String operacionesServiceUrl;
 
+    @Value("${services.geocodificacion.url:http://localhost:8084}")
+    private String geocodificacionServiceUrl;
+
+    @Value("${services.clima.url:http://localhost:8085}")
+    private String climaServiceUrl;
+
+    @Value("${services.notificaciones.url:http://localhost:8083}")
+    private String notificacionesServiceUrl;
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                // 1. Rutas para agregación perimetral de OpenAPI 3.0 downstream (Subsección 2.6)
+                // 1. Rutas para agregación perimetral de OpenAPI 3.0 downstream (Subsección 2.6 y Etapa 5)
                 .route("torneos-openapi-route", r -> r
                         .path("/api/torneos/v3/api-docs", "/api/torneos/v3/api-docs/**")
                         .filters(f -> f.rewritePath("/api/torneos/(?<remaining>.*)", "/${remaining}")
@@ -36,6 +46,11 @@ public class GatewayRoutesConfig {
                         .filters(f -> f.rewritePath("/api/partidos/(?<remaining>.*)", "/${remaining}")
                                 .setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
                         .uri(operacionesServiceUrl))
+                .route("notificaciones-openapi-route", r -> r
+                        .path("/api/notificaciones/v3/api-docs", "/api/notificaciones/v3/api-docs/**")
+                        .filters(f -> f.rewritePath("/api/notificaciones/(?<remaining>.*)", "/${remaining}")
+                                .setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
+                        .uri(notificacionesServiceUrl))
                 // 2. Precedencia de subrecursos de torneos delegados a operaciones (Subsecciones 2.5 y 3.5)
                 .route("servicio-operaciones-torneos-subrecursos-route", r -> r
                         .path(
@@ -64,6 +79,19 @@ public class GatewayRoutesConfig {
                         )
                         .filters(f -> f.setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
                         .uri(operacionesServiceUrl))
+                // 5. Rutas hacia microservicios adaptadores externos (Subsección 4.6)
+                .route("servicio-geocodificacion-route", r -> r
+                        .path("/v1/geocodificaciones", "/v1/geocodificaciones/**")
+                        .filters(f -> f.setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
+                        .uri(geocodificacionServiceUrl))
+                .route("servicio-clima-route", r -> r
+                        .path("/v1/clima", "/v1/clima/**")
+                        .filters(f -> f.setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
+                        .uri(climaServiceUrl))
+                .route("servicio-notificaciones-route", r -> r
+                        .path("/v1/notificaciones", "/v1/notificaciones/**")
+                        .filters(f -> f.setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
+                        .uri(notificacionesServiceUrl))
                 .build();
     }
 }

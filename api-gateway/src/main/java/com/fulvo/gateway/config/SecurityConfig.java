@@ -36,13 +36,14 @@ public class SecurityConfig {
                 .accessDeniedHandler(gatewayAccessDeniedHandler)
             )
             .authorizeExchange(exchanges -> exchanges
-                // Endpoints de salud, diagnóstico y Swagger UI / OpenAPI 3.0 (Subsección 2.6)
+                // Endpoints de salud, diagnóstico y Swagger UI / OpenAPI 3.0 (Subsección 2.6 y Etapa 5)
                 .pathMatchers(
                     "/health-check", "/health-check/**", "/info",
                     "/swagger-ui.html", "/swagger-ui/**",
                     "/v3/api-docs", "/v3/api-docs/**",
                     "/api/torneos/v3/api-docs", "/api/torneos/v3/api-docs/**",
                     "/api/partidos/v3/api-docs", "/api/partidos/v3/api-docs/**",
+                    "/api/notificaciones/v3/api-docs", "/api/notificaciones/v3/api-docs/**",
                     "/webjars/**"
                 ).permitAll()
 
@@ -124,7 +125,22 @@ public class SecurityConfig {
                     .hasAnyAuthority("ROL_ARBITRO", "ROLE_ARBITRO")
 
                 // =========================================================================
-                // 3. CONSULTAS GET PÚBLICAS / AUTENTICADAS (FN-12, Posiciones, Goleadores, Fixtures, Estadísticas)
+                // 3. REGLAS PERIMETRALES DE SERVICIOS ADAPTADORES (Subsección 4.6, FN-02, FN-08, FN-14, RN-06, RN-07, RN-12)
+                // =========================================================================
+                // Adaptador de Geocodificación (FN-02, RN-06, Subsección 4.1): Exclusivo ROL_ORGANIZADOR
+                .pathMatchers(HttpMethod.POST, "/v1/geocodificaciones", "/v1/geocodificaciones/**")
+                    .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
+
+                // Adaptador de Clima (FN-08, RN-07, Subsección 4.2): Consulta de pronóstico exclusivo ROL_ORGANIZADOR
+                .pathMatchers(HttpMethod.GET, "/v1/clima", "/v1/clima/**")
+                    .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
+
+                // Adaptador de Notificaciones Transaccionales (FN-14, RN-12, Subsección 4.3): Exclusivo ROL_ORGANIZADOR
+                .pathMatchers(HttpMethod.POST, "/v1/notificaciones", "/v1/notificaciones/**")
+                    .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
+
+                // =========================================================================
+                // 4. CONSULTAS GET PÚBLICAS / AUTENTICADAS (FN-12, Posiciones, Goleadores, Fixtures, Estadísticas)
                 // =========================================================================
                 // Cualquier usuario autenticado (ROL_FANATICO, ROL_DELEGADO, ROL_ARBITRO, ROL_ORGANIZADOR)
                 // puede consultar partidos, tablas de posiciones, goleadores, sedes, árbitros y estadísticas.

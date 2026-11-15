@@ -221,10 +221,11 @@
 - *Validación de cierre:* 23 comprobaciones HTTP/SQL de 4.5 y 22 de integración 4.4/4.5; merge compilado en ambos servicios. Santiago confirmó desde Postman el acta del partido reprogramado, estado FINALIZADO y actualización de puntos en PostgreSQL. Ver alcance y límites en la auditoría de cierre; Gate 3 no certificado por este cierre.
 
 #### Subsección 4.6: Enrutamiento y Aislamiento de Servicios Adaptadores en API Gateway
-- [ ] **4.6.1** Configuración de rutas en `api-gateway` para adaptadores (`/v1/geocodificaciones/**`, `/v1/clima/**`, `/v1/notificaciones/**`). `[Tomas]`
-- [ ] **4.6.2** Aislamiento perimetral impidiendo acceso público anónimo directo a las APIs internas de notificación. `[Tomas]`
+- **Estado:** `[COMPLETADA]`. Auditoría en `docs/audit/4.6-gateway-perimetral-adaptadores.md`.
+- [X] **4.6.1** Configuración de rutas en `api-gateway` para adaptadores (`/v1/geocodificaciones/**`, `/v1/clima/**`, `/v1/notificaciones/**`). `[Tomas]`
+- [X] **4.6.2** Aislamiento perimetral impidiendo acceso público anónimo directo a las APIs internas de notificación. `[Tomas]`
 - *Criterio de Aceptación 4.6:* Rutas de adaptadores securizadas y operativas a través del Gateway.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/4.6-gateway-perimetral-adaptadores.md`. `[COMPLETADO - AUDIT-20261114-46]`
 
 > 🔒 **COMPUERTA DE CALIDAD (GATE 3):** Adaptadores y Scheduler integrados y certificados contra Mailpit y APIs públicas / WireMock, auditados en `docs/audit/`.
 
