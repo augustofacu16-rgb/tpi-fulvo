@@ -19,7 +19,7 @@ logging:
     level: "%5p [%X{correlationId}]"
 
 nominatim:
-  base-url: http://localhost:8086
+  base-url: ${NOMINATIM_BASE_URL:http://localhost:8086}
   # base-url: https://nominatim.openstreetmap.org
   connect-timeout-ms: 2000
   read-timeout-ms: 3000
