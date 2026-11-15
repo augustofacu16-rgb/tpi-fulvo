@@ -90,6 +90,14 @@ public class Partido {
         comportamientoActual().cancelarPorIncidentes(this);
     }
 
+    public void suspenderPorClima() {
+        comportamientoActual().suspenderPorClima(this);
+    }
+
+    public void reprogramar(Sede nuevaSede, LocalDateTime nuevaFechaHora) {
+        comportamientoActual().reprogramar(this, nuevaSede, nuevaFechaHora);
+    }
+
     public void validarEquipoDelPartido(Long equipoId) {
         if (equipoId == null || (!equipoId.equals(equipoLocalId)
                 && !equipoId.equals(equipoVisitanteId))) {
