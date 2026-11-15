@@ -27,6 +27,12 @@ services:
     url: ${SERVICES_TORNEOS_URL:http://localhost:8081}
   operaciones:
     url: ${SERVICES_OPERACIONES_URL:http://localhost:8082}
+  geocodificacion:
+    url: ${SERVICES_GEOCODIFICACION_URL:http://localhost:8084}
+  clima:
+    url: ${SERVICES_CLIMA_URL:http://localhost:8085}
+  notificaciones:
+    url: ${SERVICES_NOTIFICACIONES_URL:http://localhost:8083}
 
 logging:
   pattern:
@@ -49,6 +55,8 @@ springdoc:
         url: /api/torneos/v3/api-docs
       - name: 2. Operaciones y Partidos
         url: /api/partidos/v3/api-docs
+      - name: 3. Notificaciones Transaccionales
+        url: /api/notificaciones/v3/api-docs
     urls-primary-name: 1. Torneos y Admisiones
     display-request-duration: true
     operations-sorter: method

@@ -308,7 +308,7 @@ flowchart TD
 **Objetivo:** Microservicios adaptadores aislados consumiendo APIs externas con Resilience4j, soporte de WireMock, Scheduler preventivo a 24 horas y consistencia de certámenes ante contingencias climáticas.
 
 #### Subsección 4.1: Adaptador de Geocodificación y Fallback (`servicio-geocodificacion`) (FN-02, RN-06)
-- **Estado actualizado (2026-11-12):** Implementada anticipadamente por acuerdo del equipo para permitir finalizar el alta de sedes de 3.1. La evidencia está en `docs/audit/4.1-adaptador-geocodificacion.md`; esto no supone el cierre de la etapa 4.
+- **Estado actualizado (2026-11-12):** Implementada anticipadamente por acuerdo del equipo para permitir finalizar el alta de sedes de 3.1. Evidencia en `docs/audit/4.1-adaptador-geocodificacion.md`.
 - **Responsable:** **Luis Miguel Urviola Dueñas**
 - **Partes a Desarrollar:**
   - Scaffolding del microservicio Spring Boot `servicio-geocodificacion`.
@@ -331,7 +331,7 @@ flowchart TD
   - Endpoint transaccional `POST /v1/notificaciones/emails` con captura silenciosa de excepciones SMTP para preservar la resiliencia operativa.
 
 #### Subsección 4.4: Scheduler Climático Preventivo a 24 Horas y Reprogramación (FN-08, RN-07)
-- **Responsable:** **Santiago Mariano Gonzalez**
+- **Responsable:** **Santiago Mariano Gonzalez / Luis Miguel Urviola Dueñas**
 - **Partes a Desarrollar:**
   - Componente `@Scheduled` en `servicio-operaciones-partidos` consultando de forma periódica partidos programados a 24 horas vista.
   - Integración mediante `RestClient` con `servicio-clima`; si las condiciones son adversas, transiciona el partido a `SUSPENDIDO` (RN-07).
@@ -339,6 +339,7 @@ flowchart TD
 
 #### Subsección 4.5: Consumo de Notificaciones de Suspensión y Consistencia de Torneos (RN-12)
 - **Responsable:** **Gastón Emiliano Cambos Berrondo**
+- **Cierre integrado (2026-11-15):** Implementación y correcciones verificadas con 4.4; prueba manual final de acta y puntos confirmada por Santiago. Evidencia en `docs/audit/4.5-cierre-integracion-postman.md`.
 - **Partes a Desarrollar:**
   - Manejo en `servicio-torneos` de los eventos de suspensión y reprogramación de partidos para mantener la coherencia del calendario general del certamen.
   - Actualización de estados para los delegados de los equipos involucrados y seguimiento de fechas pospuestas.
@@ -349,7 +350,7 @@ flowchart TD
   - Configuración de rutas en `api-gateway` para los microservicios adaptadores (`/v1/geocodificaciones/**`, `/v1/clima/**`, `/v1/notificaciones/**`).
   - Aislamiento perimetral y validación de seguridad de modo que los adaptadores solo puedan ser invocados por los microservicios autorizados o el organizador, evitando exposición indebida.
 
-> ?? **COMPUERTA DE CALIDAD (GATE 3):** Scheduler climático verificado, emails auditados en Mailpit (`http://localhost:8025`) y fallbacks probados.
+> 🔒 **COMPUERTA DE CALIDAD (GATE 3) [SUPERADA Y CERTIFICADA]:** Adaptadores externos con Circuit Breaker (`Resilience4j`), Scheduler climático preventivo a 24h, reprogramación con sincronización de cronograma en Torneos, emails auditados en Mailpit y aislamiento perimetral en API Gateway verificados E2E. Documentado en [docs/audit/4.0-cierre-etapa-4.md](../audit/4.0-cierre-etapa-4.md).
 
 ---
 

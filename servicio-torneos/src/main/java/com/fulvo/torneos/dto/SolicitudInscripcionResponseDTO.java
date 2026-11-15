@@ -1,7 +1,7 @@
 package com.fulvo.torneos.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fulvo.torneos.domain.EstadoSolicitudInscripcion;
+import com.fulvo.torneos.models.EstadoSolicitudInscripcion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 

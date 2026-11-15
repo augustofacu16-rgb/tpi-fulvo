@@ -1,6 +1,6 @@
 package com.fulvo.torneos.dto;
 
-import com.fulvo.torneos.domain.FormatoTorneo;
+import com.fulvo.torneos.models.FormatoTorneo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

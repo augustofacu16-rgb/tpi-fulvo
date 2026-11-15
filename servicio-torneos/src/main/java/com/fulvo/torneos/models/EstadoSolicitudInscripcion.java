@@ -1,4 +1,4 @@
-package com.fulvo.torneos.domain;
+package com.fulvo.torneos.models;
 
 /**
  * Estados de la solicitud de inscripción a un torneo.

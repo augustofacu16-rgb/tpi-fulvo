@@ -3,10 +3,10 @@ package com.fulvo.torneos.service;
 import com.fulvo.common.dto.ReprogramacionPartidoDTO;
 import com.fulvo.common.dto.SuspensionPartidoDTO;
 import com.fulvo.common.exception.RecursoNoEncontradoException;
-import com.fulvo.torneos.domain.Equipo;
-import com.fulvo.torneos.domain.EstadoNovedadPartido;
-import com.fulvo.torneos.domain.NovedadCronograma;
-import com.fulvo.torneos.domain.Torneo;
+import com.fulvo.torneos.models.Equipo;
+import com.fulvo.torneos.models.EstadoNovedadPartido;
+import com.fulvo.torneos.models.NovedadCronograma;
+import com.fulvo.torneos.models.Torneo;
 import com.fulvo.torneos.dto.CronogramaTorneoResponseDTO;
 import com.fulvo.torneos.dto.NovedadCronogramaResponseDTO;
 import com.fulvo.torneos.dto.PartidoPendienteDTO;
@@ -45,7 +45,7 @@ public class CronogramaTorneoService {
         log.info("Procesando suspensión del partido #{} en torneo #{} (local={}, visitante={})",
                 dto.partidoId(), torneoId, dto.equipoLocalId(), dto.equipoVisitanteId());
 
-        Torneo torneo = torneoRepository.findById(torneoId)
+        Torneo torneo = torneoRepository.findByIdWithLock(torneoId)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Torneo no encontrado con ID: " + torneoId));
 
         Equipo local = equipoRepository.findById(dto.equipoLocalId())
@@ -53,6 +53,8 @@ public class CronogramaTorneoService {
 
         Equipo visitante = equipoRepository.findById(dto.equipoVisitanteId())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Equipo visitante no encontrado con ID: " + dto.equipoVisitanteId()));
+
+        validarEquipos(torneoId, local, visitante);
 
         NovedadCronograma novedad = novedadCronogramaRepository.findByTorneoIdAndPartidoId(torneoId, dto.partidoId())
                 .orElseGet(() -> NovedadCronograma.builder()
@@ -63,19 +65,21 @@ public class CronogramaTorneoService {
                         .fechaOriginal(dto.fechaOriginal())
                         .build());
 
+        validarParticipantes(novedad, local, visitante);
         novedad.setEstadoPartido(EstadoNovedadPartido.SUSPENDIDO);
+        novedad.setNuevaFechaHora(null);
+        novedad.setNuevaSedeId(null);
         novedad.setMotivo(dto.motivo());
         if (dto.fechaOriginal() != null) {
             novedad.setFechaOriginal(dto.fechaOriginal());
         }
         novedad.setFechaRegistro(LocalDateTime.now());
-        novedad.setNotificadoDelegados(true);
+        novedad.setNotificadoDelegados(false);
 
         NovedadCronograma persistida = novedadCronogramaRepository.save(novedad);
         log.info("Novedad de suspensión guardada con éxito con ID: {}", persistida.getId());
 
-        // Despacho de notificaciones por correo a los delegados de ambos equipos (RN-11, RN-12)
-        despacharNotificacionesSuspension(torneo, local, visitante, dto);
+        persistida.setNotificadoDelegados(despacharNotificacionesSuspension(torneo, local, visitante, dto));
 
         return mapToResponseDTO(persistida, local.getNombre(), visitante.getNombre());
     }
@@ -88,7 +92,7 @@ public class CronogramaTorneoService {
         log.info("Procesando reprogramación del partido #{} en torneo #{} a nueva fecha: {}",
                 dto.partidoId(), torneoId, dto.nuevaFechaHora());
 
-        Torneo torneo = torneoRepository.findById(torneoId)
+        Torneo torneo = torneoRepository.findByIdWithLock(torneoId)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Torneo no encontrado con ID: " + torneoId));
 
         Equipo local = equipoRepository.findById(dto.equipoLocalId())
@@ -96,6 +100,8 @@ public class CronogramaTorneoService {
 
         Equipo visitante = equipoRepository.findById(dto.equipoVisitanteId())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Equipo visitante no encontrado con ID: " + dto.equipoVisitanteId()));
+
+        validarEquipos(torneoId, local, visitante);
 
         NovedadCronograma novedad = novedadCronogramaRepository.findByTorneoIdAndPartidoId(torneoId, dto.partidoId())
                 .orElseGet(() -> NovedadCronograma.builder()
@@ -105,18 +111,18 @@ public class CronogramaTorneoService {
                         .equipoVisitanteId(dto.equipoVisitanteId())
                         .build());
 
+        validarParticipantes(novedad, local, visitante);
         novedad.setEstadoPartido(EstadoNovedadPartido.REPROGRAMADO);
         novedad.setNuevaFechaHora(dto.nuevaFechaHora());
         novedad.setNuevaSedeId(dto.nuevaSedeId());
         novedad.setMotivo(dto.motivo());
         novedad.setFechaRegistro(LocalDateTime.now());
-        novedad.setNotificadoDelegados(true);
+        novedad.setNotificadoDelegados(false);
 
         NovedadCronograma persistida = novedadCronogramaRepository.save(novedad);
         log.info("Novedad de reprogramación guardada con éxito con ID: {}", persistida.getId());
 
-        // Despacho de notificaciones a los delegados de ambos equipos
-        despacharNotificacionesReprogramacion(torneo, local, visitante, dto);
+        persistida.setNotificadoDelegados(despacharNotificacionesReprogramacion(torneo, local, visitante, dto));
 
         return mapToResponseDTO(persistida, local.getNombre(), visitante.getNombre());
     }
@@ -192,28 +198,46 @@ public class CronogramaTorneoService {
                 .toList();
     }
 
-    private void despacharNotificacionesSuspension(Torneo torneo, Equipo local, Equipo visitante, SuspensionPartidoDTO dto) {
-        String emailLocal = torneoNotificacionService.resolverEmailDestinatario(local.getDelegadoUsuarioId());
-        torneoNotificacionService.despacharSuspensionPartido(
-                emailLocal, local.getNombre(), visitante.getNombre(), torneo.getNombre(),
-                dto.partidoId(), dto.motivo(), dto.fechaOriginal());
-
-        String emailVisitante = torneoNotificacionService.resolverEmailDestinatario(visitante.getDelegadoUsuarioId());
-        torneoNotificacionService.despacharSuspensionPartido(
-                emailVisitante, visitante.getNombre(), local.getNombre(), torneo.getNombre(),
-                dto.partidoId(), dto.motivo(), dto.fechaOriginal());
+    private void validarEquipos(Long torneoId, Equipo local, Equipo visitante) {
+        if (local.getId().equals(visitante.getId())) {
+            throw new IllegalArgumentException("El equipo local y el visitante deben ser distintos");
+        }
+        if (!torneoId.equals(local.getTorneo().getId()) || !torneoId.equals(visitante.getTorneo().getId())) {
+            throw new IllegalArgumentException("Ambos equipos deben pertenecer al torneo indicado");
+        }
     }
 
-    private void despacharNotificacionesReprogramacion(Torneo torneo, Equipo local, Equipo visitante, ReprogramacionPartidoDTO dto) {
+    private void validarParticipantes(NovedadCronograma novedad, Equipo local, Equipo visitante) {
+        if (!local.getId().equals(novedad.getEquipoLocalId())
+                || !visitante.getId().equals(novedad.getEquipoVisitanteId())) {
+            throw new IllegalArgumentException("Los equipos no coinciden con la novedad registrada para el partido");
+        }
+    }
+
+    private boolean despacharNotificacionesSuspension(Torneo torneo, Equipo local, Equipo visitante, SuspensionPartidoDTO dto) {
         String emailLocal = torneoNotificacionService.resolverEmailDestinatario(local.getDelegadoUsuarioId());
-        torneoNotificacionService.despacharReprogramacionPartido(
+        boolean enviadoLocal = torneoNotificacionService.despacharSuspensionPartido(
+                emailLocal, local.getNombre(), visitante.getNombre(), torneo.getNombre(),
+                dto.partidoId(), dto.motivo(), dto.fechaOriginal());
+
+        String emailVisitante = torneoNotificacionService.resolverEmailDestinatario(visitante.getDelegadoUsuarioId());
+        boolean enviadoVisitante = torneoNotificacionService.despacharSuspensionPartido(
+                emailVisitante, visitante.getNombre(), local.getNombre(), torneo.getNombre(),
+                dto.partidoId(), dto.motivo(), dto.fechaOriginal());
+        return enviadoLocal && enviadoVisitante;
+    }
+
+    private boolean despacharNotificacionesReprogramacion(Torneo torneo, Equipo local, Equipo visitante, ReprogramacionPartidoDTO dto) {
+        String emailLocal = torneoNotificacionService.resolverEmailDestinatario(local.getDelegadoUsuarioId());
+        boolean enviadoLocal = torneoNotificacionService.despacharReprogramacionPartido(
                 emailLocal, local.getNombre(), visitante.getNombre(), torneo.getNombre(),
                 dto.partidoId(), dto.motivo(), dto.nuevaFechaHora(), dto.nuevaSedeId());
 
         String emailVisitante = torneoNotificacionService.resolverEmailDestinatario(visitante.getDelegadoUsuarioId());
-        torneoNotificacionService.despacharReprogramacionPartido(
+        boolean enviadoVisitante = torneoNotificacionService.despacharReprogramacionPartido(
                 emailVisitante, visitante.getNombre(), local.getNombre(), torneo.getNombre(),
                 dto.partidoId(), dto.motivo(), dto.nuevaFechaHora(), dto.nuevaSedeId());
+        return enviadoLocal && enviadoVisitante;
     }
 
     private Map<Long, String> obtenerMapaNombresEquipos(Long torneoId) {

@@ -1,4 +1,4 @@
-package com.fulvo.torneos.domain;
+package com.fulvo.torneos.models;
 
 /**
  * Estados del equipo dentro de la competición.

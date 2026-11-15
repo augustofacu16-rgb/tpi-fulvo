@@ -48,11 +48,24 @@ springdoc:
     tags-sorter: alpha
 
 geocodificacion:
-  base-url: http://localhost:8084
+  base-url: ${GEOCODIFICACION_SERVICE_URL:http://localhost:8084}
   connect-timeout-ms: 2000
   read-timeout-ms: 7000
+
+clima:
+  base-url: ${CLIMA_SERVICE_URL:http://localhost:8085}
+  connect-timeout-ms: 2000
+  read-timeout-ms: 5000
+  scheduler:
+    fixed-rate-ms: 3600000
+
+notificaciones:
+  base-url: ${NOTIFICACIONES_SERVICE_URL:http://localhost:8083}
+  connect-timeout-ms: 2000
+  read-timeout-ms: 5000
+  delegado-fallback-email: delegado1@fulvo.com
 
 torneos:
   base-url: ${TORNEOS_BASE_URL:http://localhost:8081}
   connect-timeout-ms: 2000
-  read-timeout-ms: 5000
+  read-timeout-ms: 15000

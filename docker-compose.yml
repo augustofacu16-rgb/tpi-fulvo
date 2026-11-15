@@ -1,5 +1,7 @@
 services:
-  # Base de Datos Relacional PostgreSQL 16
+  # ==============================================================================
+  # 1. Base de Datos Relacional PostgreSQL 16
+  # ==============================================================================
   postgres-db:
     image: postgres:16-alpine
     container_name: postgres-db
@@ -22,7 +24,9 @@ services:
       timeout: 5s
       retries: 5
 
-  # Servidor de Identidad OIDC / OAuth2 Keycloak 26.5.0
+  # ==============================================================================
+  # 2. Servidor de Identidad OIDC / OAuth2 Keycloak 26.5.0
+  # ==============================================================================
   keycloak-server:
     image: quay.io/keycloak/keycloak:26.5.0
     container_name: keycloak-server
@@ -43,28 +47,212 @@ services:
       postgres-db:
         condition: service_healthy
 
-  # Servidor SMTP Mock y Bandeja de Visualización de Correos Mailpit
+  # ==============================================================================
+  # 3. Servidor SMTP Mock y Bandeja de Visualización Mailpit
+  # ==============================================================================
   mailpit:
     image: axllent/mailpit:latest
     container_name: mailpit
     restart: unless-stopped
     ports:
-      - "${MAILPIT_SMTP_PORT:-1025}:1025" # Servidor SMTP para microservicio notificaciones
+      - "${MAILPIT_SMTP_PORT:-1025}:1025" # Servidor SMTP interno/host
       - "${MAILPIT_WEB_PORT:-8025}:8025" # Interfaz Web para visualización de emails
     networks:
       - bda-net
 
-  # Servidor Mock WireMock para Contingencia Offline (OSM y Open-Meteo)
+  # ==============================================================================
+  # 4. Servidor Mock WireMock para Contingencia Offline (OSM y Open-Meteo)
+  # ==============================================================================
   wiremock:
     image: wiremock/wiremock:3.9.1
     container_name: wiremock
     restart: unless-stopped
     ports:
-      - "${WIREMOCK_PORT_HOST:-8086}:8080" # WireMock expuesto en puerto del host
+      - "${WIREMOCK_PORT_HOST:-8086}:8080" # WireMock expuesto al host
     volumes:
       - ./wiremock/mappings:/home/wiremock/mappings:ro
     networks:
       - bda-net
+
+  # ==============================================================================
+  # 5. Adaptador de Geocodificación (Nominatim / WireMock)
+  # ==============================================================================
+  servicio-geocodificacion:
+    build:
+      context: ./servicio-geocodificacion
+      dockerfile: Dockerfile
+    container_name: servicio-geocodificacion
+    restart: unless-stopped
+    expose:
+      - "8084"
+    environment:
+      NOMINATIM_BASE_URL: http://wiremock:8080
+    depends_on:
+      - wiremock
+    networks:
+      - bda-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8084/health-check || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ==============================================================================
+  # 6. Adaptador de Clima (Open-Meteo / WireMock)
+  # ==============================================================================
+  servicio-clima:
+    build:
+      context: ./servicio-clima
+      dockerfile: Dockerfile
+    container_name: servicio-clima
+    restart: unless-stopped
+    expose:
+      - "8085"
+    environment:
+      OPEN_METEO_BASE_URL: http://wiremock:8080
+    depends_on:
+      - wiremock
+    networks:
+      - bda-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8085/health-check || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ==============================================================================
+  # 7. Adaptador de Notificaciones Transaccionales (SMTP Mailpit)
+  # ==============================================================================
+  servicio-notificaciones:
+    build:
+      context: ./servicio-notificaciones
+      dockerfile: Dockerfile
+    container_name: servicio-notificaciones
+    restart: unless-stopped
+    expose:
+      - "8083"
+    environment:
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+    depends_on:
+      - mailpit
+    networks:
+      - bda-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8083/health-check || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ==============================================================================
+  # 8. Microservicio de Gestión de Torneos, Inscripciones y Fixtures
+  # ==============================================================================
+  servicio-torneos:
+    build:
+      context: ./servicio-torneos
+      dockerfile: Dockerfile
+    container_name: servicio-torneos
+    restart: unless-stopped
+    expose:
+      - "8081"
+    environment:
+      DB_HOST: postgres-db
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      NOTIFICACIONES_SERVICE_URL: http://servicio-notificaciones:8083
+      OPERACIONES_SERVICE_URL: http://servicio-operaciones-partidos:8082
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      servicio-notificaciones:
+        condition: service_started
+    networks:
+      - bda-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8081/health-check || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ==============================================================================
+  # 9. Microservicio de Operaciones de Partidos, Sedes y Actas Arbitrales
+  # ==============================================================================
+  servicio-operaciones-partidos:
+    build:
+      context: ./servicio-operaciones-partidos
+      dockerfile: Dockerfile
+    container_name: servicio-operaciones-partidos
+    restart: unless-stopped
+    expose:
+      - "8082"
+    environment:
+      DB_HOST: postgres-db
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      KEYCLOAK_JWK_SET_URI: http://keycloak-server:8090/realms/fulvo-realm/protocol/openid-connect/certs
+      GEOCODIFICACION_SERVICE_URL: http://servicio-geocodificacion:8084
+      CLIMA_SERVICE_URL: http://servicio-clima:8085
+      NOTIFICACIONES_SERVICE_URL: http://servicio-notificaciones:8083
+      TORNEOS_BASE_URL: http://servicio-torneos:8081
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      keycloak-server:
+        condition: service_started
+      servicio-geocodificacion:
+        condition: service_started
+      servicio-clima:
+        condition: service_started
+      servicio-notificaciones:
+        condition: service_started
+    networks:
+      - bda-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8082/health-check || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ==============================================================================
+  # 10. API Gateway Reactivo Perimetral (ÚNICO PUERTO DE ENTRADA AL ECOSISTEMA)
+  # ==============================================================================
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    restart: unless-stopped
+    ports:
+      - "${GATEWAY_PORT_HOST:-8080}:8080"
+    environment:
+      KEYCLOAK_JWK_SET_URI: http://keycloak-server:8090/realms/fulvo-realm/protocol/openid-connect/certs
+      SERVICES_TORNEOS_URL: http://servicio-torneos:8081
+      SERVICES_OPERACIONES_URL: http://servicio-operaciones-partidos:8082
+      SERVICES_GEOCODIFICACION_URL: http://servicio-geocodificacion:8084
+      SERVICES_CLIMA_URL: http://servicio-clima:8085
+      SERVICES_NOTIFICACIONES_URL: http://servicio-notificaciones:8083
+    depends_on:
+      - keycloak-server
+      - servicio-torneos
+      - servicio-operaciones-partidos
+      - servicio-geocodificacion
+      - servicio-clima
+      - servicio-notificaciones
+    networks:
+      - bda-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health-check || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 networks:
   bda-net:

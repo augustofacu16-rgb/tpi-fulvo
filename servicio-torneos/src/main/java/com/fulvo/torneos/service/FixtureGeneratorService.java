@@ -1,8 +1,8 @@
 package com.fulvo.torneos.service;
 
 import com.fulvo.common.dto.CrucePartidoDTO;
-import com.fulvo.torneos.domain.Equipo;
-import com.fulvo.torneos.domain.FormatoTorneo;
+import com.fulvo.torneos.models.Equipo;
+import com.fulvo.torneos.models.FormatoTorneo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

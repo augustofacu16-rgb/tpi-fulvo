@@ -1,6 +1,6 @@
 package com.fulvo.torneos.dto;
 
-import com.fulvo.torneos.domain.EstadoSolicitudInscripcion;
+import com.fulvo.torneos.models.EstadoSolicitudInscripcion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

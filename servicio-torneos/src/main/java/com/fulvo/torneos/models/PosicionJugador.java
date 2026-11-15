@@ -1,4 +1,4 @@
-package com.fulvo.torneos.domain;
+package com.fulvo.torneos.models;
 
 /**
  * Posiciones oficiales de los jugadores en cancha.

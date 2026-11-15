@@ -1,8 +1,8 @@
 package com.fulvo.torneos.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fulvo.torneos.domain.EstadoTorneo;
-import com.fulvo.torneos.domain.FormatoTorneo;
+import com.fulvo.torneos.models.EstadoTorneo;
+import com.fulvo.torneos.models.FormatoTorneo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 

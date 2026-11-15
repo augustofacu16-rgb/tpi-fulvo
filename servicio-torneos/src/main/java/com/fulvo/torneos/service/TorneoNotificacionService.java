@@ -195,7 +195,7 @@ public class TorneoNotificacionService {
      * @param motivo            Motivo de la suspensión (clima severo, fuerza mayor, etc.).
      * @param fechaOriginal     Fecha y hora original del encuentro.
      */
-    public void despacharSuspensionPartido(String emailDestinatario, String nombreEquipo, String nombreRival,
+    public boolean despacharSuspensionPartido(String emailDestinatario, String nombreEquipo, String nombreRival,
                                            String nombreTorneo, Long partidoId, String motivo, LocalDateTime fechaOriginal) {
         String asunto = "Alerta Meteorológica: Partido Suspendido por Tormenta - " + nombreTorneo;
         String fechaTexto = fechaOriginal != null ? fechaOriginal.format(FORMATTER) : "A confirmar";
@@ -230,7 +230,7 @@ public class TorneoNotificacionService {
 
         log.info("Disparando alerta de suspensión de partido #{} para equipo '{}' en certamen '{}' a {}",
                 partidoId, nombreEquipo, nombreTorneo, emailDestinatario);
-        notificacionesApiClient.enviarNotificacionAsync(dto);
+        return notificacionesApiClient.enviarNotificacionConfirmada(dto);
     }
 
     /**
@@ -245,7 +245,7 @@ public class TorneoNotificacionService {
      * @param nuevaFechaHora    Nueva fecha y hora fijada para la disputa.
      * @param nuevaSedeId       Nueva sede asignada.
      */
-    public void despacharReprogramacionPartido(String emailDestinatario, String nombreEquipo, String nombreRival,
+    public boolean despacharReprogramacionPartido(String emailDestinatario, String nombreEquipo, String nombreRival,
                                               String nombreTorneo, Long partidoId, String motivo,
                                               LocalDateTime nuevaFechaHora, Long nuevaSedeId) {
         String asunto = "Partido Reprogramado - " + nombreTorneo;
@@ -282,7 +282,7 @@ public class TorneoNotificacionService {
 
         log.info("Disparando notificación de reprogramación de partido #{} para equipo '{}' en certamen '{}' a {}",
                 partidoId, nombreEquipo, nombreTorneo, emailDestinatario);
-        notificacionesApiClient.enviarNotificacionAsync(dto);
+        return notificacionesApiClient.enviarNotificacionConfirmada(dto);
     }
 
     /**
