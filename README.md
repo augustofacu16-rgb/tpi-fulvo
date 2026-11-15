@@ -38,28 +38,30 @@ La solución adopta una **arquitectura de microservicios desacoplada** con aisla
 * Maven 3.9+.
 * Docker & Docker Compose.
 
-### 2. Infraestructura Base con Docker
-Copiar las variables de entorno e inicializar los contenedores de soporte:
+### 2. Configuración de Variables de Entorno
+Copiar la plantilla de variables de entorno (ajustando `DB_PORT_HOST` o `GATEWAY_PORT_HOST` si fuera necesario):
 ```bash
-# Configurar variables de entorno (ajustar DB_PORT_HOST si el puerto 5432 estuviera ocupado)
 cp .env.example .env
-
-# Levantar PostgreSQL, Keycloak, Mailpit y WireMock
-docker compose up -d
 ```
 
-### 3. Compilar e Instalar la Librería Común
-Antes de ejecutar los microservicios, compilar `fulvo-common-lib` para instalarla en el repositorio `.m2` local:
+### 3. Compilar e Instalar la Librería Común y Microservicios
+Antes de construir las imágenes Docker, compilar e instalar `fulvo-common-lib` en el repositorio local `.m2` y empaquetar los 6 microservicios:
 ```bash
+# Compilar e instalar librería común
 cd fulvo-common-lib
 mvn clean install -DskipTests
 cd ..
-```
 
-### 4. Compilar los Microservicios
-```bash
+# Empaquetar los 6 microservicios Java
 mvn clean package -DskipTests
 ```
+
+### 4. Despliegue Integral Contenerizado con Docker Compose
+Levantar los 10 servicios (PostgreSQL, Keycloak, Mailpit, WireMock y los 6 microservicios) en la red perimetral cerrada `bda-net`:
+```bash
+docker compose up -d --build
+```
+> **Aislamiento Perimetral Estricto:** Únicamente el `api-gateway` expone el puerto `8080` (junto con Keycloak `8090`, Mailpit `8025` y WireMock `8086`). Los microservicios de negocio (`servicio-torneos`, `servicio-operaciones-partidos`, etc.) operan de forma aislada en `bda-net` sin mapeo directo de puertos hacia el host.
 
 ---
 
