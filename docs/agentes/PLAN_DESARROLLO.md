@@ -374,9 +374,12 @@ flowchart TD
 
 #### Subsección 5.3: Enriquecimiento y Documentación OpenAPI 3.0 de Operaciones, Sedes y Arbitraje (`servicio-operaciones-partidos`)
 - **Responsable:** **Santiago Mariano Gonzalez**
-- **Partes a Desarrollar:**
-  - Anotación detallada de endpoints de sedes, árbitros, asignaciones horarias, estados de partido, actas y tablas de posiciones (`@Operation`, `@ApiResponse`).
-  - Documentación de esquemas de respuesta y códigos de error (401, 403, 409).
+- **Estado:** `[COMPLETADA - AUDIT-20261115-53]`.
+- **Partes desarrolladas:**
+  - Anotaciones de los 11 endpoints de los cinco controladores: árbitros, sedes, lote, asignaciones, inicio, cancelación, actas, scheduler, reprogramaciones, posiciones y goleadores.
+  - Descripciones y ejemplos en los 15 DTOs locales, esquemas de petición/respuesta y respuestas de error ProblemDetail según cada operación.
+  - Documentación de Bearer JWT, roles exigidos por Gateway y comprobación del árbitro asignado en Operaciones. Parámetros internos Jwt ocultos.
+  - Compilación verificada y revisión manual en Swagger del Gateway confirmada por Santiago. Auditoría: `docs/audit/5.3-documentacion-openapi-operaciones.md`. Este cierre no certifica la suite E2E ni la etapa 5 completa.
 
 #### Subsección 5.4: Auditoría y Verificación de Swagger UI en API Gateway y Esquemas de Seguridad JWT `[COMPLETADO - AUDIT-20261115-54]`
 - **Responsable:** **Tomas Augusto Quiróz**
