@@ -213,11 +213,12 @@
 - *Revisión corregida:* Ver `docs/audit/4.4-correcciones-integracion-concurrencia.md`. 22 comprobaciones HTTP/SQL con Torneos 4.5 real; Clima y correo simulados. Requiere integrar/desplegar también 4.5. No certifica Gate 3.
 
 #### Subsección 4.5: Consumo de Notificaciones de Suspensión y Consistencia de Torneos
-- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/4.5-suspensiones-consistencia-torneos.md`.
+- **Estado:** `[COMPLETADA]`. Cierre integrado con 4.4 registrado en `docs/audit/4.5-cierre-integracion-postman.md` (2026-11-15).
 - [X] **4.5.1** Integración en `servicio-torneos` para procesar el impacto de suspensiones y reprogramaciones sobre el cronograma del torneo. `[Gastón]`
 - [X] **4.5.2** Mantener consistencia del certamen y trazabilidad de los partidos pendientes para los delegados. `[Gastón]`
 - *Criterio de Aceptación 4.5:* El cronograma del torneo refleja los partidos suspendidos sin corromper cruces.
 - *Auditoría:* `docs/audit/4.5-suspensiones-consistencia-torneos.md`.
+- *Validación de cierre:* 23 comprobaciones HTTP/SQL de 4.5 y 22 de integración 4.4/4.5; merge compilado en ambos servicios. Santiago confirmó desde Postman el acta del partido reprogramado, estado FINALIZADO y actualización de puntos en PostgreSQL. Ver alcance y límites en la auditoría de cierre; Gate 3 no certificado por este cierre.
 
 #### Subsección 4.6: Enrutamiento y Aislamiento de Servicios Adaptadores en API Gateway
 - [ ] **4.6.1** Configuración de rutas en `api-gateway` para adaptadores (`/v1/geocodificaciones/**`, `/v1/clima/**`, `/v1/notificaciones/**`). `[Tomas]`
