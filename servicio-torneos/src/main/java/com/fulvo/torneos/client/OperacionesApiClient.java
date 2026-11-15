@@ -7,11 +7,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 import java.util.Map;
@@ -36,12 +39,16 @@ public class OperacionesApiClient {
         log.info("Despachando lote de {} partidos a servicio-operaciones-partidos (POST /v1/partidos/lote)", cruces.size());
         try {
             String correlationId = MDC.get(CorrelationIdFilter.CORRELATION_ID_MDC_KEY);
+            String authorizationHeader = resolveAuthorizationHeader();
 
             ResponseEntity<Map<String, Object>> response = operacionesRestClient.post()
                     .uri("/v1/partidos/lote")
                     .headers(headers -> {
                         if (StringUtils.hasText(correlationId)) {
                             headers.set(CorrelationIdFilter.CORRELATION_ID_HEADER, correlationId);
+                        }
+                        if (StringUtils.hasText(authorizationHeader)) {
+                            headers.set(HttpHeaders.AUTHORIZATION, authorizationHeader);
                         }
                     })
                     .contentType(MediaType.APPLICATION_JSON)
@@ -56,5 +63,12 @@ public class OperacionesApiClient {
             // Cumplimiento estricto de Regla de Oro 2.6 de CONTEXT.md: preservar la causa original e
             throw new BusinessRuleException("Error al despachar el lote de partidos hacia el servicio de operaciones: " + e.getMessage(), e);
         }
+    }
+
+    private String resolveAuthorizationHeader() {
+        if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attrs) {
+            return attrs.getRequest().getHeader(HttpHeaders.AUTHORIZATION);
+        }
+        return null;
     }
 }
