@@ -52,6 +52,10 @@ class GatewayRoutesConfigTest {
                 .anyMatch(r -> "operaciones-openapi-route".equals(r.getId()));
         boolean hasNotificacionesOpenApiRoute = routes.stream()
                 .anyMatch(r -> "notificaciones-openapi-route".equals(r.getId()));
+        boolean hasGeocodificacionOpenApiRoute = routes.stream()
+                .anyMatch(r -> "geocodificacion-openapi-route".equals(r.getId()));
+        boolean hasClimaOpenApiRoute = routes.stream()
+                .anyMatch(r -> "clima-openapi-route".equals(r.getId()));
         boolean hasSubrecursosOperacionesRoute = routes.stream()
                 .anyMatch(r -> "servicio-operaciones-torneos-subrecursos-route".equals(r.getId()));
         boolean hasTorneosBusinessRoute = routes.stream()
@@ -68,6 +72,8 @@ class GatewayRoutesConfigTest {
         assertTrue(hasTorneosOpenApiRoute, "Debe incluir la ruta torneos-openapi-route");
         assertTrue(hasOperacionesOpenApiRoute, "Debe incluir la ruta operaciones-openapi-route");
         assertTrue(hasNotificacionesOpenApiRoute, "Debe incluir la ruta notificaciones-openapi-route");
+        assertTrue(hasGeocodificacionOpenApiRoute, "Debe incluir la ruta geocodificacion-openapi-route");
+        assertTrue(hasClimaOpenApiRoute, "Debe incluir la ruta clima-openapi-route");
         assertTrue(hasSubrecursosOperacionesRoute, "Debe incluir la ruta con precedencia de subrecursos a operaciones");
         assertTrue(hasTorneosBusinessRoute, "Debe incluir la ruta servicio-torneos-route");
         assertTrue(hasOperacionesBusinessRoute, "Debe incluir la ruta servicio-operaciones-route para sedes, arbitros y partidos");
@@ -117,5 +123,17 @@ class GatewayRoutesConfigTest {
                 .findFirst()
                 .orElseThrow();
         assertEquals("http://localhost:8083", notifOpenApiRoute.getUri().toString());
+
+        Route geoOpenApiRoute = routes.stream()
+                .filter(r -> "geocodificacion-openapi-route".equals(r.getId()))
+                .findFirst()
+                .orElseThrow();
+        assertEquals("http://localhost:8084", geoOpenApiRoute.getUri().toString());
+
+        Route climaOpenApiRoute = routes.stream()
+                .filter(r -> "clima-openapi-route".equals(r.getId()))
+                .findFirst()
+                .orElseThrow();
+        assertEquals("http://localhost:8085", climaOpenApiRoute.getUri().toString());
     }
 }

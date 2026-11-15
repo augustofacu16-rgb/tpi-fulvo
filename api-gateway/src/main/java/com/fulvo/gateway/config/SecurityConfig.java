@@ -44,6 +44,8 @@ public class SecurityConfig {
                     "/api/torneos/v3/api-docs", "/api/torneos/v3/api-docs/**",
                     "/api/partidos/v3/api-docs", "/api/partidos/v3/api-docs/**",
                     "/api/notificaciones/v3/api-docs", "/api/notificaciones/v3/api-docs/**",
+                    "/api/geocodificaciones/v3/api-docs", "/api/geocodificaciones/v3/api-docs/**",
+                    "/api/clima/v3/api-docs", "/api/clima/v3/api-docs/**",
                     "/webjars/**"
                 ).permitAll()
 

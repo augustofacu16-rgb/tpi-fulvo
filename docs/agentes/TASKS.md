@@ -256,9 +256,9 @@
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
 
 #### Subsección 5.4: Auditoría y Verificación de Swagger UI en API Gateway y Esquemas de Seguridad JWT
-- [ ] **5.4.1** Verificación en Swagger UI unificado (`http://localhost:8080/swagger-ui.html`) alternando entre definiciones de microservicios y autenticación interactiva `Bearer` con Keycloak. `[Tomas]`
+- [X] **5.4.1** Verificación en Swagger UI unificado (`http://localhost:8080/swagger-ui.html`) alternando entre definiciones de microservicios y autenticación interactiva `Bearer` con Keycloak. `[Tomas]`
 - *Criterio de Aceptación 5.4:* Swagger UI interactivo y securizado navegable desde el Gateway.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar. `[COMPLETADO - AUDIT-20261115-54]`
 
 #### Subsección 5.5: Colección Automatizada Postman E2E de los 21 Escenarios Oficiales
 - [ ] **5.5.1** Automatización de los 10 escenarios positivos canónicos (`EP-01` a `EP-10`). `[Todo el Equipo]`

@@ -21,6 +21,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/health-check",
+                                "/v3/api-docs",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
@@ -28,11 +29,14 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint(
-                                authenticationEntryPoint))
+                        exceptionHandling
+                                .authenticationEntryPoint(authenticationEntryPoint)
+                                .accessDeniedHandler(authenticationEntryPoint)
+                )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2
                                 .authenticationEntryPoint(authenticationEntryPoint)
+                                .accessDeniedHandler(authenticationEntryPoint)
                                 .jwt(Customizer.withDefaults())
                 );
 

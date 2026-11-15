@@ -7,8 +7,10 @@ import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +20,7 @@ import java.time.Instant;
 
 @Component
 public class ApiAuthenticationEntryPoint
-        implements AuthenticationEntryPoint, AuthenticationFailureHandler {
+        implements AuthenticationEntryPoint, AuthenticationFailureHandler, AccessDeniedHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -38,7 +40,10 @@ public class ApiAuthenticationEntryPoint
         problem.setProperty("timestamp", Instant.now().toString());
 
         String correlationId = MDC.get("correlationId");
-        if (correlationId != null) {
+        if (correlationId == null || correlationId.isBlank()) {
+            correlationId = request.getHeader("X-Correlation-ID");
+        }
+        if (correlationId != null && !correlationId.isBlank()) {
             problem.setProperty("correlationId", correlationId);
         }
 
@@ -54,5 +59,34 @@ public class ApiAuthenticationEntryPoint
             HttpServletResponse response,
             AuthenticationException exception) throws IOException {
         commence(request, response, exception);
+    }
+
+    @Override
+    public void handle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AccessDeniedException accessDeniedException) throws IOException {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.FORBIDDEN,
+                "El usuario autenticado no posee los privilegios requeridos para ejecutar esta operación."
+        );
+        problem.setTitle("Acceso Denegado");
+        problem.setType(URI.create("https://fulvo.com/errors/forbidden"));
+        problem.setInstance(URI.create(request.getRequestURI()));
+        problem.setProperty("timestamp", Instant.now().toString());
+
+        String correlationId = MDC.get("correlationId");
+        if (correlationId == null || correlationId.isBlank()) {
+            correlationId = request.getHeader("X-Correlation-ID");
+        }
+        if (correlationId != null && !correlationId.isBlank()) {
+            problem.setProperty("correlationId", correlationId);
+        }
+
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        objectMapper.writeValue(response.getOutputStream(), problem);
     }
 }

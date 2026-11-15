@@ -1,6 +1,7 @@
 package com.fulvo.notificaciones.controller;
 
 import com.fulvo.common.dto.NotificacionEmailDTO;
+import com.fulvo.notificaciones.config.OpenApiConfig;
 import com.fulvo.notificaciones.service.EmailSenderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ import java.util.Map;
 @RequestMapping("/v1/notificaciones")
 @RequiredArgsConstructor
 @Tag(name = "Notificaciones", description = "Adaptador de despacho de correos transaccionales vía SMTP (Mailpit)")
+@SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class NotificacionEmailController {
 
     private final EmailSenderService emailSenderService;
@@ -44,7 +47,17 @@ public class NotificacionEmailController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Datos de notificación inválidos (RFC 7807 ProblemDetail)",
-                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "No autenticado o token ausente/inválido (RFC 7807 ProblemDetail)",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Acceso denegado por privilegios insuficientes (RFC 7807 ProblemDetail)",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
             )
     })
     @PostMapping("/emails")
