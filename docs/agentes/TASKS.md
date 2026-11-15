@@ -237,11 +237,12 @@
 - **Responsables:** Tomas Augusto Quiróz, Gastón Emiliano Cambos Berrondo, Santiago Mariano Gonzalez, Luis Miguel Urviola Dueñas.
 
 #### Subsección 5.1: Orquestación Integral Docker Compose y Red Perimetral `bda-net`
-- [ ] **5.1.1** Creación de `Dockerfile` JRE alpine optimizado en los 6 microservicios. `[Tomas]`
-- [ ] **5.1.2** `docker-compose.yml` unificado con los 6 servicios Java, Postgres, Keycloak, Mailpit y WireMock en la red cerrada `bda-net`. `[Tomas]`
-- [ ] **5.1.3** Aislamiento perimetral: Únicamente `api-gateway` expone el puerto `8080`, Keycloak `8090`, Mailpit `8025` y WireMock `8086`. Los microservicios de negocio operan exclusivamente en la red interna aislada. `[Tomas]`
+- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/5.1-orquestacion-docker-compose.md`.
+- [X] **5.1.1** Creación de `Dockerfile` JRE alpine optimizado en los 6 microservicios. `[Tomas]`
+- [X] **5.1.2** `docker-compose.yml` unificado con los 6 servicios Java, Postgres, Keycloak, Mailpit y WireMock en la red cerrada `bda-net`. `[Tomas]`
+- [X] **5.1.3** Aislamiento perimetral: Únicamente `api-gateway` expone el puerto `8080`, Keycloak `8090`, Mailpit `8025` y WireMock `8086`. Los microservicios de negocio operan exclusivamente en la red interna aislada. `[Tomas]`
 - *Criterio de Aceptación 5.1:* `docker compose up -d` exitoso; acceso directo a puertos de microservicios internos bloqueado.
-- *Auditoría Requerida:* Registrar entrada en `docs/audit/` al finalizar.
+- *Auditoría:* `docs/audit/5.1-orquestacion-docker-compose.md`. `[COMPLETADO - AUDIT-20261115-51]`
 
 #### Subsección 5.2: Enriquecimiento y Documentación OpenAPI 3.0 en `servicio-torneos`
 - [ ] **5.2.1** Anotaciones exhaustivas de esquemas, descripciones y respuestas RFC 7807 en `servicio-torneos`. `[Gastón]`
