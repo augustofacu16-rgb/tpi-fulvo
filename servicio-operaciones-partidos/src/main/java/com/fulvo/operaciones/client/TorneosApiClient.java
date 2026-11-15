@@ -31,6 +31,33 @@ public class TorneosApiClient {
         this.restClient = restClient;
     }
 
+    public void notificarSuspensionPartido(Long torneoId, SuspensionPartidoDTO dto) {
+        sincronizarCronograma(torneoId, "suspension", dto);
+        log.info("Suspensión del partido #{} notificada con éxito a servicio-torneos", dto.partidoId());
+    }
+
+    public void notificarReprogramacionPartido(Long torneoId, ReprogramacionPartidoDTO dto) {
+        sincronizarCronograma(torneoId, "reprogramacion", dto);
+        log.info("Reprogramación del partido #{} notificada con éxito a servicio-torneos", dto.partidoId());
+    }
+
+    private void sincronizarCronograma(Long torneoId, String evento, Object dto) {
+        try {
+            restClient.post()
+                    .uri("/internal/v1/torneos/{id}/partidos/{evento}", torneoId, evento)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .headers(headers -> {
+                        String correlationId = MDC.get("correlationId");
+                        if (correlationId != null) headers.set("X-Correlation-ID", correlationId);
+                    })
+                    .body(dto)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (RestClientException ex) {
+            throw new TorneosIntegracionException("No se pudo sincronizar " + evento + " con Torneos", ex);
+        }
+    }
+
     public void descalificarPorIncidentes(Long torneoId, Long localId, Long visitanteId) {
         try {
             restClient.post()
@@ -80,49 +107,4 @@ public class TorneosApiClient {
         }
     }
 
-    /**
-     * Notifica la suspensión de un partido hacia servicio-torneos para mantener la consistencia del cronograma (Subsección 4.5, RN-07, RN-12).
-     */
-    public void notificarSuspensionPartido(Long torneoId, SuspensionPartidoDTO dto) {
-        try {
-            restClient.post()
-                    .uri("/internal/v1/torneos/{id}/partidos/suspension", torneoId)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .headers(headers -> {
-                        String correlationId = MDC.get("correlationId");
-                        if (correlationId != null) {
-                            headers.set("X-Correlation-ID", correlationId);
-                        }
-                    })
-                    .body(dto)
-                    .retrieve()
-                    .toBodilessEntity();
-            log.info("Suspensión del partido #{} notificada con éxito a servicio-torneos", dto.partidoId());
-        } catch (RestClientException ex) {
-            throw new TorneosIntegracionException("No se pudo sincronizar la suspensión del partido con Torneos", ex);
-        }
-    }
-
-    /**
-     * Notifica la reprogramación de un partido hacia servicio-torneos para actualizar el calendario (Subsección 4.5).
-     */
-    public void notificarReprogramacionPartido(Long torneoId, ReprogramacionPartidoDTO dto) {
-        try {
-            restClient.post()
-                    .uri("/internal/v1/torneos/{id}/partidos/reprogramacion", torneoId)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .headers(headers -> {
-                        String correlationId = MDC.get("correlationId");
-                        if (correlationId != null) {
-                            headers.set("X-Correlation-ID", correlationId);
-                        }
-                    })
-                    .body(dto)
-                    .retrieve()
-                    .toBodilessEntity();
-            log.info("Reprogramación del partido #{} notificada con éxito a servicio-torneos", dto.partidoId());
-        } catch (RestClientException ex) {
-            throw new TorneosIntegracionException("No se pudo sincronizar la reprogramación del partido con Torneos", ex);
-        }
-    }
 }

@@ -1,0 +1,337 @@
+{
+  "info": {
+    "name": "Fulvo - Subsección 4.4 - Scheduler Climático y Reprogramación",
+    "description": "Guía de uso para probar la Subsección 4.4:\n\n1. Prerrequisitos: docker compose up -d (Postgres, Keycloak :8090, Mailpit :8025, WireMock :8086) y levantados servicio-notificaciones (:8083), servicio-clima (:8085), servicio-geocodificacion (:8084), servicio-operaciones-partidos (:8082) y api-gateway (:8080).\n2. Ejecutar en orden: 01 -> 01b -> 01c -> 01d -> 02 -> 03 -> verificar correo en Mailpit (http://localhost:8025) -> 04 -> 05.\n3. Repetibilidad: En una BD limpia, 01b crea el partido id=1 (coincide con la variable partido_id=1 por defecto). Si repetís el flujo sobre la misma BD, 01c y 01d aceptan 409 sin fallar, pero deberás incrementar partido_id en Variables (2, 3, ...) porque POST /v1/partidos/lote no devuelve el id generado (o resetear la BD con docker compose down -v && docker compose up -d).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "gateway_url", "value": "http://localhost:8080" },
+    { "key": "keycloak_url", "value": "http://localhost:8090" },
+    { "key": "token_organizador", "value": "" },
+    { "key": "sede_id", "value": "1" },
+    { "key": "partido_id", "value": "1" },
+    { "key": "fecha_24h", "value": "" },
+    { "key": "fecha_reprogramada", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 - Login Organizador (admin1)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Login exitoso (200)', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set('token_organizador', json.access_token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "grant_type", "value": "password", "type": "text" },
+            { "key": "client_id", "value": "fulvo-backend", "type": "text" },
+            { "key": "username", "value": "admin1", "type": "text" },
+            { "key": "password", "value": "admin123", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8090/realms/fulvo-realm/protocol/openid-connect/token",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8090",
+          "path": ["realms", "fulvo-realm", "protocol", "openid-connect", "token"]
+        }
+      }
+    },
+    {
+      "name": "01b - Crear Partido Nuevo en Lote (PROGRAMADO)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Lote aceptado (202)', function () {",
+              "    pm.response.to.have.status(202);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token_organizador}}", "type": "string" }]
+        },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  {\n    \"torneoId\": 1,\n    \"formatoTorneo\": \"LIGA\",\n    \"fechaOFase\": 1,\n    \"equipoLocalId\": 1,\n    \"equipoVisitanteId\": 2,\n    \"estado\": \"PROGRAMADO\"\n  }\n]"
+        },
+        "url": {
+          "raw": "http://localhost:8080/v1/partidos/lote",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["v1", "partidos", "lote"]
+        }
+      }
+    },
+    {
+      "name": "01c - Crear Sede Tormenta (Fallback -31.9999)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Sede creada (201) o ya existente (409)', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+              "});",
+              "const json = pm.response.json();",
+              "if (pm.response.code === 201 && json && json.id) {",
+              "    pm.collectionVariables.set('sede_id', String(json.id));",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token_organizador}}", "type": "string" }]
+        },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Predio Tormenta Test\",\n  \"direccion\": \"Calle Inexistente 9999, Ciudad Desconocida, Argentina\",\n  \"latitudManual\": -31.9999,\n  \"longitudManual\": -64.1833\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/v1/sedes",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["v1", "sedes"]
+        }
+      }
+    },
+    {
+      "name": "01d - Crear Árbitro (30111222)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Árbitro creado (201) o ya existente (409)', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token_organizador}}", "type": "string" }]
+        },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"dni\": \"30111222\",\n  \"usuarioId\": \"arbitro1\",\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Baldassi\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/v1/arbitros",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["v1", "arbitros"]
+        }
+      }
+    },
+    {
+      "name": "02 - Asignar Partido dentro de 24h (Sede Tormenta)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const pid = Number(pm.collectionVariables.get('partido_id') || 1);",
+              "const offsetHoras = 12 + ((pid % 4) * 3);",
+              "const d = new Date(Date.now() + offsetHoras * 60 * 60 * 1000);",
+              "const pad = n => String(n).padStart(2, '0');",
+              "const iso = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;",
+              "pm.collectionVariables.set('fecha_24h', iso);"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Asignación exitosa (200)', function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token_organizador}}", "type": "string" }]
+        },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sedeId\": {{sede_id}},\n  \"arbitroDni\": \"30111222\",\n  \"fechaHora\": \"{{fecha_24h}}\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/v1/partidos/{{partido_id}}/asignaciones",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["v1", "partidos", "{{partido_id}}", "asignaciones"]
+        }
+      }
+    },
+    {
+      "name": "03 - Ejecutar Scheduler Climático 24h (EP-07 / RN-07)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Scheduler ejecutado (200)', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test('Se suspendió al menos un partido', function () {",
+              "    pm.expect(json.partidosSuspendidos).to.be.above(0);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token_organizador}}", "type": "string" }]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/v1/partidos/scheduler-clima/ejecutar",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["v1", "partidos", "scheduler-clima", "ejecutar"]
+        }
+      }
+    },
+    {
+      "name": "04 - Reprogramar Partido Suspendido (200 OK)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const pid = Number(pm.collectionVariables.get('partido_id') || 1);",
+              "const offsetHoras = 72 + ((pid % 4) * 3);",
+              "const d = new Date(Date.now() + offsetHoras * 60 * 60 * 1000);",
+              "const pad = n => String(n).padStart(2, '0');",
+              "const iso = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;",
+              "pm.collectionVariables.set('fecha_reprogramada', iso);"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Reprogramación exitosa (200)', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test('Estado es REPROGRAMADO', function () {",
+              "    pm.expect(json.estado).to.eql('REPROGRAMADO');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token_organizador}}", "type": "string" }]
+        },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nuevaSedeId\": {{sede_id}},\n  \"nuevaFechaHora\": \"{{fecha_reprogramada}}\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/v1/partidos/{{partido_id}}/reprogramaciones",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["v1", "partidos", "{{partido_id}}", "reprogramaciones"]
+        }
+      }
+    },
+    {
+      "name": "05 - Negativo: Reprogramar Partido No Suspendido (409 Conflict)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Rechazado por estado inválido (409)', function () {",
+              "    pm.response.to.have.status(409);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token_organizador}}", "type": "string" }]
+        },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nuevaSedeId\": {{sede_id}},\n  \"nuevaFechaHora\": \"{{fecha_reprogramada}}\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/v1/partidos/{{partido_id}}/reprogramaciones",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["v1", "partidos", "{{partido_id}}", "reprogramaciones"]
+        }
+      }
+    }
+  ]
+}
