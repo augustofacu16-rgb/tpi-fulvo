@@ -1,6 +1,6 @@
 # Tablero de Control y Trazabilidad de Tareas - TPI Fulvo'
 
-> **Estado:** `ETAPA 3 COMPLETADA - GATE 2B SUPERADO - EN ARRANQUE ETAPA 4`  
+> **Estado:** `ETAPA 4 COMPLETADA - GATE 3 SUPERADO - EN ARRANQUE ETAPA 5`  
 > **Regla de Operación Obligatoria:**
 > 1. Antes de codear cualquier tarea, leer `CONTEXT.md`, `PLAN_DESARROLLO.md`, `DISENO_SISTEMA_FULVO.md` y las últimas entradas de `docs/audit/` .
 > 2. Al finalizar cada subsección, validar los endpoints y flujos según `GUIA_PRUEBAS_MANUALES.md`, marcar las casillas completadas `[X]` en este archivo y **registrar la auditoría correspondiente en `docs/audit/`** detallando qué se hizo, qué se arregló sobre la marcha y si hubo diferencias con el plan original.
@@ -19,8 +19,8 @@
 | **Día 1** | **Etapa 1** | Infraestructura Base, Common Lib, Scaffolding y Gateway | Tomas, Luis Miguel, Gastón, Santiago | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261109-GATE1) |
 | **Día 2** | **Etapa 2** | Core de Torneos, Admisiones, Fixtures y Swagger Base | Tomas, Gastón, Santiago, Luis Miguel | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261111-GATE2A) |
 | **Día 2** | **Etapa 3** | Core de Operaciones, Arbitraje, Posiciones y Planteles | Santiago, Gastón, Tomas, Luis Miguel | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261114-GATE2B) |
-| **Día 3** | **Etapa 4** | Adaptadores Externos, Resiliencia y Scheduler | Luis Miguel, Santiago, Gastón, Tomas | `[PENDIENTE]` | `[ ]` | `[ ]` |
-| **Día 3** | **Etapa 5** | Despliegue Docker, Auditoría OpenAPI y Postman E2E | Tomas, Gastón, Santiago, Luis Miguel | `[PENDIENTE]` | `[ ]` | `[ ]` |
+| **Día 3** | **Etapa 4** | Adaptadores Externos, Resiliencia y Scheduler | Luis Miguel, Santiago, Gastón, Tomas | `[COMPLETADO]` | `[X]` | `[X]` (AUDIT-20261115-GATE3) |
+| **Día 3** | **Etapa 5** | Despliegue Docker, Auditoría OpenAPI y Postman E2E | Tomas, Gastón, Santiago, Luis Miguel | `[EN ARRANQUE]` | `[ ]` | `[ ]` |
 
 ---
 
@@ -205,20 +205,21 @@
 - *Auditoría:* `docs/audit/4.3-adaptador-notificaciones.md`.
 
 #### Subsección 4.4: Scheduler Climático Preventivo a 24 Horas y Reprogramación
+- **Estado:** `[COMPLETADA]`. Cierre registrado en `docs/audit/4.4-scheduler-climatico-reprogramacion.md` y `docs/audit/4.4-correcciones-integracion-concurrencia.md`.
 - [X] **4.4.1** Implementar `@Scheduled` en `servicio-operaciones-partidos` consultando partidos a 24h. `[Luis Miguel]`
 - [X] **4.4.2** Suspender automáticamente encuentros ante tormenta severa (`SUSPENDIDO`, RN-07) y sincronizar con Torneos 4.5, que notifica a los delegados (RN-12). `[Luis Miguel; correcciones Santiago]`
 - [X] **4.4.3** `POST /v1/partidos/{id}/reprogramaciones` para reasignar fecha y sede pasando a `REPROGRAMADO`. `[Luis Miguel]`
 - *Criterio de Aceptación 4.4:* El scheduler suspende el encuentro ante tormenta y envía el correo de alerta al delegado.
 - *Auditoría Requerida:* Registrar entrada en `docs/audit/4.4-scheduler-climatico-reprogramacion.md` al finalizar. `[COMPLETADO - AUDIT-20261113-44]`
-- *Revisión corregida:* Ver `docs/audit/4.4-correcciones-integracion-concurrencia.md`. 22 comprobaciones HTTP/SQL con Torneos 4.5 real; Clima y correo simulados. Requiere integrar/desplegar también 4.5. No certifica Gate 3.
+- *Revisión corregida:* Ver `docs/audit/4.4-correcciones-integracion-concurrencia.md`. 22 comprobaciones HTTP/SQL con Torneos 4.5 real e integración final E2E certificada en `docs/audit/4.0-cierre-etapa-4.md`.
 
 #### Subsección 4.5: Consumo de Notificaciones de Suspensión y Consistencia de Torneos
 - **Estado:** `[COMPLETADA]`. Cierre integrado con 4.4 registrado en `docs/audit/4.5-cierre-integracion-postman.md` (2026-11-15).
 - [X] **4.5.1** Integración en `servicio-torneos` para procesar el impacto de suspensiones y reprogramaciones sobre el cronograma del torneo. `[Gastón]`
 - [X] **4.5.2** Mantener consistencia del certamen y trazabilidad de los partidos pendientes para los delegados. `[Gastón]`
 - *Criterio de Aceptación 4.5:* El cronograma del torneo refleja los partidos suspendidos sin corromper cruces.
-- *Auditoría:* `docs/audit/4.5-suspensiones-consistencia-torneos.md`.
-- *Validación de cierre:* 23 comprobaciones HTTP/SQL de 4.5 y 22 de integración 4.4/4.5; merge compilado en ambos servicios. Santiago confirmó desde Postman el acta del partido reprogramado, estado FINALIZADO y actualización de puntos en PostgreSQL. Ver alcance y límites en la auditoría de cierre; Gate 3 no certificado por este cierre.
+- *Auditoría:* `docs/audit/4.5-suspensiones-consistencia-torneos.md`. `[COMPLETADO - AUDIT-20261114-45]`
+- *Validación de cierre:* 23 comprobaciones HTTP/SQL de 4.5 y 22 de integración 4.4/4.5; merge compilado en ambos servicios. Confirmado en Postman el flujo completo de suspensión, reprogramación, inicio, acta del partido (`FINALIZADO`) y actualización de puntos en PostgreSQL.
 
 #### Subsección 4.6: Enrutamiento y Aislamiento de Servicios Adaptadores en API Gateway
 - **Estado:** `[COMPLETADA]`. Auditoría en `docs/audit/4.6-gateway-perimetral-adaptadores.md`.
@@ -227,7 +228,7 @@
 - *Criterio de Aceptación 4.6:* Rutas de adaptadores securizadas y operativas a través del Gateway.
 - *Auditoría:* `docs/audit/4.6-gateway-perimetral-adaptadores.md`. `[COMPLETADO - AUDIT-20261114-46]`
 
-> 🔒 **COMPUERTA DE CALIDAD (GATE 3):** Adaptadores y Scheduler integrados y certificados contra Mailpit y APIs públicas / WireMock, auditados en `docs/audit/`.
+> 🔒 **COMPUERTA DE CALIDAD (GATE 3) [SUPERADA Y CERTIFICADA]:** Adaptadores externos con Circuit Breaker (`Resilience4j`), emulación `WireMock`, notificaciones en `Mailpit`, Scheduler climático preventivo a 24h, reprogramación y consistencia de cronograma integrados y verificados de punta a punta a través del API Gateway. Certificado en `docs/audit/4.0-cierre-etapa-4.md`.
 
 ---
 
