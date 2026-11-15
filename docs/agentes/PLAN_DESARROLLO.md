@@ -378,11 +378,11 @@ flowchart TD
   - Anotación detallada de endpoints de sedes, árbitros, asignaciones horarias, estados de partido, actas y tablas de posiciones (`@Operation`, `@ApiResponse`).
   - Documentación de esquemas de respuesta y códigos de error (401, 403, 409).
 
-#### Subsección 5.4: Auditoría y Verificación de Swagger UI en API Gateway y Esquemas de Seguridad JWT
+#### Subsección 5.4: Auditoría y Verificación de Swagger UI en API Gateway y Esquemas de Seguridad JWT `[COMPLETADO - AUDIT-20261115-54]`
 - **Responsable:** **Tomas Augusto Quiróz**
-- **Partes a Desarrollar:**
-  - Verificación final de la agregación centralizada OpenAPI 3.0 en `api-gateway` para visualización unificada en Swagger UI (`http://localhost:8080/swagger-ui.html`).
-  - Auditoría del esquema de seguridad JWT Bearer y del formato estándar de errores RFC 7807 (`ProblemDetail`).
+- **Partes Desarrolladas y Certificadas:**
+  - Verificación final de la agregación centralizada OpenAPI 3.0 en `api-gateway` para visualización unificada en Swagger UI (`http://localhost:8080/swagger-ui.html`) cubriendo los 5 microservicios downstream (`torneos`, `partidos`, `notificaciones`, `geocodificaciones`, `clima`).
+  - Auditoría del esquema de seguridad JWT Bearer (`bearerAuth`) unificado en todos los servicios y del formato estándar de errores RFC 7807 (`ProblemDetail`) con garantía de inyección de `correlationId` perimetral (401/403).
 
 #### Subsección 5.5: Automatización de Suite Postman Integral y Entorno de Pruebas
 - **Responsable:** **Luis Miguel Urviola Dueñas**

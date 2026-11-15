@@ -37,3 +37,11 @@ app:
   mail:
     from: ${MAIL_FROM:notificaciones@fulvo.com}
     from-name: ${MAIL_FROM_NAME:Fulvo! Notificaciones}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true

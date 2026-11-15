@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * Punto de entrada reactivo para peticiones no autenticadas (HTTP 401).
@@ -33,9 +34,13 @@ public class GatewayAuthenticationEntryPoint implements ServerAuthenticationEntr
 
         String path = exchange.getRequest().getPath().value();
         String correlationId = exchange.getRequest().getHeaders().getFirst("X-Correlation-ID");
-        String correlationProperty = (correlationId != null && !correlationId.isBlank())
-                ? ",\n  \"correlationId\": \"" + escapeJson(correlationId) + "\""
-                : "";
+        if (correlationId == null || correlationId.isBlank()) {
+            correlationId = response.getHeaders().getFirst("X-Correlation-ID");
+        }
+        if (correlationId == null || correlationId.isBlank()) {
+            correlationId = UUID.randomUUID().toString();
+        }
+        response.getHeaders().set("X-Correlation-ID", correlationId);
 
         String json = """
                 {
@@ -44,9 +49,10 @@ public class GatewayAuthenticationEntryPoint implements ServerAuthenticationEntr
                   "status": 401,
                   "detail": "El recurso solicitado requiere autenticación Bearer JWT válida.",
                   "instance": "%s",
-                  "timestamp": "%s"%s
+                  "timestamp": "%s",
+                  "correlationId": "%s"
                 }
-                """.formatted(escapeJson(path), Instant.now().toString(), correlationProperty);
+                """.formatted(escapeJson(path), Instant.now().toString(), escapeJson(correlationId));
 
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = response.bufferFactory().wrap(bytes);

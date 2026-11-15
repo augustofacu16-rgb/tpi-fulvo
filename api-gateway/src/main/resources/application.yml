@@ -57,6 +57,10 @@ springdoc:
         url: /api/partidos/v3/api-docs
       - name: 3. Notificaciones Transaccionales
         url: /api/notificaciones/v3/api-docs
+      - name: 4. Geocodificación Satelital
+        url: /api/geocodificaciones/v3/api-docs
+      - name: 5. Evaluación Climática
+        url: /api/clima/v3/api-docs
     urls-primary-name: 1. Torneos y Admisiones
     display-request-duration: true
     operations-sorter: method

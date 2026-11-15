@@ -51,6 +51,16 @@ public class GatewayRoutesConfig {
                         .filters(f -> f.rewritePath("/api/notificaciones/(?<remaining>.*)", "/${remaining}")
                                 .setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
                         .uri(notificacionesServiceUrl))
+                .route("geocodificacion-openapi-route", r -> r
+                        .path("/api/geocodificaciones/v3/api-docs", "/api/geocodificaciones/v3/api-docs/**")
+                        .filters(f -> f.rewritePath("/api/geocodificaciones/(?<remaining>.*)", "/${remaining}")
+                                .setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
+                        .uri(geocodificacionServiceUrl))
+                .route("clima-openapi-route", r -> r
+                        .path("/api/clima/v3/api-docs", "/api/clima/v3/api-docs/**")
+                        .filters(f -> f.rewritePath("/api/clima/(?<remaining>.*)", "/${remaining}")
+                                .setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
+                        .uri(climaServiceUrl))
                 // 2. Precedencia de subrecursos de torneos delegados a operaciones (Subsecciones 2.5 y 3.5)
                 .route("servicio-operaciones-torneos-subrecursos-route", r -> r
                         .path(
