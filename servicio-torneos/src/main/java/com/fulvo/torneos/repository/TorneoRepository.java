@@ -1,6 +1,6 @@
 package com.fulvo.torneos.repository;
 
-import com.fulvo.torneos.domain.Torneo;
+import com.fulvo.torneos.models.Torneo;
 import com.fulvo.torneos.dto.TorneoResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -31,7 +31,7 @@ public interface TorneoRepository extends JpaRepository<Torneo, Long> {
             t.fechaCreacion
         )
         FROM Torneo t
-        LEFT JOIN Equipo e ON e.torneo.id = t.id AND e.estado = com.fulvo.torneos.domain.EstadoEquipo.ACTIVO
+        LEFT JOIN Equipo e ON e.torneo.id = t.id AND e.estado = com.fulvo.torneos.models.EstadoEquipo.ACTIVO
         GROUP BY t.id, t.nombre, t.formato, t.cupoEquipos, t.estado, t.fechaInicio, t.fechaCreacion
         ORDER BY t.id ASC
     """)
@@ -48,7 +48,7 @@ public interface TorneoRepository extends JpaRepository<Torneo, Long> {
             t.fechaCreacion
         )
         FROM Torneo t
-        LEFT JOIN Equipo e ON e.torneo.id = t.id AND e.estado = com.fulvo.torneos.domain.EstadoEquipo.ACTIVO
+        LEFT JOIN Equipo e ON e.torneo.id = t.id AND e.estado = com.fulvo.torneos.models.EstadoEquipo.ACTIVO
         WHERE t.id = :id
         GROUP BY t.id, t.nombre, t.formato, t.cupoEquipos, t.estado, t.fechaInicio, t.fechaCreacion
     """)

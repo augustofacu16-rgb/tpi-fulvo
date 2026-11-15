@@ -1,7 +1,7 @@
 package com.fulvo.torneos.repository;
 
-import com.fulvo.torneos.domain.Equipo;
-import com.fulvo.torneos.domain.EstadoEquipo;
+import com.fulvo.torneos.models.Equipo;
+import com.fulvo.torneos.models.EstadoEquipo;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

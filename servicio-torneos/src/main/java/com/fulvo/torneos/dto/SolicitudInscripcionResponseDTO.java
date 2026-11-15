@@ -1,6 +1,6 @@
 package com.fulvo.torneos.dto;
 
-import com.fulvo.torneos.domain.EstadoSolicitudInscripcion;
+import com.fulvo.torneos.models.EstadoSolicitudInscripcion;
 import lombok.*;
 
 import java.time.LocalDateTime;

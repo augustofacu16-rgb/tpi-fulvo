@@ -1,6 +1,6 @@
 package com.fulvo.torneos.dto;
 
-import com.fulvo.torneos.domain.FormatoTorneo;
+import com.fulvo.torneos.models.FormatoTorneo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

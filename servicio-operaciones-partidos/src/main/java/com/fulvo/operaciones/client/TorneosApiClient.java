@@ -1,21 +1,27 @@
 package com.fulvo.operaciones.client;
 
 import com.fulvo.common.dto.DescalificarEquiposRequest;
-import com.fulvo.common.dto.SuspensionPartidoDTO;
+import com.fulvo.common.dto.JugadorPlantelDTO;
 import com.fulvo.common.dto.ReprogramacionPartidoDTO;
+import com.fulvo.common.dto.SuspensionPartidoDTO;
 import com.fulvo.operaciones.exception.TorneosIntegracionException;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import com.fulvo.common.dto.JugadorPlantelDTO;
-import org.springframework.core.ParameterizedTypeReference;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Cliente HTTP para la comunicación síncrona hacia servicio-torneos (Subsecciones 3.2 y 4.5).
+ */
+@Slf4j
 @Component
 public class TorneosApiClient {
 
@@ -27,10 +33,12 @@ public class TorneosApiClient {
 
     public void notificarSuspensionPartido(Long torneoId, SuspensionPartidoDTO dto) {
         sincronizarCronograma(torneoId, "suspension", dto);
+        log.info("Suspensión del partido #{} notificada con éxito a servicio-torneos", dto.partidoId());
     }
 
     public void notificarReprogramacionPartido(Long torneoId, ReprogramacionPartidoDTO dto) {
         sincronizarCronograma(torneoId, "reprogramacion", dto);
+        log.info("Reprogramación del partido #{} notificada con éxito a servicio-torneos", dto.partidoId());
     }
 
     private void sincronizarCronograma(Long torneoId, String evento, Object dto) {
@@ -69,6 +77,7 @@ public class TorneosApiClient {
                     "No se pudo confirmar la descalificación de ambos equipos en Torneos", ex);
         }
     }
+
     public Map<String, JugadorPlantelDTO> obtenerJugadoresTorneo(Long torneoId) {
         try {
             List<JugadorPlantelDTO> lista = restClient.get()
@@ -97,4 +106,5 @@ public class TorneosApiClient {
             return Map.of(); // Si Torneos no responde, no rompe la tabla de goleadores
         }
     }
+
 }

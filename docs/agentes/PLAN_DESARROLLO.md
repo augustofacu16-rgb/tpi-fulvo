@@ -339,6 +339,7 @@ flowchart TD
 
 #### Subsección 4.5: Consumo de Notificaciones de Suspensión y Consistencia de Torneos (RN-12)
 - **Responsable:** **Gastón Emiliano Cambos Berrondo**
+- **Cierre integrado (2026-11-15):** Implementación y correcciones verificadas con 4.4; prueba manual final de acta y puntos confirmada por Santiago. Evidencia y límites en `docs/audit/4.5-cierre-integracion-postman.md`. No implica certificación global de Gate 3.
 - **Partes a Desarrollar:**
   - Manejo en `servicio-torneos` de los eventos de suspensión y reprogramación de partidos para mantener la coherencia del calendario general del certamen.
   - Actualización de estados para los delegados de los equipos involucrados y seguimiento de fechas pospuestas.

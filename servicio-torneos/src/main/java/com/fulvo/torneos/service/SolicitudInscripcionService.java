@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fulvo.common.exception.BusinessRuleException;
 import com.fulvo.common.exception.ConflictoEstadoException;
 import com.fulvo.common.exception.RecursoNoEncontradoException;
-import com.fulvo.torneos.domain.*;
+import com.fulvo.torneos.models.*;
 import com.fulvo.torneos.dto.CrearSolicitudInscripcionDTO;
 import com.fulvo.torneos.dto.JugadorInscripcionDTO;
 import com.fulvo.torneos.dto.ResolverAdmisionDTO;
