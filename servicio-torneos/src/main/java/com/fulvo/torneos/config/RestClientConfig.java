@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
 /**
  * Configuración de clientes RestClient para comunicación inter-servicio en servicio-torneos.
@@ -15,7 +16,11 @@ public class RestClientConfig {
     @Bean
     public RestClient notificacionesRestClient(
             @Value("${servicios.notificaciones.url:http://localhost:8083}") String notificacionesUrl) {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(2000);
+        factory.setReadTimeout(3000);
         return RestClient.builder()
+                .requestFactory(factory)
                 .baseUrl(notificacionesUrl)
                 .build();
     }

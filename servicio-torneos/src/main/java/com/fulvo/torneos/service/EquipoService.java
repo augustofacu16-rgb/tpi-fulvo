@@ -4,12 +4,12 @@ import com.fulvo.common.exception.BusinessRuleException;
 import com.fulvo.common.dto.DescalificarEquiposRequest;
 import com.fulvo.common.exception.ConflictoEstadoException;
 import com.fulvo.common.exception.RecursoNoEncontradoException;
-import com.fulvo.torneos.domain.Equipo;
-import com.fulvo.torneos.domain.EstadoEquipo;
-import com.fulvo.torneos.domain.EstadoTorneo;
-import com.fulvo.torneos.domain.Jugador;
-import com.fulvo.torneos.domain.PosicionJugador;
-import com.fulvo.torneos.domain.Torneo;
+import com.fulvo.torneos.models.Equipo;
+import com.fulvo.torneos.models.EstadoEquipo;
+import com.fulvo.torneos.models.EstadoTorneo;
+import com.fulvo.torneos.models.Jugador;
+import com.fulvo.torneos.models.PosicionJugador;
+import com.fulvo.torneos.models.Torneo;
 import com.fulvo.torneos.dto.BajaEquipoResponseDTO;
 import com.fulvo.torneos.dto.JugadorInscripcionDTO;
 import com.fulvo.torneos.dto.ReemplazoJugadorDTO;
@@ -51,7 +51,7 @@ public class EquipoService {
         }
         Torneo torneo = torneoRepository.findByIdWithLock(torneoId)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Torneo", torneoId));
-        if (torneo.getFormato() != com.fulvo.torneos.domain.FormatoTorneo.LLAVES
+        if (torneo.getFormato() != com.fulvo.torneos.models.FormatoTorneo.LLAVES
                 || torneo.getEstado() != EstadoTorneo.INICIADO) {
             throw new ConflictoEstadoException("La descalificación arbitral requiere un torneo LLAVES INICIADO");
         }

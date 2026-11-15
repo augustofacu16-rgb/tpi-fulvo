@@ -1,4 +1,4 @@
-package com.fulvo.torneos.domain;
+package com.fulvo.torneos.models;
 
 import jakarta.persistence.*;
 import lombok.*;

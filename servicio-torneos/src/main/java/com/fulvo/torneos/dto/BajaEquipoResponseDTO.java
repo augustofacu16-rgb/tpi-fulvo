@@ -1,7 +1,7 @@
 package com.fulvo.torneos.dto;
 
-import com.fulvo.torneos.domain.EstadoEquipo;
-import com.fulvo.torneos.domain.EstadoTorneo;
+import com.fulvo.torneos.models.EstadoEquipo;
+import com.fulvo.torneos.models.EstadoTorneo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.fulvo.torneos.domain;
+package com.fulvo.torneos.models;
 
 /**
  * Formatos de torneo admitidos en el sistema (RN-01).

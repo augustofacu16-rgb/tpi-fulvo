@@ -14,7 +14,7 @@ public class TorneosClientConfig {
             RestClient.Builder builder,
             @Value("${torneos.base-url:http://localhost:8081}") String baseUrl,
             @Value("${torneos.connect-timeout-ms:2000}") int connectTimeout,
-            @Value("${torneos.read-timeout-ms:5000}") int readTimeout) {
+            @Value("${torneos.read-timeout-ms:15000}") int readTimeout) {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(connectTimeout);
         factory.setReadTimeout(readTimeout);

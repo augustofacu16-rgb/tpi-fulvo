@@ -1,6 +1,6 @@
 package com.fulvo.torneos.dto;
 
-import com.fulvo.torneos.domain.PosicionJugador;
+import com.fulvo.torneos.models.PosicionJugador;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

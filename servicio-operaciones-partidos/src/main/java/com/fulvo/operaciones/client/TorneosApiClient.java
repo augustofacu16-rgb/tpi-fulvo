@@ -98,8 +98,8 @@ public class TorneosApiClient {
                     .retrieve()
                     .toBodilessEntity();
             log.info("Suspensión del partido #{} notificada con éxito a servicio-torneos", dto.partidoId());
-        } catch (Exception ex) {
-            log.warn("No se pudo notificar la suspensión del partido #{} a servicio-torneos: {}", dto.partidoId(), ex.getMessage());
+        } catch (RestClientException ex) {
+            throw new TorneosIntegracionException("No se pudo sincronizar la suspensión del partido con Torneos", ex);
         }
     }
 
@@ -121,8 +121,8 @@ public class TorneosApiClient {
                     .retrieve()
                     .toBodilessEntity();
             log.info("Reprogramación del partido #{} notificada con éxito a servicio-torneos", dto.partidoId());
-        } catch (Exception ex) {
-            log.warn("No se pudo notificar la reprogramación del partido #{} a servicio-torneos: {}", dto.partidoId(), ex.getMessage());
+        } catch (RestClientException ex) {
+            throw new TorneosIntegracionException("No se pudo sincronizar la reprogramación del partido con Torneos", ex);
         }
     }
 }

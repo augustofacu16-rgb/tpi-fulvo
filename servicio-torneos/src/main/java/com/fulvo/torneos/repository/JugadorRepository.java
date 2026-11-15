@@ -1,6 +1,6 @@
 package com.fulvo.torneos.repository;
 
-import com.fulvo.torneos.domain.Jugador;
+import com.fulvo.torneos.models.Jugador;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,14 +27,14 @@ public interface JugadorRepository extends JpaRepository<Jugador, Long> {
             WHERE j.equipo.torneo.id = :torneoId
               AND j.dni IN :dnis
               AND j.activo = true
-              AND j.equipo.estado = com.fulvo.torneos.domain.EstadoEquipo.ACTIVO
+              AND j.equipo.estado = com.fulvo.torneos.models.EstadoEquipo.ACTIVO
             """)
     boolean existsByTorneoIdAndDniIn(@Param("torneoId") Long torneoId, @Param("dnis") List<String> dnis);
     @Query("""
             SELECT j FROM Jugador j
             WHERE j.equipo.torneo.id = :torneoId
               AND j.activo = true
-              AND j.equipo.estado = com.fulvo.torneos.domain.EstadoEquipo.ACTIVO
+              AND j.equipo.estado = com.fulvo.torneos.models.EstadoEquipo.ACTIVO
             """)
     List<Jugador> findActivosByTorneoId(@Param("torneoId") Long torneoId);
 }

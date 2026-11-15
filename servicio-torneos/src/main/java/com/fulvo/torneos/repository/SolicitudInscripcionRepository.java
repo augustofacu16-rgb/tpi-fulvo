@@ -1,7 +1,7 @@
 package com.fulvo.torneos.repository;
 
-import com.fulvo.torneos.domain.EstadoSolicitudInscripcion;
-import com.fulvo.torneos.domain.SolicitudInscripcion;
+import com.fulvo.torneos.models.EstadoSolicitudInscripcion;
+import com.fulvo.torneos.models.SolicitudInscripcion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
