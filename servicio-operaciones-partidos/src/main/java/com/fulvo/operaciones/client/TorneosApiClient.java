@@ -1,6 +1,8 @@
 package com.fulvo.operaciones.client;
 
 import com.fulvo.common.dto.DescalificarEquiposRequest;
+import com.fulvo.common.dto.SuspensionPartidoDTO;
+import com.fulvo.common.dto.ReprogramacionPartidoDTO;
 import com.fulvo.operaciones.exception.TorneosIntegracionException;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +23,31 @@ public class TorneosApiClient {
 
     public TorneosApiClient(@Qualifier("torneosRestClient") RestClient restClient) {
         this.restClient = restClient;
+    }
+
+    public void notificarSuspensionPartido(Long torneoId, SuspensionPartidoDTO dto) {
+        sincronizarCronograma(torneoId, "suspension", dto);
+    }
+
+    public void notificarReprogramacionPartido(Long torneoId, ReprogramacionPartidoDTO dto) {
+        sincronizarCronograma(torneoId, "reprogramacion", dto);
+    }
+
+    private void sincronizarCronograma(Long torneoId, String evento, Object dto) {
+        try {
+            restClient.post()
+                    .uri("/internal/v1/torneos/{id}/partidos/{evento}", torneoId, evento)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .headers(headers -> {
+                        String correlationId = MDC.get("correlationId");
+                        if (correlationId != null) headers.set("X-Correlation-ID", correlationId);
+                    })
+                    .body(dto)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (RestClientException ex) {
+            throw new TorneosIntegracionException("No se pudo sincronizar " + evento + " con Torneos", ex);
+        }
     }
 
     public void descalificarPorIncidentes(Long torneoId, Long localId, Long visitanteId) {

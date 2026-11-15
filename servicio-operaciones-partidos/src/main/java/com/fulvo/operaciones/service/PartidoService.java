@@ -1,6 +1,7 @@
 package com.fulvo.operaciones.service;
 
 import com.fulvo.common.exception.ArbitroNoAsignadoException;
+import com.fulvo.common.dto.ReprogramacionPartidoDTO;
 import com.fulvo.common.exception.ConflictoEstadoException;
 import com.fulvo.common.exception.RecursoNoEncontradoException;
 import com.fulvo.operaciones.client.TorneosApiClient;
@@ -135,7 +136,11 @@ public class PartidoService {
         validarDisponibilidadHoraria(partidoId, nuevaSede.getId(), arbitroDni, request.nuevaFechaHora());
 
         partido.reprogramar(nuevaSede, request.nuevaFechaHora());
-
+        partidoRepository.flush();
+        torneosApiClient.notificarReprogramacionPartido(partido.getTorneoId(),
+                new ReprogramacionPartidoDTO(partido.getId(), partido.getEquipoLocalId(),
+                        partido.getEquipoVisitanteId(), partido.getFechaHora(), nuevaSede.getId(),
+                        "Reprogramación del partido suspendido"));
         return partidoRepository.save(partido);
     }
 

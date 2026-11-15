@@ -68,4 +68,4 @@ notificaciones:
 torneos:
   base-url: ${TORNEOS_BASE_URL:http://localhost:8081}
   connect-timeout-ms: 2000
-  read-timeout-ms: 5000
+  read-timeout-ms: 15000

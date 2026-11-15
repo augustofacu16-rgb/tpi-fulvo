@@ -1,0 +1,29 @@
+package com.fulvo.common.dto;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+/**
+ * DTO para la notificación inter-servicio de suspensión de un partido (Subsección 4.5, RN-07, RN-12).
+ */
+public record SuspensionPartidoDTO(
+        @NotNull(message = "El identificador del partido es obligatorio")
+        @Positive(message = "El identificador del partido debe ser positivo")
+        Long partidoId,
+
+        @NotNull(message = "El identificador del equipo local es obligatorio")
+        @Positive(message = "El identificador del equipo local debe ser positivo")
+        Long equipoLocalId,
+
+        @NotNull(message = "El identificador del equipo visitante es obligatorio")
+        @Positive(message = "El identificador del equipo visitante debe ser positivo")
+        Long equipoVisitanteId,
+
+        String motivo,
+
+        LocalDateTime fechaOriginal
+) implements Serializable {
+}

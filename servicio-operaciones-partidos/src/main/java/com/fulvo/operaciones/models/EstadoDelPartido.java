@@ -24,7 +24,7 @@ public abstract class EstadoDelPartido {
     }
 
     public void iniciar(Partido partido) {
-        throw new ConflictoEstadoException("El partido no se encuentra en estado PROGRAMADO");
+        throw new ConflictoEstadoException("Solo se pueden iniciar partidos PROGRAMADO o REPROGRAMADO");
     }
 
     public void suspenderPorClima(Partido partido) {
@@ -142,6 +142,14 @@ public abstract class EstadoDelPartido {
 
     private static final class Reprogramado extends ReceptorDeClasificados {
         @Override
+        public void iniciar(Partido partido) {
+            if (partido.getEquipoLocalId() == null || partido.getEquipoVisitanteId() == null) {
+                throw new ConflictoEstadoException("El partido todavía no tiene ambos equipos definidos");
+            }
+            partido.transicionarA(EstadoPartido.EN_CURSO);
+        }
+
+        @Override
         public void suspenderPorClima(Partido partido) {
             partido.transicionarA(EstadoPartido.SUSPENDIDO);
         }
@@ -150,6 +158,10 @@ public abstract class EstadoDelPartido {
     private static final class Suspendido extends EstadoDelPartido {
         @Override
         public void reprogramar(Partido partido, Sede nuevaSede, java.time.LocalDateTime nuevaFechaHora) {
+            if (nuevaSede == null || nuevaFechaHora == null
+                    || !nuevaFechaHora.isAfter(java.time.LocalDateTime.now())) {
+                throw new IllegalArgumentException("La reprogramación requiere una sede y una fecha futura");
+            }
             partido.setSede(nuevaSede);
             partido.setFechaHora(nuevaFechaHora);
             partido.transicionarA(EstadoPartido.REPROGRAMADO);

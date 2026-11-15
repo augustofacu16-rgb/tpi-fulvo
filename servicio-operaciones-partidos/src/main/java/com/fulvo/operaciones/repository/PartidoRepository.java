@@ -2,7 +2,6 @@ package com.fulvo.operaciones.repository;
 
 import com.fulvo.operaciones.models.EstadoPartido;
 import com.fulvo.operaciones.models.Partido;
-import com.fulvo.operaciones.models.EstadoPartido;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -12,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.List;
 
 public interface PartidoRepository extends JpaRepository<Partido, Long> {
 
