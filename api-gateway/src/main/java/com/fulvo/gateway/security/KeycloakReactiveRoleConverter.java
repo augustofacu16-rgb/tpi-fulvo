@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Convertidor reactivo de claims de Keycloak a GrantedAuthority de Spring Security.
  * Extrae los roles del claim 'realm_access.roles' y los expone con nombres directos
- * (ej. ROL_ORGANIZADOR) y con prefijo ROLE_ (ej. ROLE_ORGANIZADOR, ROLE_ROL_ORGANIZADOR)
+ * (ej. ROL_ORGANIZADOR) y con prefijo ROLE_ (ej. ROLE_ORGANIZADOR)
  * para máxima interoperabilidad con hasRole y hasAuthority.
  */
 @Component

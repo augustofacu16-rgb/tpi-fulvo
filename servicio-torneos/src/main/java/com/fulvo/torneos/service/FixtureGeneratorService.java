@@ -62,10 +62,7 @@ public class FixtureGeneratorService {
                 Long localId = equipoIds.get(localIdx);
                 Long visitanteId = equipoIds.get(visitanteIdx);
 
-                // Alternancia de localía según Tablas de Berger para distribuir equilibradamente
-                // la condición de local y visitante entre todos los equipos a lo largo de las fechas:
-                // - En el partido 0 (donde interviene el pivote fijo), se invierte en fechas pares.
-                // - En los demás partidos de la jornada, se invierte en índices impares de partido.
+                // Alternancia de localía para distribuir equilibradamente
                 boolean invertirLocalia = (partido == 0) ? (fecha % 2 == 0) : (partido % 2 == 1);
                 if (invertirLocalia) {
                     Long temp = localId;
