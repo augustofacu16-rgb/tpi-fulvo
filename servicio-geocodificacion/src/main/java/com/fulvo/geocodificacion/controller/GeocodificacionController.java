@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controlador REST para el adaptador de geocodificación satelital.
- * Expone endpoints para resolución y normalización geográfica (Subsección 4.1 y 5.4).
+ * Expone endpoints para resolución y normalización geográfica.
  */
 @RestController
 @RequestMapping("/v1/geocodificaciones")

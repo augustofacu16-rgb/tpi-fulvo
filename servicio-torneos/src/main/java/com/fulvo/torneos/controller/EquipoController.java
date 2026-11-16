@@ -17,7 +17,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Equipos", description = "Gestión del plantel, reemplazos de jugadores y bajas/descalificaciones de planteles (Subsección 5.2)")
+@Tag(name = "Equipos", description = "Gestión del plantel, reemplazos de jugadores y bajas/descalificaciones de planteles")
 @RestController
 @RequiredArgsConstructor
 public class EquipoController {

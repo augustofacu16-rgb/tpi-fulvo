@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * DTO que consolida la visión del cronograma general de un certamen y sus contingencias (Subsección 4.5).
+ * DTO que consolida la visión del cronograma general de un certamen y sus contingencias.
  */
 @Data
 @Builder

@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Respuesta de DELETE /v1/torneos/{idTorneo}/equipos/{idEquipo} (FN-13, Subsección 3.4.2).
+ * Respuesta de DELETE /v1/torneos/{idTorneo}/equipos/{idEquipo} (FN-13).
  */
 @Schema(description = "Detalle de la baja voluntaria o descalificación de un equipo en un torneo")
 @Data

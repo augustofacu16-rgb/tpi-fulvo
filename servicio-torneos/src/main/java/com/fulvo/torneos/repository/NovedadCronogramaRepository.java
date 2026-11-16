@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Repositorio JPA para novedades y trazabilidad del cronograma de partidos (Subsección 4.5).
+ * Repositorio JPA para novedades y trazabilidad del cronograma de partidos.
  */
 public interface NovedadCronogramaRepository extends JpaRepository<NovedadCronograma, Long> {
 

@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Controlador REST para la recepción y persistencia transaccional en lote de cruces de partidos (Subsección 2.3).
- * Documentado formalmente con OpenAPI 3.0 / Swagger (Subsección 2.6).
+ * Controlador REST para la recepción y persistencia transaccional en lote de cruces de partidos.
+ * Documentado formalmente con OpenAPI 3.0 / Swagger.
  */
 @RestController
 @RequestMapping("v1/partidos")

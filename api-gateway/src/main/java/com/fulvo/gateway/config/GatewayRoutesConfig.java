@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Configuración programática de rutas de Spring Cloud Gateway mediante RouteLocatorBuilder (Apunte 19).
+ * Configuración programática de rutas de Spring Cloud Gateway mediante RouteLocatorBuilder.
  * Desacopla la red externa del perímetro interno hacia servicio-torneos, servicio-operaciones-partidos
  * y los microservicios adaptadores (servicio-geocodificacion, servicio-clima, servicio-notificaciones),
- * asegurando la precedencia de subrecursos operativos (Subsecciones 2.5, 3.5), el enrutamiento y aislamiento
- * de adaptadores (Subsección 4.6) y la agregación perimetral de especificaciones OpenAPI 3.0 (Subsección 2.6).
+ * asegurando la precedencia de subrecursos operativos, el enrutamiento y aislamiento
+ * de adaptadores y la agregación perimetral de especificaciones OpenAPI 3.0.
  * Responsable: Tomas Augusto Quiróz.
  */
 @Configuration
@@ -35,7 +35,7 @@ public class GatewayRoutesConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                // 1. Rutas para agregación perimetral de OpenAPI 3.0 downstream (Subsección 2.6 y Etapa 5)
+                // 1. Rutas para agregación perimetral de OpenAPI 3.0 downstream
                 .route("torneos-openapi-route", r -> r
                         .path("/api/torneos/v3/api-docs", "/api/torneos/v3/api-docs/**")
                         .filters(f -> f.rewritePath("/api/torneos/(?<remaining>.*)", "/${remaining}")
@@ -61,7 +61,7 @@ public class GatewayRoutesConfig {
                         .filters(f -> f.rewritePath("/api/clima/(?<remaining>.*)", "/${remaining}")
                                 .setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
                         .uri(climaServiceUrl))
-                // 2. Precedencia de subrecursos de torneos delegados a operaciones (Subsecciones 2.5 y 3.5)
+                // 2. Precedencia de subrecursos de torneos delegados a operaciones
                 .route("servicio-operaciones-torneos-subrecursos-route", r -> r
                         .path(
                                 "/v1/torneos/*/partidos", "/v1/torneos/*/partidos/**",
@@ -79,7 +79,7 @@ public class GatewayRoutesConfig {
                         )
                         .filters(f -> f.setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
                         .uri(torneosServiceUrl))
-                // 4. Rutas principales hacia servicio-operaciones-partidos (puerto interno 8082 - Subsección 3.5)
+                // 4. Rutas principales hacia servicio-operaciones-partidos (puerto interno 8082)
                 .route("servicio-operaciones-route", r -> r
                         .path(
                                 "/v1/partidos", "/v1/partidos/**",
@@ -89,7 +89,7 @@ public class GatewayRoutesConfig {
                         )
                         .filters(f -> f.setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))
                         .uri(operacionesServiceUrl))
-                // 5. Rutas hacia microservicios adaptadores externos (Subsección 4.6)
+                // 5. Rutas hacia microservicios adaptadores externos
                 .route("servicio-geocodificacion-route", r -> r
                         .path("/v1/geocodificaciones", "/v1/geocodificaciones/**")
                         .filters(f -> f.setRequestHeader("X-Gateway-Source", "SpringCloudGateway"))

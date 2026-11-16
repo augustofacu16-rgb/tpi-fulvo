@@ -20,7 +20,7 @@ public interface JugadorRepository extends JpaRepository<Jugador, Long> {
     /**
      * RN-02: un jugador no puede figurar en dos equipos del mismo certamen.
      * Solo se consideran los jugadores VIGENTES (activo = true) de equipos ACTIVOS: un jugador
-     * reemplazado o el plantel de un equipo dado de baja/descalificado dejan de bloquear el DNI (Subsección 3.4).
+     * reemplazado o el plantel de un equipo dado de baja/descalificado dejan de bloquear el DNI.
      */
     @Query("""
             SELECT COUNT(j) > 0 FROM Jugador j

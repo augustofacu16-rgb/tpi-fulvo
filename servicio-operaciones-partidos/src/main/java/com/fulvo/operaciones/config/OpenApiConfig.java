@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 /**
- * Configuración de OpenAPI 3.0 y Swagger UI para el microservicio de Operaciones de Partidos (Subsección 2.6).
+ * Configuración de OpenAPI 3.0 y Swagger UI para el microservicio de Operaciones de Partidos.
  * Expone la especificación viva del microservicio e integra el esquema de seguridad Bearer JWT (Keycloak).
  */
 @Configuration

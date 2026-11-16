@@ -12,9 +12,9 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 /**
- * Configuración de seguridad perimetral reactiva en API Gateway (Apuntes 20 y 21).
+ * Configuración de seguridad perimetral reactiva en API Gateway.
  * Implementa inspección JWT sin estado contra Keycloak y control de acceso basado en roles (RBAC),
- * garantizando reglas para Torneos (Subsección 2.5) y Operaciones/Arbitraje (Subsección 3.5),
+ * garantizando reglas para Torneos y Operaciones/Arbitraje,
  * devolviendo respuestas estandarizadas bajo RFC 7807 (ProblemDetail).
  * Responsable: Tomas Augusto Quiróz.
  */
@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .accessDeniedHandler(gatewayAccessDeniedHandler)
             )
             .authorizeExchange(exchanges -> exchanges
-                // Endpoints de salud, diagnóstico y Swagger UI / OpenAPI 3.0 (Subsección 2.6 y Etapa 5)
+                // Endpoints de salud, diagnóstico y Swagger UI / OpenAPI 3.0
                 .pathMatchers(
                     "/health-check", "/health-check/**", "/info",
                     "/swagger-ui.html", "/swagger-ui/**",
@@ -50,7 +50,7 @@ public class SecurityConfig {
                 ).permitAll()
 
                 // =========================================================================
-                // 1. REGLAS PERIMETRALES DE TORNEOS (Subsección 2.5, FN-01 a FN-06, RN-01 a RN-04)
+                // 1. REGLAS PERIMETRALES DE TORNEOS (FN-01 a FN-06, RN-01 a RN-04)
                 // =========================================================================
                 // Alta de certámenes (FN-01, RN-01): Exclusivo ROL_ORGANIZADOR
                 .pathMatchers(HttpMethod.POST, "/v1/torneos", "/v1/torneos/")
@@ -80,12 +80,12 @@ public class SecurityConfig {
                 .pathMatchers(HttpMethod.DELETE, "/v1/torneos/*/equipos/*", "/v1/torneos/*/equipos/*/**")
                     .hasAnyAuthority("ROL_ORGANIZADOR", "ROL_DELEGADO", "ROLE_ORGANIZADOR", "ROLE_DELEGADO")
 
-                // Reemplazo de jugadores en lista de buena fe (FN-11, RN-11, Subsección 3.4): Exclusivo ROL_DELEGADO
+                // Reemplazo de jugadores en lista de buena fe (FN-11, RN-11): Exclusivo ROL_DELEGADO
                 .pathMatchers(HttpMethod.POST, "/v1/equipos/*/reemplazos-jugadores", "/v1/equipos/*/reemplazos-jugadores/**")
                     .hasAnyAuthority("ROL_DELEGADO", "ROLE_DELEGADO")
 
                 // =========================================================================
-                // 2. REGLAS PERIMETRALES DE OPERACIONES Y ARBITRAJE (Subsección 3.5, FN-02, FN-03, FN-07 a FN-10, RN-05 a RN-10)
+                // 2. REGLAS PERIMETRALES DE OPERACIONES Y ARBITRAJE (FN-02, FN-03, FN-07 a FN-10, RN-05 a RN-10)
                 // =========================================================================
                 // Alta, modificación y baja de Sedes deportivas (FN-02, RN-05): Exclusivo ROL_ORGANIZADOR
                 .pathMatchers(HttpMethod.POST, "/v1/sedes", "/v1/sedes/**")
@@ -103,7 +103,7 @@ public class SecurityConfig {
                 .pathMatchers(HttpMethod.DELETE, "/v1/arbitros/**")
                     .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
 
-                // Recepción de fixture en lote (Subsección 2.3): Exclusivo ROL_ORGANIZADOR
+                // Recepción de fixture en lote: Exclusivo ROL_ORGANIZADOR
                 .pathMatchers(HttpMethod.POST, "/v1/partidos/lote", "/v1/partidos/lote/**")
                     .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
 
@@ -111,7 +111,7 @@ public class SecurityConfig {
                 .pathMatchers(HttpMethod.POST, "/v1/partidos/*/asignaciones", "/v1/partidos/*/asignaciones/**")
                     .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
 
-                // Reprogramación de partidos por contingencia climática (FN-08, RN-07, Subsección 4.4): Exclusivo ROL_ORGANIZADOR
+                // Reprogramación de partidos por contingencia climática (FN-08, RN-07): Exclusivo ROL_ORGANIZADOR
                 .pathMatchers(HttpMethod.POST, "/v1/partidos/*/reprogramaciones", "/v1/partidos/*/reprogramaciones/**")
                     .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
 
@@ -127,17 +127,17 @@ public class SecurityConfig {
                     .hasAnyAuthority("ROL_ARBITRO", "ROLE_ARBITRO")
 
                 // =========================================================================
-                // 3. REGLAS PERIMETRALES DE SERVICIOS ADAPTADORES (Subsección 4.6, FN-02, FN-08, FN-14, RN-06, RN-07, RN-12)
+                // 3. REGLAS PERIMETRALES DE SERVICIOS ADAPTADORES (FN-02, FN-08, FN-14, RN-06, RN-07, RN-12)
                 // =========================================================================
-                // Adaptador de Geocodificación (FN-02, RN-06, Subsección 4.1): Exclusivo ROL_ORGANIZADOR
+                // Adaptador de Geocodificación (FN-02, RN-06): Exclusivo ROL_ORGANIZADOR
                 .pathMatchers(HttpMethod.POST, "/v1/geocodificaciones", "/v1/geocodificaciones/**")
                     .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
 
-                // Adaptador de Clima (FN-08, RN-07, Subsección 4.2): Consulta de pronóstico exclusivo ROL_ORGANIZADOR
+                // Adaptador de Clima (FN-08, RN-07): Consulta de pronóstico exclusivo ROL_ORGANIZADOR
                 .pathMatchers(HttpMethod.GET, "/v1/clima", "/v1/clima/**")
                     .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
 
-                // Adaptador de Notificaciones Transaccionales (FN-14, RN-12, Subsección 4.3): Exclusivo ROL_ORGANIZADOR
+                // Adaptador de Notificaciones Transaccionales (FN-14, RN-12): Exclusivo ROL_ORGANIZADOR
                 .pathMatchers(HttpMethod.POST, "/v1/notificaciones", "/v1/notificaciones/**")
                     .hasAnyAuthority("ROL_ORGANIZADOR", "ROLE_ORGANIZADOR")
 

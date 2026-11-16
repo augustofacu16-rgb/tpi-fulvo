@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * Servicio de dominio responsable de procesar el impacto de suspensiones y reprogramaciones
- * sobre el calendario del torneo, garantizando consistencia y trazabilidad de partidos pendientes (Subsección 4.5).
+ * sobre el calendario del torneo, garantizando consistencia y trazabilidad de partidos pendientes.
  */
 @Slf4j
 @Service
@@ -85,7 +85,7 @@ public class CronogramaTorneoService {
     }
 
     /**
-     * Procesa la reprogramación de un partido suspendido y notifica la nueva fecha/sede a delegados (Subsección 4.5).
+     * Procesa la reprogramación de un partido suspendido y notifica la nueva fecha/sede a delegados.
      */
     @Transactional
     public NovedadCronogramaResponseDTO registrarReprogramacion(Long torneoId, ReprogramacionPartidoDTO dto) {
@@ -128,7 +128,7 @@ public class CronogramaTorneoService {
     }
 
     /**
-     * Consulta el cronograma consolidado del torneo reflejando partidos afectados (Subsección 4.5).
+     * Consulta el cronograma consolidado del torneo reflejando partidos afectados.
      */
     @Transactional(readOnly = true)
     public CronogramaTorneoResponseDTO obtenerCronogramaTorneo(Long torneoId) {
@@ -164,7 +164,7 @@ public class CronogramaTorneoService {
     }
 
     /**
-     * Retorna los partidos pendientes o pospuestos, opcionalmente filtrados para un equipo/delegado (Subsección 4.5).
+     * Retorna los partidos pendientes o pospuestos, opcionalmente filtrados para un equipo/delegado.
      */
     @Transactional(readOnly = true)
     public List<PartidoPendienteDTO> obtenerPartidosPendientes(Long torneoId, Long equipoId) {

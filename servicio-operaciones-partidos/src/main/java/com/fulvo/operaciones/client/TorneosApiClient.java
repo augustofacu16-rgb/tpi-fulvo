@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Cliente HTTP para la comunicación síncrona hacia servicio-torneos (Subsecciones 3.2 y 4.5).
+ * Cliente HTTP para la comunicación síncrona hacia servicio-torneos.
  */
 @Slf4j
 @Component

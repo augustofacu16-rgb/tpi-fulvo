@@ -20,20 +20,20 @@ import java.util.List;
 
 /**
  * Controlador REST para la consulta de cronograma general y seguimiento de partidos pendientes
- * para delegados y fanáticos (Subsección 4.5 y 5.2, Criterio de Aceptación 4.5 y 5.2).
+ * para delegados y fanáticos.
  */
 @Slf4j
 @RestController
 @RequestMapping("/v1/torneos/{torneoId}")
 @RequiredArgsConstructor
-@Tag(name = "Cronograma y Partidos Pendientes", description = "Endpoints de consulta de estado del cronograma, suspensiones y fechas pospuestas (Subsección 5.2)")
+@Tag(name = "Cronograma y Partidos Pendientes", description = "Endpoints de consulta de estado del cronograma, suspensiones y fechas pospuestas")
 public class CronogramaController {
 
     private final CronogramaTorneoService cronogramaTorneoService;
 
     @Operation(
             summary = "Consultar cronograma y contingencias del certamen",
-            description = "Retorna el estado general del torneo con el balance de partidos afectados por suspensión o reprogramación sin corromper cruces (Subsección 4.5)."
+            description = "Retorna el estado general del torneo con el balance de partidos afectados por suspensión o reprogramación sin corromper cruces."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Cronograma obtenido exitosamente"),
@@ -58,7 +58,7 @@ public class CronogramaController {
 
     @Operation(
             summary = "Consultar partidos pendientes para delegados",
-            description = "Lista los partidos suspendidos o reprogramados de un torneo, con filtro opcional por equipo para facilitar el seguimiento logístico al delegado (Subsección 4.5)."
+            description = "Lista los partidos suspendidos o reprogramados de un torneo, con filtro opcional por equipo para facilitar el seguimiento logístico al delegado."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Listado de partidos pendientes obtenido exitosamente"),

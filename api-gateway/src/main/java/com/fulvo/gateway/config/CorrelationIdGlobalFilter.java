@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 /**
- * Filtro reactivo global para inyección y propagación del encabezado X-Correlation-ID (Apunte 23).
+ * Filtro reactivo global para inyección y propagación del encabezado X-Correlation-ID.
  * Si la solicitud entrante no lo posee, genera un UUID v4 y lo propaga a los downstream y respuesta.
  */
 @Component

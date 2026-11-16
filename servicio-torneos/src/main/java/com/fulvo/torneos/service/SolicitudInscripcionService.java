@@ -83,7 +83,7 @@ public class SolicitudInscripcionService {
         SolicitudInscripcion guardada = solicitudRepository.save(solicitud);
         log.info("Solicitud de inscripción guardada con ID {}", guardada.getId());
 
-        // FN-14 / Subsección 2.4: Despacho asíncrono de confirmación de postulación vía Mailpit
+        // FN-14: Despacho asíncrono de confirmación de postulación vía Mailpit
         String emailPostulante = obtenerEmailDestinatario(fanaticoUsuarioId);
         torneoNotificacionService.despacharConfirmacionPostulacion(
                 emailPostulante,
@@ -162,7 +162,7 @@ public class SolicitudInscripcionService {
 
         SolicitudInscripcion actualizada = solicitudRepository.save(solicitud);
 
-        // RN-12 / Subsección 2.4: Despacho asíncrono de resolución (aprobación o rechazo con motivo) vía Mailpit
+        // RN-12: Despacho asíncrono de resolución (aprobación o rechazo con motivo) vía Mailpit
         String emailDelegado = obtenerEmailDestinatario(actualizada.getFanaticoUsuarioId());
         boolean aprobada = actualizada.getEstado() == EstadoSolicitudInscripcion.ACEPTADA;
         torneoNotificacionService.despacharResolucionAdmision(

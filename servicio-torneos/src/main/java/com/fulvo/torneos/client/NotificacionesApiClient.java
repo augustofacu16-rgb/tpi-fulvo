@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Cliente HTTP desacoplado basado en RestClient para invocar el microservicio adaptador
- * servicio-notificaciones (POST /v1/notificaciones/emails) (Subsección 2.4.1).
+ * servicio-notificaciones (POST /v1/notificaciones/emails).
  * Implementa despacho asíncrono para no degradar el tiempo de respuesta del hilo principal.
  */
 @Slf4j

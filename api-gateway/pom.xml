@@ -61,7 +61,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- OpenAPI 3.0 y Swagger UI Reactivo para Gateway (Subsección 2.6) -->
+        <!-- OpenAPI 3.0 y Swagger UI Reactivo para Gateway -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>

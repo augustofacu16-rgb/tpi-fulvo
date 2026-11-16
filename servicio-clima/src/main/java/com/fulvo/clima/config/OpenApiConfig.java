@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 /**
- * Configuración de OpenAPI 3.0 y Swagger UI para el adaptador de Evaluación Climática (Subsección 4.2 y 5.4).
+ * Configuración de OpenAPI 3.0 y Swagger UI para el adaptador de Evaluación Climática.
  * Define metadatos base, esquemas de seguridad Bearer JWT y compatibilidad perimetral con API Gateway.
  */
 @Configuration

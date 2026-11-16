@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * DTO para la notificación inter-servicio de reprogramación de un partido (Subsección 4.5, RN-07, RN-12).
+ * DTO para la notificación inter-servicio de reprogramación de un partido (RN-07, RN-12).
  */
 public record ReprogramacionPartidoDTO(
         @NotNull(message = "El identificador del partido es obligatorio")

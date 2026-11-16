@@ -19,7 +19,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Solicitudes de Inscripción", description = "Endpoints para la postulación de equipos con lista de buena fe y resolución administrativa de admisiones (Subsección 5.2)")
+@Tag(name = "Solicitudes de Inscripción", description = "Endpoints para la postulación de equipos con lista de buena fe y resolución administrativa de admisiones")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

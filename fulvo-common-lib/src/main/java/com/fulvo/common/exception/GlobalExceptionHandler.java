@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Manejador global centralizado de excepciones bajo el estándar RFC 7807 (ProblemDetail) (Apuntes 18 y 23).
+ * Manejador global centralizado de excepciones bajo el estándar RFC 7807 (ProblemDetail).
  * Intercepta excepciones de dominio y validación, retornando respuestas estructuradas enriquecidas
  * con timestamp, correlationId y URI de la petición.
  */

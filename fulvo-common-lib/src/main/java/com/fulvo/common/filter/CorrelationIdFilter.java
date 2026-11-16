@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * Filtro de servlet de trazabilidad transversal (Apunte 23).
+ * Filtro de servlet de trazabilidad transversal.
  * Extrae la cabecera 'X-Correlation-ID' de la petición entrante (o genera un UUID nuevo si viene ausente),
  * lo inyecta en el contexto MDC de SLF4J bajo la clave 'correlationId' para formateo en logs '[%X{correlationId}]',
  * y asegura su propagación en las cabeceras de respuesta HTTP.

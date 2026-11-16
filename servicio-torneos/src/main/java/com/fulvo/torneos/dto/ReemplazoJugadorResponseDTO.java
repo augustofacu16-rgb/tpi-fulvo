@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Respuesta de un reemplazo de jugador exitoso (Subsección 3.4.1).
+ * Respuesta de un reemplazo de jugador exitoso.
  */
 @Schema(description = "Detalle del reemplazo de jugador procesado y estado del cupo de cambios")
 @Data

@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Servicio de generación determinística de fixtures (Round Robin para Liga y Árbol para Llaves) (Subsección 2.2.2).
+ * Servicio de generación determinística de fixtures (Round Robin para Liga y Árbol para Llaves).
  */
 @Slf4j
 @Service

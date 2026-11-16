@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * DTO de respuesta que detalla una novedad individual en el cronograma de un torneo (Subsección 4.5).
+ * DTO de respuesta que detalla una novedad individual en el cronograma de un torneo.
  */
 @Data
 @Builder

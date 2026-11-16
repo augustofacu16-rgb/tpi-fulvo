@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 /**
  * Entidad JPA para la persistencia y trazabilidad de eventos sobre el cronograma
- * de partidos (suspensiones y reprogramaciones) en esquema_torneos (Subsección 4.5, RN-07, RN-12).
+ * de partidos (suspensiones y reprogramaciones) en esquema_torneos (RN-07, RN-12).
  */
 @Entity
 @Table(name = "novedad_cronograma", schema = "esquema_torneos")

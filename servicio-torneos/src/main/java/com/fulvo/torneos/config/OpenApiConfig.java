@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 /**
- * Configuración de OpenAPI 3.0 y Swagger UI enriquecida para el microservicio de Torneos (Subsección 2.6 y 5.2).
+ * Configuración de OpenAPI 3.0 y Swagger UI enriquecida para el microservicio de Torneos.
  * Define metadatos base del servicio, esquemas de seguridad Bearer JWT y compatibilidad perimetral con Gateway.
  * Responsable: Gastón Emiliano Campos Berrondo.
  */
@@ -29,7 +29,7 @@ public class OpenApiConfig {
                         .title("Servicio de Gestión de Torneos - TPI Fulvo")
                         .description("Microservicio encargado de la administración de torneos, solicitudes de inscripción de equipos, " +
                                 "control estricto de cupos (RN-01), validación de planteles de buena fe (RN-02), reemplazo de jugadores (RN-11), " +
-                                "bajas y descalificaciones (RN-04), generación determinística de fixtures y consistencia del cronograma ante contingencias (Subsecciones 2.1, 2.2, 3.4, 4.5, 5.2).")
+                                "bajas y descalificaciones (RN-04), generación determinística de fixtures y consistencia del cronograma ante contingencias.")
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("Cátedra Backend de Aplicaciones - UTN FRC")

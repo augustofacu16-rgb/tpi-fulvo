@@ -16,7 +16,7 @@ import java.util.UUID;
 
 /**
  * Manejador reactivo de denegación de acceso por rol insuficiente (HTTP 403).
- * Devuelve un ProblemDetail estandarizado bajo RFC 7807 (Apuntes 18 y 23).
+ * Devuelve un ProblemDetail estandarizado bajo RFC 7807.
  */
 @Slf4j
 @Component

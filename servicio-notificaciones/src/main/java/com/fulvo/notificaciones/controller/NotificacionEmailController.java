@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * Controlador REST para el adaptador de notificaciones por email.
- * Expone el endpoint canónico POST /v1/notificaciones/emails (Subsecciones 2.4 y 4.3).
+ * Expone el endpoint canónico POST /v1/notificaciones/emails.
  */
 @Slf4j
 @RestController

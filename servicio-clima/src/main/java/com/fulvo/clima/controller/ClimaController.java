@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 /**
- * Controlador REST para consultar pronósticos y evaluación de severidad climática (FN-08, RN-07, Subsección 4.2 y 5.4).
+ * Controlador REST para consultar pronósticos y evaluación de severidad climática (FN-08, RN-07).
  */
 @Validated
 @RestController

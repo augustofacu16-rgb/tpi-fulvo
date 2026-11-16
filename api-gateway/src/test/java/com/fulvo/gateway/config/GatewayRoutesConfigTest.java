@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("GatewayRoutesConfig en api-gateway - Tests unitarios de enrutamiento y agregación Swagger (Subsecciones 3.5 y 4.6)")
+@DisplayName("GatewayRoutesConfig en api-gateway - Tests unitarios de enrutamiento y agregación Swagger")
 class GatewayRoutesConfigTest {
 
     @Test

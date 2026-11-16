@@ -61,14 +61,14 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Librería común de integración (Subsección 1.2) -->
+        <!-- Librería común de integración -->
         <dependency>
             <groupId>com.fulvo</groupId>
             <artifactId>fulvo-common-lib</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- OpenAPI 3.0 y Swagger UI (Subsección 2.6) -->
+        <!-- OpenAPI 3.0 y Swagger UI -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 /**
- * Configuración de OpenAPI 3.0 y Swagger UI para el adaptador de Notificaciones Transaccionales (Subsección 4.3 y 5.4).
+ * Configuración de OpenAPI 3.0 y Swagger UI para el adaptador de Notificaciones Transaccionales.
  * Incorpora esquema de seguridad Bearer JWT unificado para interacción interactiva desde API Gateway.
  */
 @Configuration

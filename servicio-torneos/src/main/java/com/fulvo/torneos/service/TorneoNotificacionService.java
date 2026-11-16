@@ -185,7 +185,7 @@ public class TorneoNotificacionService {
 
     /**
      * Despacha alerta de suspensión de partido hacia el delegado de un equipo involucrado
-     * (RN-07, RN-11, RN-12, Subsección 4.5).
+     * (RN-07, RN-11, RN-12).
      *
      * @param emailDestinatario Dirección del delegado destinatario.
      * @param nombreEquipo      Nombre del equipo del delegado.
@@ -234,7 +234,7 @@ public class TorneoNotificacionService {
     }
 
     /**
-     * Despacha notificación de reprogramación de partido hacia el delegado de un equipo involucrado (Subsección 4.5).
+     * Despacha notificación de reprogramación de partido hacia el delegado de un equipo involucrado.
      *
      * @param emailDestinatario Dirección del delegado destinatario.
      * @param nombreEquipo      Nombre del equipo del delegado.

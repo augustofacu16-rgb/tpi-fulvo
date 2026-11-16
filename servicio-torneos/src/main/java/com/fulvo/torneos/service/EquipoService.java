@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Gestión del plantel y de la permanencia de un equipo dentro del certamen (Subsección 3.4):
+ * Gestión del plantel y de la permanencia de un equipo dentro del certamen:
  * reemplazos de jugadores (FN-11) y bajas / descalificaciones (FN-13, RN-04).
  */
 @Service
@@ -77,7 +77,7 @@ public class EquipoService {
     }
 
     /**
-     * Reemplaza un jugador del plantel (Subsección 3.4.1, FN-11, RN-05/RN-11).
+     * Reemplaza un jugador del plantel (FN-11, RN-05/RN-11).
      * El jugador saliente (identificado por su ID autogenerado) pasa a activo = false
      * y el nuevo jugador se incorpora al plantel.
      */
@@ -188,7 +188,7 @@ public class EquipoService {
     }
 
     /**
-     * Baja voluntaria o descalificación de un equipo (Subsección 3.4.2, FN-13, RN-04).
+     * Baja voluntaria o descalificación de un equipo (FN-13, RN-04).
      * Permitida en cualquier fase del torneo mientras este no haya finalizado ni sido cancelado.
      *
      * @param tipo BAJA_VOLUNTARIA (por defecto) o DESCALIFICACION.

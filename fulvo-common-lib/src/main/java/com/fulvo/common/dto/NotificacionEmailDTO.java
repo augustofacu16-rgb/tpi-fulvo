@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 /**
  * DTO para el envío de notificaciones por correo electrónico transaccionales
  * hacia servicio-notificaciones (POST /v1/notificaciones/emails) cubriendo los 7 eventos del ciclo (RN-11)
- * y reprogramaciones (Subsección 4.5).
+ * y reprogramaciones.
  */
 @Data
 @Builder

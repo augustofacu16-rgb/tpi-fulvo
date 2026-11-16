@@ -68,7 +68,7 @@ public class TorneoService {
     }
 
     /**
-     * Cierra la inscripción o cancela el torneo (Subsección 2.2.1, FN-06, RN-01, RN-04).
+     * Cierra la inscripción o cancela el torneo (FN-06, RN-01, RN-04).
      * Si el nuevo estado es CERRADO_INSCRIPCION (o INSCRIPCION_CERRADA), valida que el cupo esté al 100%.
      * Si no alcanzó el 100%, rechaza con 409 Conflict.
      */
@@ -109,7 +109,7 @@ public class TorneoService {
     }
 
     /**
-     * Genera el fixture determinístico y lo despacha a Operaciones (Subsección 2.2.2, 2.2.3).
+     * Genera el fixture determinístico y lo despacha a Operaciones.
      * Transiciona el torneo a INICIADO.
      */
     @Transactional

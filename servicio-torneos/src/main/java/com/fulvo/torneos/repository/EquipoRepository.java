@@ -26,7 +26,7 @@ public interface EquipoRepository extends JpaRepository<Equipo, Long> {
     boolean existsByTorneoIdAndNombreIgnoreCase(Long torneoId, String nombre);
 
     /**
-     * Bloqueo pesimista (SELECT ... FOR UPDATE) sobre la fila del equipo (Subsección 3.4).
+     * Bloqueo pesimista (SELECT ... FOR UPDATE) sobre la fila del equipo.
      * Serializa reemplazos y bajas concurrentes para que el contador de cambios no se corrompa.
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE)

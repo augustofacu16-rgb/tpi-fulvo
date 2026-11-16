@@ -16,7 +16,7 @@ import java.util.UUID;
 
 /**
  * Punto de entrada reactivo para peticiones no autenticadas (HTTP 401).
- * Devuelve un ProblemDetail estandarizado bajo RFC 7807 (Apuntes 18 y 23).
+ * Devuelve un ProblemDetail estandarizado bajo RFC 7807.
  */
 @Slf4j
 @Component

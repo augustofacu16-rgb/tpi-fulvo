@@ -23,13 +23,13 @@ import java.util.Map;
 
 /**
  * Controlador REST para el disparo y prueba de notificaciones de postulación y admisión
- * en servicio-torneos (Subsección 2.4 y 5.2).
+ * en servicio-torneos.
  */
 @Slf4j
 @RestController
 @RequestMapping("/v1/torneos/notificaciones")
 @RequiredArgsConstructor
-@Tag(name = "Notificaciones de Torneo", description = "Endpoints de disparo y prueba de alertas por correo electrónico hacia Mailpit (Subsección 5.2)")
+@Tag(name = "Notificaciones de Torneo", description = "Endpoints de disparo y prueba de alertas por correo electrónico hacia Mailpit")
 public class TorneoNotificacionController {
 
     private final TorneoNotificacionService torneoNotificacionService;

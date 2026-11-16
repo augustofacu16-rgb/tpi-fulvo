@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Controlador REST interno para la sincronización de contingencias de partidos
- * entre microservicios (servicio-operaciones-partidos -> servicio-torneos) (Subsección 4.5, 5.2, RN-07, RN-12).
+ * entre microservicios (servicio-operaciones-partidos -> servicio-torneos) (RN-07, RN-12).
  */
 @Slf4j
 @RestController
 @RequestMapping("/internal/v1/torneos/{torneoId}/partidos")
 @RequiredArgsConstructor
-@Tag(name = "Sincronización Interna Cronograma", description = "Endpoints internos para registrar contingencias de partidos y notificar delegados (Subsección 5.2)")
+@Tag(name = "Sincronización Interna Cronograma", description = "Endpoints internos para registrar contingencias de partidos y notificar delegados")
 public class SincronizacionCronogramaInternalController {
 
     private final CronogramaTorneoService cronogramaTorneoService;
@@ -60,7 +60,7 @@ public class SincronizacionCronogramaInternalController {
 
     @Operation(
             summary = "Registrar reprogramación de partido",
-            description = "Consume la reasignación de fecha y sede para un partido suspendido y notifica a los delegados involucrados (Subsección 4.5)"
+            description = "Consume la reasignación de fecha y sede para un partido suspendido y notifica a los delegados involucrados"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Reprogramación registrada y notificada a delegados exitosamente"),

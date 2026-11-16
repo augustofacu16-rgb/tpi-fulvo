@@ -68,7 +68,7 @@
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
-        <!-- OpenAPI 3.0 y Swagger UI (Subsección 2.6) -->
+        <!-- OpenAPI 3.0 y Swagger UI -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

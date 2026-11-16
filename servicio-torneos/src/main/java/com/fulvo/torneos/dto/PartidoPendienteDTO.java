@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * DTO para la trazabilidad y seguimiento de partidos pendientes o pospuestos para delegados (Subsección 4.5).
+ * DTO para la trazabilidad y seguimiento de partidos pendientes o pospuestos para delegados.
  */
 @Data
 @Builder

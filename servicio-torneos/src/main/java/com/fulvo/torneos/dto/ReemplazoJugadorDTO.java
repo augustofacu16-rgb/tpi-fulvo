@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Cuerpo de POST /v1/equipos/{id}/reemplazos-jugadores (FN-11, Subsección 3.4.1).
+ * Cuerpo de POST /v1/equipos/{id}/reemplazos-jugadores (FN-11).
  * Identifica al jugador saliente por su ID autogenerado (Long PK) conforme a DISENO_SISTEMA_FULVO.md.
  */
 @Schema(description = "Solicitud de reemplazo de un jugador en la lista de buena fe de un equipo en competencia (máximo 5 cambios)")

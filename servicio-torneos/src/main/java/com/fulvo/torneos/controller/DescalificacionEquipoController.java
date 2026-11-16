@@ -15,7 +15,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Descalificaciones Internas", description = "Endpoints de comunicación interna inter-servicio para la descalificación de planteles (Subsección 3.2 y 5.2)")
+@Tag(name = "Descalificaciones Internas", description = "Endpoints de comunicación interna inter-servicio para la descalificación de planteles")
 @RestController
 @RequestMapping("/internal/v1/torneos")
 @RequiredArgsConstructor

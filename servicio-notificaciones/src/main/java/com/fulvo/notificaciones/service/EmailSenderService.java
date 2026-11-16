@@ -57,7 +57,7 @@ public class EmailSenderService {
                     dto.getTipoEvento(), dto.getDestinatario());
             return true;
         } catch (Exception e) {
-            // RN-12 y Subsección 4.3: Captura silenciosa de excepciones SMTP
+            // RN-12: Captura silenciosa de excepciones SMTP
             // para no bloquear ni abortar las transacciones de negocio.
             log.error("Fallo SMTP al enviar correo [{}] a {}: {}. Continuando por resiliencia operativa.",
                     dto.getTipoEvento(), dto.getDestinatario(), e.getMessage(), e);

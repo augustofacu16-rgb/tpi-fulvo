@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Cliente HTTP para comunicación síncrona con servicio-operaciones-partidos (POST /v1/partidos/lote) (Subsección 2.2.3).
+ * Cliente HTTP para comunicación síncrona con servicio-operaciones-partidos (POST /v1/partidos/lote).
  */
 @Slf4j
 @Component
@@ -31,7 +31,7 @@ public class OperacionesApiClient {
 
     /**
      * Despacha el lote completo de cruces de fixture a servicio-operaciones-partidos,
-     * propagando la cabecera X-Correlation-ID desde el contexto MDC de SLF4J (Apunte 23).
+     * propagando la cabecera X-Correlation-ID desde el contexto MDC de SLF4J.
      *
      * @param cruces Lista de CrucePartidoDTO a persistir en esquema_operaciones.
      */

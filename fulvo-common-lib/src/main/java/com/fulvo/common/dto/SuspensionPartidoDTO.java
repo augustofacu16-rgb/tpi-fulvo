@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * DTO para la notificación inter-servicio de suspensión de un partido (Subsección 4.5, RN-07, RN-12).
+ * DTO para la notificación inter-servicio de suspensión de un partido (RN-07, RN-12).
  */
 public record SuspensionPartidoDTO(
         @NotNull(message = "El identificador del partido es obligatorio")

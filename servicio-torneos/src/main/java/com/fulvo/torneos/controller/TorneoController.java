@@ -25,7 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@Tag(name = "Torneos", description = "Endpoints para la creación, consulta, fixture y gestión del ciclo de vida de certámenes (Subsección 5.2)")
+@Tag(name = "Torneos", description = "Endpoints para la creación, consulta, fixture y gestión del ciclo de vida de certámenes")
 @RestController
 @RequestMapping("/v1/torneos")
 @RequiredArgsConstructor

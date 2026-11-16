@@ -1,7 +1,7 @@
 package com.fulvo.torneos.models;
 
 /**
- * Estados posibles de novedades sobre el cronograma de un partido (Subsección 4.5).
+ * Estados posibles de novedades sobre el cronograma de un partido.
  */
 public enum EstadoNovedadPartido {
     SUSPENDIDO,
