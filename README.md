@@ -65,27 +65,26 @@ docker compose up -d --build
 
 ---
 
-## 📚 Mapa de Documentación y Protocolo de Agentes
+## 📚 Documentación Técnica
 
-Toda la documentación técnica, tableros de avance y especificaciones se encuentran organizadas en `docs/`:
+Toda la documentación técnica, diagramas de arquitectura y especificaciones se encuentran organizadas en la carpeta `docs/`:
 
-### Documentación de Diseño y Gestión (`docs/agentes/`)
-* **[docs/agentes/CONTEXT.md](docs/agentes/CONTEXT.md):** **Directivas obligatorias de ejecución** para Agentes de IA y desarrolladores, reglas innegociables de arquitectura, protocolo anti-suposición y ciclo de vida de ramas.
-* **[docs/agentes/TASKS.md](docs/agentes/TASKS.md):** Tablero de control de avance por etapas con compuertas de calidad (*Gates*).
-* **[docs/agentes/DISENO_SISTEMA_FULVO.md](docs/agentes/DISENO_SISTEMA_FULVO.md):** Especificación funcional oficial, catálogo de endpoints, DER, diagramas C4 y máquinas de estado.
-* **[docs/agentes/PLAN_DESARROLLO.md](docs/agentes/PLAN_DESARROLLO.md):** Planificación sprint a sprint y matriz de responsabilidades por integrante.
-* **[docs/agentes/GUIA_PRUEBAS_MANUALES.md](docs/agentes/GUIA_PRUEBAS_MANUALES.md):** Guion de pruebas manuales, comandos `curl` y verificación paso a paso.
-
-### Bitácoras de Auditoría Modulares (`docs/audit/`)
-Para evitar conflictos de merge en Git (*Git Hotspots*) durante el desarrollo paralelo de features, la bitácora opera bajo el **Patrón de Fragmentos Modulares**:
-* **[docs/audit/](docs/audit/):** Carpeta donde cada tarea/subsección genera y conserva su propio archivo `.md` independiente (ej: `1.4-inicializacion-operaciones.md`).
-* **[docs/audit/_TEMPLATE.md](docs/audit/_TEMPLATE.md):** Plantilla estándar obligatoria para cada entrada de auditoría.
+* **Diagramas C4 de Arquitectura:**
+  * **[docs/TPI-Diagrama de contexto.pdf](docs/TPI-Diagrama%20de%20contexto.pdf):** Diagrama de contexto del sistema distribuido.
+  * **[docs/TPI-Diagrama de contenedores.pdf](docs/TPI-Diagrama%20de%20contenedores.pdf):** Diagrama de contenedores y servicios interconectados.
+* **Modelo de Datos:**
+  * **[docs/DER-Fulvo.pdf](docs/DER-Fulvo.pdf):** Diagrama Entidad-Relación (DER) de esquemas relacionales.
+* **Máquinas de Estado:**
+  * **[docs/TPI-METorneo.drawio.pdf](docs/TPI-METorneo.drawio.pdf):** Ciclo de vida y transiciones del Torneo.
+  * **[docs/TPI-MEPartido.drawio.pdf](docs/TPI-MEPartido.drawio.pdf):** Ciclo de vida y transiciones de Partidos.
+  * **[docs/TPI-MEInscripcion.drawio.pdf](docs/TPI-MEInscripcion.drawio.pdf):** Flujo de solicitudes de inscripción.
+* **Especificación y Cuestionario:**
+  * **[docs/Documentacion COMPLETA CUESTIONARIO BACKEND TP FULVO.pdf](docs/Documentacion%20COMPLETA%20CUESTIONARIO%20BACKEND%20TP%20FULVO.pdf):** Documentación funcional y respuestas al cuestionario de la cátedra.
 
 ---
 
 ## 🌿 Flujo de Trabajo en Git
 
-1. **Ramas Locales Aisladas:** Cada tarea se desarrolla en su rama dedicada: `feature/<etapa>-<subseccion>-<slug>`.
-2. **Prohibición de Push por Agentes:** Los agentes de IA nunca pushean al repositorio remoto.
-3. **Registro Modular:** Al finalizar la tarea, se crea el fragmento en `docs/audit/<etapa>.<subseccion>-<slug>.md` (**cero conflictos de Git**).
-4. **Revisión y PR Manual:** El desarrollador humano inspecciona los cambios, ejecuta `git push -u origin feature/...` y abre la Pull Request en GitHub hacia `main`.
+1. **Ramas de Desarrollo:** Cada funcionalidad se desarrolla en su rama dedicada: `feature/<nombre-feature>`.
+2. **Validación Local:** Se verifican los cambios localmente y se ejecutan las suites de pruebas automatizadas.
+3. **Revisión y Pull Request:** Se abre la Pull Request en GitHub hacia `main` para su integración y revisión.
